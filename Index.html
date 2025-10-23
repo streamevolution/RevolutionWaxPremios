@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Lealtad con Login - ¡Ingresa Código!</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        :root {
+            --color-principal: #007bff; /* Azul para Login */
+            --color-lealtad: #4CAF50; /* Verde para Lealtad */
+            --color-secundario: #FF9800;
+            --color-fondo: #f4f4f4;
+            --color-texto: #333;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .contenedor {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        h1 {
+            color: var(--color-principal);
+            border-bottom: 3px solid var(--color-lealtad);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        /* --- Login Section Styling --- */
+        #login-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        #login-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn-login {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+        }
+        /* --- Lealtad Section Styling (Hidden by default) --- */
+        #lealtad-section {
+            display: none; 
+        }
+        #puntos-actuales {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--color-lealtad);
+            margin: 10px 0 20px 0;
+            padding: 10px;
+            border: 2px dashed var(--color-lealtad);
+            display: inline-block;
+            border-radius: 5px;
+        }
+        #qr-code {
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #ddd;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .catalogo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+        .premio {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: left;
+            display: flex; /* Para organizar imagen y texto */
+            flex-direction: column; /* Coloca elementos en columna */
+            align-items: center; /* Centra horizontalmente */
+            text-align: center;
+        }
+        .premio img {
+            max-width: 100%; /* Asegura que la imagen no se desborde */
+            height: 120px; /* Altura fija para uniformidad */
+            object-fit: cover; /* Recorta la imagen para cubrir el espacio */
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .premio .puntos-costo {
+            font-weight: bold;
+            color: var(--color-secundario);
+            font-size: 1.2em;
+            display: block;
+            margin: 10px 0;
+        }
+        .btn-canjear {
+            background-color: var(--color-secundario);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: auto; /* Empuja el botón hacia abajo */
+            transition: background-color 0.3s;
+        }
+        .btn-logout {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* --- ESTILOS DEL MODAL DE CANJE (Banner Flotante) --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 10; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .modal-content input[type=text] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 90%;
+            border: 2px solid var(--color-lealtad);
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .modal-content button {
+            background-color: var(--color-lealtad);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>🌟 Programa de Lealtad VIP 🌟</h1>
+
+        <div id="login-section">
+            <h2>Iniciar Sesión</h2>
+            
+            <form id="login-form">
+                <label for="email"><b>Correo Electrónico</b></label>
+                <input type="text" placeholder="Ingresa Correo" name="email" id="email" required>
+
+                <label for="psw"><b>Contraseña</b></label>
+                <input type="password" placeholder="Ingresa Contraseña" name="psw" id="psw" required>
+                    
+                <button type="submit" class="btn-login">Iniciar Sesión</button>
+                <p id="login-error" style="color:red; text-align:center;"></p>
+            </form>
+        </div>
+
+        <div id="lealtad-section">
+            <p>Bienvenido, <strong id="user-display"></strong></p>
+            
+            <div style="background-color: #e8f5e9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <h2>Mi Saldo de Puntos</h2>
+                <span id="puntos-actuales">0 Puntos</span>
+                
+                <h2>Escanea para Sumar Puntos (100 pts)</h2>
+                <p style="font-weight: bold; color: #d32f2f;">
+                    👉 INSTRUCCIONES: Escanea este QR. Se te solicitará el código de canje para sumar puntos.
+                </p>
+                
+                <div id="qr-code"></div>
+                <p id="qr-info" style="font-size: 0.8em; color: #777;">URL de escaneo: Cargando...</p>
+            </div>
+            
+            <h2>🎁 Catálogo de Premios</h2>
+            <div class="catalogo" id="catalogo-premios"></div>
+            
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div id="redemption-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('redemption-modal').style.display='none'" style="float:right; cursor:pointer; font-size: 24px;">&times;</span>
+            <h2>¡Escaneo Detectado!</h2>
+            <p>Para sumar 100 puntos a tu cuenta, ingresa el código de canje proporcionado:</p>
+            <input type="text" id="redemption-code" placeholder="Código Secreto" maxlength="6">
+            <button onclick="procesarCanjeQR()">Confirmar Código</button>
+            <p id="modal-message" style="color:red; margin-top:10px;"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN DE SEGURIDAD SIMULADA ---
+        const CLAVE_ALMACENAMIENTO_USUARIOS = 'puntosUsuariosLealtad';
+        const CLAVE_USUARIO_ACTIVO = 'usuarioActivo';
+        const PUNTOS_POR_ESCANEO = 100;
+        const CODIGO_SECRETO = "100199"; 
+        
+        // ** USUARIOS DE PRUEBA (Simulación de la base de datos) **
+        const USUARIOS_VALIDOS = {
+            "axeso5115": "prueba",
+            "prueba": "prueba"
+        };
+        
+        // --- CATÁLOGO DE PRUEBA CON IMÁGENES ---
+        const catalogoPremios = [
+            { id: 1, nombre: "Aditivo de Combustible", costo: 200, descripcion: "Potencia tu motor, maximiza tu rendimiento. Nuestro aditivo de gasolina elimina impurezas, reduce el consumo y prolonga la vida útil de tu motor. ¡Protege tu inversión, optimiza tu viaje!.", imagen: "https://i.postimg.cc/k4qSsffq/AKRON-CAJA-ADITIVO-GASOLINA.png" },
+            { id: 2, nombre: "Descuento de $50 MXN", costo: 1000, descripcion: "Aplicable en cualquier compra mayor a $200 MXN.", imagen: "https://cdn.pixabay.com/photo/2018/05/18/12/03/promo-3411036_1280.jpg" },
+            { id: 3, nombre: "Postre del Día Gratis", costo: 1500, descripcion: "Prueba el postre especial de hoy.", imagen: "https://images.unsplash.com/photo-1563729780517-380d0d826a7e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+            { id: 4, nombre: "Producto Sorpresa VIP", costo: 2500, descripcion: "Un regalo exclusivo por ser un cliente fiel.", imagen: "https://images.unsplash.com/photo-1547481179-ff352614b532?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }
+        ];
+
+        let usuarioLogueado = null;
+        let puntosUsuario = 0;
+        let usuarioEscaneado = null; 
+
+        // --- MANEJO DE PUNTOS (Simulando BBDD) ---
+
+        function cargarPuntosUsuarios() {
+            try {
+                const data = localStorage.getItem(CLAVE_ALMACENAMIENTO_USUARIOS);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function guardarPuntosUsuario(email, puntos) {
+            const todosLosPuntos = cargarPuntosUsuarios();
+            todosLosPuntos[email] = puntos;
+            localStorage.setItem(CLAVE_ALMACENAMIENTO_USUARIOS, JSON.stringify(todosLosPuntos));
+        }
+
+        // --- MANEJO DE AUTENTICACIÓN ---
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.toLowerCase();
+            const psw = document.getElementById('psw').value;
+            const errorElement = document.getElementById('login-error');
+
+            if (USUARIOS_VALIDOS[email] === psw) {
+                localStorage.setItem(CLAVE_USUARIO_ACTIVO, email);
+                iniciarSesion(email);
+            } else {
+                errorElement.textContent = "Correo o contraseña incorrectos.";
+            }
+        });
+
+        function iniciarSesion(email) {
+            usuarioLogueado = email;
+            document.getElementById('user-display').textContent = email;
+            
+            const todosLosPuntos = cargarPuntosUsuarios();
+            puntosUsuario = todosLosPuntos[email] || 0;
+
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('lealtad-section').style.display = 'block';
+
+            actualizarInterfaz();
+            simularEscaneoQR(); 
+        }
+
+        function logout() {
+            localStorage.removeItem(CLAVE_USUARIO_ACTIVO);
+            usuarioLogueado = null;
+            puntosUsuario = 0;
+            
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('lealtad-section').style.display = 'none';
+            document.getElementById('login-error').textContent = '';
+            document.getElementById('login-form').reset();
+            
+            document.getElementById("qr-code").innerHTML = '';
+        }
+
+        // --- LÓGICA PRINCIPAL DE PUNTOS Y QR ---
+
+        function actualizarInterfaz() {
+            document.getElementById('puntos-actuales').textContent = `${puntosUsuario} Puntos`;
+            guardarPuntosUsuario(usuarioLogueado, puntosUsuario); 
+            renderizarCatalogo(); 
+        }
+
+        function simularEscaneoQR() {
+            const URL_BASE = window.location.origin + window.location.pathname; 
+            const QR_DATA = `${URL_BASE}?action=addpoints&user=${usuarioLogueado}`;
+            
+            document.getElementById("qr-code").innerHTML = '';
+            
+            new QRCode(document.getElementById("qr-code"), {
+                text: QR_DATA,
+                width: 150,
+                height: 150,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            document.getElementById('qr-info').textContent = `URL de escaneo: ${QR_DATA}`;
+        }
+        
+        function sumarPuntos(cantidad) {
+            puntosUsuario += cantidad;
+            // La alerta ya se muestra en procesarCanjeQR
+        }
+
+        // --- LÓGICA DEL MODAL DE CANJE ---
+
+        function mostrarModalCanje(user) {
+            usuarioEscaneado = user; 
+            document.getElementById('modal-message').textContent = '';
+            document.getElementById('redemption-code').value = '';
+            document.getElementById('redemption-modal').style.display = 'block';
+        }
+
+        function procesarCanjeQR() {
+            const codigoIngresado = document.getElementById('redemption-code').value.trim();
+            const modalMessage = document.getElementById('modal-message');
+
+            const sessionKey = `puntosSumados_${usuarioEscaneado}`;
+            if (sessionStorage.getItem(sessionKey)) {
+                modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!';
+                return;
+            }
+
+            if (codigoIngresado === CODIGO_SECRETO) {
+                const todosLosPuntos = cargarPuntosUsuarios();
+                let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
+                puntosTemporales += PUNTOS_POR_ESCANEO;
+                
+                guardarPuntosUsuario(usuarioEscaneado, puntosTemporales); 
+                sessionStorage.setItem(sessionKey, 'true'); 
+                
+                document.getElementById('redemption-modal').style.display = 'none';
+                
+                if (usuarioLogueado === usuarioEscaneado) {
+                     puntosUsuario = puntosTemporales;
+                     actualizarInterfaz();
+                     alert(`🎉 ¡Código correcto! 100 puntos sumados a tu cuenta.`);
+                } else {
+                    alert(`✅ Puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`);
+                }
+            } else {
+                modalMessage.textContent = '❌ Código de canje incorrecto. No se sumaron puntos.';
+                document.getElementById('redemption-code').value = ''; 
+            }
+        }
+
+        // --- LÓGICA DE ESCANEO REALISTA (al cargar la página) ---
+
+        function verificarEscaneoAlCargar() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            const userFromQR = urlParams.get('user');
+
+            if (action === 'addpoints' && userFromQR) {
+                if (USUARIOS_VALIDOS.hasOwnProperty(userFromQR)) {
+                    const URL_BASE = window.location.origin + window.location.pathname; 
+                    history.replaceState(null, '', URL_BASE);
+
+                    mostrarModalCanje(userFromQR);
+                } else {
+                    alert('Error: Usuario del QR no encontrado.');
+                }
+            }
+        }
+
+        // --- LÓGICA DE CANJE Y RENDERIZADO (Resto de funciones) ---
+
+        function canjearPremio(idPremio) {
+            if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
+
+            const premio = catalogoPremios.find(p => p.id === idPremio);
+            if (!premio) return;
+
+            if (puntosUsuario >= premio.costo) {
+                if (confirm(`¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
+                    puntosUsuario -= premio.costo;
+                    alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosUsuario}.`);
+                    actualizarInterfaz();
+                }
+            } else {
+                alert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`);
+            }
+        }
+        
+        function renderizarCatalogo() {
+            const contenedorCatalogo = document.getElementById('catalogo-premios');
+            contenedorCatalogo.innerHTML = '';
+            if (!usuarioLogueado) return; 
+            
+            catalogoPremios.forEach(premio => {
+                const puedeCanjear = puntosUsuario >= premio.costo;
+                const divPremio = document.createElement('div');
+                divPremio.className = 'premio';
+                divPremio.innerHTML = `
+                    <img src="${premio.imagen}" alt="${premio.nombre}" loading="lazy">
+                    <h3>${premio.nombre}</h3>
+                    <p>${premio.descripcion}</p>
+                    <span class="puntos-costo">Costo: ${premio.costo} Puntos</span>
+                    <button onclick="canjearPremio(${premio.id})" class="btn-canjear" ${!puedeCanjear ? 'disabled' : ''}>
+                        ${puedeCanjear ? 'Canjear' : `Faltan ${premio.costo - puntosUsuario} Pts`}
+                    </button>
+                `;
+                contenedorCatalogo.appendChild(divPremio);
+            });
+        }
+        
+        // --- INICIALIZACIÓN DE LA APLICACIÓN ---
+        
+        verificarEscaneoAlCargar();
+        
+        const usuarioGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
+        if (usuarioGuardado) {
+            iniciarSesion(usuarioGuardado);
+        }
+        
+    </script>
+</body>
+  </html>
+  
