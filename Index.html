@@ -3,16 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔒 Lealtad con Login - ¡Ingresa Código!</title>
+    <title>🎁 Revolution Wax - ¡Acomular y Gana!</title>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --color-principal: #007bff; /* Azul para Login */
-            --color-lealtad: #4CAF50; /* Verde para Lealtad */
+            --color-principal: #007bff;
+            /* Azul para Login */
+            --color-lealtad: #4CAF50;
+            /* Verde para Lealtad */
             --color-secundario: #FF9800;
             --color-fondo: #f4f4f4;
             --color-texto: #333;
+            --color-negro: #212529; /* Negro para la barra de navegación */
         }
+
+        /* ===================================================================
+        === BARRA DE LOGIN NEÓN
+        ===================================================================
+        */
+        #login-nav-bar {
+            background-color: var(--color-negro);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        .neon-text {
+            color: #FFFF00; /* Amarillo Neón */
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 0 0 5px #FFFF00, 0 0 10px #FFFF00;
+            animation: blinker 1s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+        }
+
+        @keyframes blinker {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0.7;
+            }
+        }
+        /*
+        ===================================================================
+        === FIN DE ESTILOS DE BARRA DE LOGIN NEÓN
+        ===================================================================
+        */
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: var(--color-fondo);
@@ -20,6 +62,109 @@
             margin: 0;
             padding: 0;
             text-align: center;
+        }
+        /* --- BARRA DE NAVEGACIÓN SUPERIOR (OCULTA POR DEFECTO EN EL HTML, MOSTRADA POR JS EN SESIÓN) --- */
+        #nav-bar {
+            display: none; /* Oculto por defecto */
+            background-color: var(--color-negro);
+            color: white;
+            padding: 10px 25px; /* Barra más grande */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        #nav-bar .nav-logo img {
+            height: 40px; /* Logo más grande y visible */
+            width: auto;
+        }
+        #nav-bar .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        #nav-bar .nav-links a,
+        #nav-bar .nav-links .dropdown-btn {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            padding: 10px 0;
+            font-weight: 600;
+            font-size: 1.1em; /* Texto más grande */
+            cursor: pointer;
+            background: none;
+            border: none;
+            position: relative;
+            transition: color 0.2s;
+        }
+        #nav-bar .nav-links a:hover,
+        #nav-bar .nav-links .dropdown-btn:hover {
+            color: var(--color-lealtad);
+        }
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--color-negro);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+            z-index: 10;
+            top: 100%; /* Posicionar debajo del botón */
+            left: -50px;
+        }
+        .dropdown-content a {
+            color: white !important;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            margin-left: 0;
+            font-size: 0.9em;
+        }
+        .dropdown-content a:hover {
+            background-color: #3e3e3e;
+            color: var(--color-secundario) !important;
+        }
+        /* La clase 'show' se usa en JS para mostrar el menú */
+        .dropdown-content.show {
+            display: block;
+        }
+        
+        /* ESTILOS DEL BOTÓN "IR ARRIBA" */
+        #scrollToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: var(--color-lealtad);
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: opacity 0.3s;
+        }
+        #scrollToTopBtn:hover {
+            background-color: #388e3c;
+        }
+        /* --- Contenedor y Logo en Login --- */
+        .logo-container {
+            padding-bottom: 20px;
+            text-align: center;
+        }
+        .logo-container img {
+            max-width: 150px;
+            height: auto;
         }
         .contenedor {
             max-width: 900px;
@@ -44,6 +189,12 @@
             max-width: 400px;
             margin: 0 auto;
         }
+        #login-section .logo-container {
+             padding-top: 0; 
+             padding-bottom: 15px; 
+             margin-top: -15px;
+        }
+
         #login-section input {
             width: 100%;
             padding: 10px;
@@ -54,7 +205,7 @@
             box-sizing: border-box;
         }
         .btn-login {
-            background-color: var(--color-principal);
+            background-color: var(--color-secundario);
             color: white;
             padding: 14px 20px;
             margin: 8px 0;
@@ -64,9 +215,66 @@
             width: 100%;
             font-size: 1.1em;
         }
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--color-principal);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9em;
+            padding: 5px 0;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        #login-section .btn-create {
+            background-color: var(--color-lealtad);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+        
+        /* === ESTILOS PARA DESCARGA APK === */
+        #apk-download-container {
+            text-align: center;
+            padding: 15px 0;
+            border-top: 1px dashed #ccc;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        #apk-download-container img {
+            width: 40px; 
+            height: auto;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .btn-download-apk {
+            background-color: var(--color-lealtad); 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-download-apk:hover {
+            background-color: #388e3c; /* Verde más oscuro */
+        }
+        /* ======================================= */
+
         /* --- Lealtad Section Styling (Hidden by default) --- */
         #lealtad-section {
-            display: none; 
+            display: none;
         }
         #puntos-actuales {
             font-size: 2.5em;
@@ -78,35 +286,54 @@
             display: inline-block;
             border-radius: 5px;
         }
-        #qr-code {
-            padding: 15px;
-            background-color: white;
-            border: 1px solid #ddd;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        .catalogo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+        /* Estilos para el listado por categoría */
+        .categoria-titulo {
+            /* Se añade un ID para poder navegar a este título */
+            color: var(--color-principal);
+            background-color: #f0f0f0; 
             padding: 10px;
+            margin: 30px 0 15px 0;
+            border-radius: 5px;
+            font-size: 1.5em;
+            text-align: left;
+            font-weight: bold;
         }
+        
+        /* === MODIFICACIÓN PARA CARRUSEL === */
+        .catalogo-categoria {
+            display: flex;
+            overflow-x: scroll;
+            padding: 10px;
+            gap: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .catalogo-categoria::-webkit-scrollbar {
+            display: none;
+        }
+        
         .premio {
+            flex-shrink: 0;
+            width: 250px;
             border: 1px solid #ccc;
             padding: 15px;
             border-radius: 8px;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             text-align: left;
-            display: flex; /* Para organizar imagen y texto */
-            flex-direction: column; /* Coloca elementos en columna */
-            align-items: center; /* Centra horizontalmente */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
+            min-height: 350px; 
+            box-sizing: border-box;
         }
+        /* ================================= */
+
         .premio img {
-            max-width: 100%; /* Asegura que la imagen no se desborde */
-            height: 120px; /* Altura fija para uniformidad */
-            object-fit: cover; /* Recorta la imagen para cubrir el espacio */
+            max-width: 100%;
+            height: 120px;
+            object-fit: cover;
             border-radius: 5px;
             margin-bottom: 10px;
         }
@@ -125,24 +352,53 @@
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
-            margin-top: auto; /* Empuja el botón hacia abajo */
+            margin-top: auto;
             transition: background-color 0.3s;
         }
-        .btn-logout {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
+        .btn-canjear:disabled {
+            background-color: var(--color-principal) !important;
+            color: white; 
+            cursor: not-allowed;
+            font-weight: bold;
+        }
+        .social-links {
+            padding-top: 50px;
+            margin: 20px 0;
+            padding-bottom: 10px;
+        }
+        
+        /* === ESTILOS MODIFICADOS PARA ICONOS DE REDES SOCIALES === */
+        .social-links a {
+            font-size: 2.5em; /* Iconos más grandes */
+            margin: 0 15px;
+            transition: transform 0.3s, color 0.3s;
+        }
+        .social-links a:hover {
+            transform: scale(1.1); /* Efecto de acercamiento al pasar el ratón */
         }
 
-        /* --- ESTILOS DEL MODAL DE CANJE (Banner Flotante) --- */
+        /* Colores específicos para cada red social */
+        .fa-facebook-square {
+            color: #3b5998; /* Azul de Facebook */
+        }
+
+        .fa-instagram {
+            /* Degradado de Instagram */
+            background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .fa-whatsapp {
+            color: #25d366; /* Verde de WhatsApp */
+        }
+        /* ======================================================== */
+        
+        /* --- MODALES --- */
         .modal {
-            display: none; 
+            display: none;
             position: fixed; 
-            z-index: 10; 
+            z-index: 100;
             left: 0;
             top: 0;
             width: 100%;
@@ -151,6 +407,55 @@
             background-color: rgba(0,0,0,0.4); 
             padding-top: 60px;
         }
+        
+        /* Estilos para el modal de Bienvenida */
+        #welcome-modal .modal-content {
+            border: 5px solid var(--color-lealtad);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        #welcome-modal .modal-content h2 {
+            color: var(--color-lealtad);
+            border-bottom: 2px solid var(--color-secundario);
+            padding-bottom: 10px;
+        }
+        .btn-facebook-link {
+            background-color: #3b5998; /* Azul de Facebook */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 90%;
+            max-width: 300px;
+            margin-top: 15px;
+            text-decoration: none; /* Asegura que no tenga subrayado */
+            display: inline-block;
+        }
+
+        /* Estilo para el modal de advertencia */
+        #security-warning-modal {
+            background-color: transparent;
+            z-index: 150; 
+            padding-top: 10%; 
+        }
+
+        #security-warning-modal .modal-content {
+            background-color: white;
+            color: var(--color-principal);
+            border: 3px solid var(--color-secundario);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        #security-warning-modal .modal-content h2 {
+            color: #d32f2f; /* Rojo para la advertencia */
+        }
+        
+        #security-warning-modal .modal-content button {
+            background-color: var(--color-secundario);
+            margin-top: 20px;
+        }
+
+
         .modal-content {
             background-color: #fefefe;
             margin: 5% auto; 
@@ -161,7 +466,7 @@
             border-radius: 10px;
             text-align: center;
         }
-        .modal-content input[type=text] {
+        .modal-content input[type=text], .modal-content input[type=password] {
             padding: 10px;
             margin: 10px 0;
             width: 90%;
@@ -169,6 +474,7 @@
             border-radius: 5px;
             text-align: center;
             font-size: 1.2em;
+            box-sizing: border-box;
         }
         .modal-content button {
             background-color: var(--color-lealtad);
@@ -178,28 +484,183 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            width: 90%;
+            max-width: 300px;
         }
+        .close-btn {
+            float:right;
+            cursor:pointer; 
+            font-size: 24px;
+        }
+        footer {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #333;
+            color: white;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* === ESTILO PARA BOTÓN CERRAR SESIÓN ROJO === */
+        .btn-logout {
+            background-color: #dc3545; /* Rojo de Bootstrap */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 30px; /* Para separarlo de los premios */
+            transition: background-color 0.3s;
+            width: 100%; /* Ocupa todo el ancho disponible */
+            box-sizing: border-box;
+        }
+        .btn-logout:hover {
+            background-color: #c82333; /* Rojo más oscuro al pasar el ratón */
+        }
+
+        /* === ESTILOS PARA LA TARJETA DE ESTADÍSTICAS Y BOTONES (NUEVOS) === */
+        #stats-card {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+        .stats-buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+        .stat-button {
+            flex: 1;
+            padding: 15px 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+        .stat-button:hover {
+            opacity: 0.9;
+        }
+        .stat-button .stat-value {
+            font-size: 1.8em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        #btn-scans {
+            background-color: var(--color-lealtad); /* Verde */
+        }
+        #btn-redeems {
+            background-color: var(--color-secundario); /* Naranja */
+        }
+
+        /* Estilo específico para el modal de historial */
+        .history-modal-content {
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .history-modal-content h2 {
+            color: var(--color-principal);
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .history-list-popup {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        .history-list-popup li {
+            padding: 8px 0;
+            border-bottom: 1px dotted #ccc;
+            font-size: 0.95em;
+        }
+        .history-list-popup li:last-child {
+            border-bottom: none;
+        }
+        .scan-item {
+            color: var(--color-lealtad); /* Verde */
+        }
+        .redeem-item {
+            color: var(--color-secundario); /* Naranja */
+        }
+        /* ======================================================== */
     </style>
 </head>
-<body>
+<body onscroll="scrollFunction()">
 
+    <div id="login-nav-bar">
+        <span class="neon-text">Revolution Wax Formula Premium</span>
+    </div>
+    
+    <div id="nav-bar" style="display: none;">
+        <div class="nav-logo">
+            <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#" onclick="topFunction(); return false;">Inicio</a>
+            
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown(this)">Premios <i class="fas fa-caret-down"></i></button>
+                <div class="dropdown-content" id="premios-dropdown">
+                    </div>
+            </div>
+
+            <a href="#" onclick="scrollToContact(); return false;">Contacto</a>
+        </div>
+    </div>
+    
     <div class="contenedor">
-        <h1>🌟 Programa de Lealtad VIP 🌟</h1>
+        
+        <h1 id="main-title">🏁 Revolution Wax 🏁</h1>
 
         <div id="login-section">
+            
+            <div class="logo-container">
+                <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logotipo de la Empresa">
+            </div>
+
             <h2>Iniciar Sesión</h2>
             
             <form id="login-form">
-                <label for="email"><b>Correo Electrónico</b></label>
-                <input type="text" placeholder="Ingresa Correo" name="email" id="email" required>
+                <label for="username"><b>Usuario</b></label>
+                <input type="text" placeholder="Ingresa Usuario" name="username" id="username" required>
 
                 <label for="psw"><b>Contraseña</b></label>
                 <input type="password" placeholder="Ingresa Contraseña" name="psw" id="psw" required>
                     
                 <button type="submit" class="btn-login">Iniciar Sesión</button>
+             
                 <p id="login-error" style="color:red; text-align:center;"></p>
             </form>
-        </div>
+
+            <button class="btn-create" onclick="document.getElementById('security-warning-modal').style.display='block'">Crear Usuario</button>
+            <button class="btn-link" onclick="document.getElementById('forgot-password-modal').style.display='block'">¿Olvidaste contraseña?</button>
+
+            <div id="apk-download-container">
+                <p style="font-weight: bold; margin-bottom: 10px;">
+                    <img src="https://i.postimg.cc/vZyRpJjq/unnamed.png" alt="Logo Android"> 
+                    ¡Descarga nuestra App Oficial! (Solo Android)
+                </p>
+                <a href="URL_DE_TU_ARCHIVO_APK_AQUI" download class="btn-download-apk" title="Descargar APK de la aplicación">
+                    Descargar APK
+                </a>
+                
+            </div>
+            </div>
 
         <div id="lealtad-section">
             <p>Bienvenido, <strong id="user-display"></strong></p>
@@ -208,60 +669,370 @@
                 <h2>Mi Saldo de Puntos</h2>
                 <span id="puntos-actuales">0 Puntos</span>
                 
-                <h2>Escanea para Sumar Puntos (100 pts)</h2>
-                <p style="font-weight: bold; color: #d32f2f;">
+                <h2>Escanea para Sumar Puntos</h2>
+                <p style="font-weight: bold;
+                color: #d32f2f;">
                     👉 INSTRUCCIONES: Escanea este QR. Se te solicitará el código de canje para sumar puntos.
                 </p>
                 
                 <div id="qr-code"></div>
-                <p id="qr-info" style="font-size: 0.8em; color: #777;">URL de escaneo: Cargando...</p>
+                
+                <p id="qr-info" style="font-size: 0.8em; color: #777; display: none;"></p>
             </div>
             
-            <h2>🎁 Catálogo de Premios</h2>
-            <div class="catalogo" id="catalogo-premios"></div>
+            <h2 id="premios-section-title">🎁 Catálogo de Premios</h2>
+            <div id="catalogo-premios"></div>
             
             <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            
+            <div id="stats-card">
+                <p style="font-weight: bold; margin-bottom: 15px; color: var(--color-negro);">Historial y Estadísticas Rápidas:</p>
+                <div class="stats-buttons">
+                    <button id="btn-scans" class="stat-button" onclick="openHistoryModal('scan')">
+                        <span class="stat-value" id="total-scans">0</span>
+                        <span>Escaneos Realizados</span>
+                    </button>
+                    <button id="btn-redeems" class="stat-button" onclick="openHistoryModal('redeem')">
+                        <span class="stat-value" id="total-redeems">0</span>
+                        <span>Regalos Canjeados</span>
+                    </button>
+                </div>
+            </div>
+            </div>
+    
+    </div>
+
+    <div class="social-links" id="contacto-redes">
+        <p style="font-weight: bold;">Síguenos y contáctanos:</p>
+        <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" title="Visita nuestro Facebook">
+            <i class="fab fa-facebook-square"></i>
+        </a>
+        <a href="https://www.instagram.com/angelzamorange" target="_blank" title="Síguenos en Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/5217719624236" target="_blank" title="Escríbenos por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+    
+    <div id="history-modal" class="modal">
+        <div class="modal-content history-modal-content">
+            <span class="close-btn" onclick="document.getElementById('history-modal').style.display='none'">&times;</span>
+            <h2 id="history-modal-title">Historial de Movimientos</h2>
+            <ul id="history-list-popup" class="history-list-popup">
+                <li>Cargando historial...</li>
+            </ul>
+            <button style="background-color: var(--color-principal);" onclick="document.getElementById('history-modal').style.display='none'">Cerrar</button>
+        </div>
+    </div>
+    <div id="welcome-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('welcome-modal').style.display='none'">&times;</span>
+            <h2>¡Bienvenido al Programa de Lealtad!</h2>
+            <p style="font-size: 1.1em; margin-bottom: 20px;">
+                Esta es tu aplicación de lealtad. Con ella, todas tus compras acumularán puntos que podrás canjear por increíbles premios exclusivos 🎁.
+            </p>
+            
+            <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" class="btn-facebook-link">
+                <i class="fab fa-facebook-f"></i> Síguenos en Facebook
+            </a>
         </div>
     </div>
 
+    <div id="security-warning-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('security-warning-modal').style.display='none'">&times;</span>
+            <h2>⚠️ ¡ALERTA DE SEGURIDAD! ⚠️</h2>
+            <p style="font-size: 1.1em; font-weight: bold; color: var(--color-negro);">
+                Para proteger tus puntos de lealtad, NUNCA compartas tu usuario, contraseña o correo electrónico con nadie.
+                <br><br>
+                Nosotros nunca te los solicitaremos por canales no oficiales.
+            </p>
+            <button onclick="document.getElementById('security-warning-modal').style.display='none'; document.getElementById('create-user-modal').style.display='block'">Entendido, continuar a Registro</button>
+            <button style="background-color: #6c757d;" onclick="document.getElementById('security-warning-modal').style.display='none'">Cancelar</button>
+        </div>
+    </div>
     <div id="redemption-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('redemption-modal').style.display='none'" style="float:right; cursor:pointer; font-size: 24px;">&times;</span>
+            <span class="close-btn" onclick="document.getElementById('redemption-modal').style.display='none'">&times;</span>
             <h2>¡Escaneo Detectado!</h2>
-            <p>Para sumar 100 puntos a tu cuenta, ingresa el código de canje proporcionado:</p>
-            <input type="text" id="redemption-code" placeholder="Código Secreto" maxlength="6">
+            <p>Para sumar puntos a tu cuenta, ingresa el código de canje proporcionado:</p>
+            <input type="text" id="redemption-code" placeholder="Código de Puntos" maxlength="9">
             <button onclick="procesarCanjeQR()">Confirmar Código</button>
             <p id="modal-message" style="color:red; margin-top:10px;"></p>
         </div>
     </div>
 
+    <div id="create-user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('create-user-modal').style.display='none'">&times;</span>
+            <h2>Crear Nueva Cuenta / Contacto</h2>
+            <p>Envía un mensaje a WhatsApp para solicitar tu registro o contactar al administrador:</p>
+            <form id="create-user-form">
+                <input type="text" placeholder="Correo Electrónico" id="new-email" required>
+                <input type="text" placeholder="Usuario" id="new-username" required>
+                <input type="password" placeholder="Contraseña" id="new-psw" required>
+                <button type="button" onclick="crearUsuarioWhatsapp()">Enviar Solicitud / Contactar</button>
+            </form>
+            <p id="create-message" style="color:green; margin-top:10px;"></p>
+        </div>
+    </div>
+
+    <div id="forgot-password-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('forgot-password-modal').style.display='none'">&times;</span>
+            <h2>Recuperar Contraseña</h2>
+            <input type="text" placeholder="Correo Electrónico" id="recover-email" required>
+            <input type="text" placeholder="Usuario" id="recover-username" required>
+            <button onclick="recuperarContrasena()">Mostrar Contraseña</button>
+            <p id="recover-message" style="margin-top:10px;"></p>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Revolution Wax Premios. Todos los derechos reservados.<br>
+        Creador de la página: <a href="mailto: mrandroidtutorialeshd@gmail.com">Juan Zamora</a>
+    </footer>
+    
+    <button onclick="topFunction()" id="scrollToTopBtn" title="Ir arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script>
-        // --- CONFIGURACIÓN DE SEGURIDAD SIMULADA ---
+        // --- CONFIGURACIÓN GENERAL ---
         const CLAVE_ALMACENAMIENTO_USUARIOS = 'puntosUsuariosLealtad';
-        const CLAVE_USUARIO_ACTIVO = 'usuarioActivo';
-        const PUNTOS_POR_ESCANEO = 100;
-        const CODIGO_SECRETO = "100199"; 
+        const CLAVE_USUARIO_ACTIVO = 'usuarioActivo'; 
+        const CLAVE_CANJES_PREMIOS = 'canjesPremios'; 
+        // CLAVES PARA EL HISTORIAL Y CONTADORES
+        const CLAVE_LOG_SCANS = 'logScans'; 
+        const CLAVE_LOG_REDEEMS = 'logRedeems'; 
+        const CLAVE_HISTORIAL = 'movimientoHistory';
+
+        const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000; 
         
-        // ** USUARIOS DE PRUEBA (Simulación de la base de datos) **
-        const USUARIOS_VALIDOS = {
-            "axeso5115": "prueba",
-            "prueba": "prueba"
+        // ** PUNTOS Y CÓDIGOS DE CANJE **
+        const CODIGOS_DE_CANJE = {
+            "10019950": 50,
+            "100199100": 100,
+            "100199200": 200
         };
         
-        // --- CATÁLOGO DE PRUEBA CON IMÁGENES ---
-        const catalogoPremios = [
-            { id: 1, nombre: "Aditivo de Combustible", costo: 200, descripcion: "Potencia tu motor, maximiza tu rendimiento. Nuestro aditivo de gasolina elimina impurezas, reduce el consumo y prolonga la vida útil de tu motor. ¡Protege tu inversión, optimiza tu viaje!.", imagen: "https://i.postimg.cc/k4qSsffq/AKRON-CAJA-ADITIVO-GASOLINA.png" },
-            { id: 2, nombre: "Descuento de $50 MXN", costo: 1000, descripcion: "Aplicable en cualquier compra mayor a $200 MXN.", imagen: "https://cdn.pixabay.com/photo/2018/05/18/12/03/promo-3411036_1280.jpg" },
-            { id: 3, nombre: "Postre del Día Gratis", costo: 1500, descripcion: "Prueba el postre especial de hoy.", imagen: "https://images.unsplash.com/photo-1563729780517-380d0d826a7e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
-            { id: 4, nombre: "Producto Sorpresa VIP", costo: 2500, descripcion: "Un regalo exclusivo por ser un cliente fiel.", imagen: "https://images.unsplash.com/photo-1547481179-ff352614b532?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" }
-        ];
+        // ** USUARIOS DE PRUEBA **
+        const USUARIOS_VALIDOS = {
+            "juanzamora": { psw: "prueba", email: "mrandroidtutorialeshd@gmail.com" },
+            "prueba1": { psw: "prueba1", email: "escuela100198@gmail.com" },
+            "tprueba2": { psw: "prueba2", email: "juanzamora2025a@gmail.com" }
+        };
+        const WHATSAPP_NUMBER = "5215512345678"; 
+        
+        // --- CATÁLOGO DE PREMIOS POR CATEGORÍA ---
+        const categoriasPremios = {
+            "Aceites": [
+                { id: 1, nombre: "Aditivo de Combustible", costo: 165, descripcion: "Potencia tu motor, maximiza tu rendimiento. Nuestro aditivo de gasolina elimina impurezas, reduce el consumo y prolonga la vida útil de tu motor. ¡Protege tu inversión, optimiza tu viaje!.", imagen: "https://i.postimg.cc/mDHF11wQ/tom7sc2i4a2gzq0hljda.jpg" },
+                { id: 5, nombre: "Anticongelante 33%", costo: 180, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/JhWwC9F0/162832-d.jpg" },
+                { id: 5, nombre: "Líquido de Frenos", costo: 175, descripcion: "Frena con confianza. Líquido de frenos de alta performance, garantiza una frenada segura y eficiente en cualquier condición.", imagen: "https://i.postimg.cc/gJYfn3dv/images-6.jpg" },
+                { id: 5, nombre: "Limpia Parabrisas", costo: 160, descripcion: "Visión clara, conducción segura. Nuestro líquido limpia parabrisas elimina la suciedad y el agua para una visibilidad perfecta en cualquier clima.", imagen: "https://i.postimg.cc/tRvL41c2/149425-d.jpg" },
+                { id: 5, nombre: "Dirección Hidráulica", costo: 150, descripcion: "Dirige con suavidad y precisión. Nuestro líquido de dirección hidráulica lubrica y protege el sistema, garantizando una conducción suave y segura.", imagen: "https://i.postimg.cc/Y00ZxkvP/177506-d.jpg" }
+            ],
+            "Gasolina": [
+                { id: 6, nombre: "Vale de $50 MXN", costo: 250, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/CL9FQrHQ/1761284472934.png" },
+                { id: 7, nombre: "Vale de $100", costo: 450, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/ZKWbjz3Y/1761284392265.png" },
+                { id: 7, nombre: "Vale de $200", costo: 800, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/bvhqzG5n/1761284478157.png" },
+                { id: 7, nombre: "Vale de $500", costo: 1750, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/3Rr7vs7f/1761284484288.png" },
+                { id: 7, nombre: "Vale de $1,000", costo: 4000, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/Y9X7fdCz/1761284573266.png" }
+            ],
+            "Revolution Wax": [
+                { id: 8, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
+                { id: 8, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" },
+                { id: 8, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" }
+            ],            
+            "Streaming": [
+                { id: 10, nombre: "YouTube 1 mes", costo: 270, descripcion: "Una suscripción de 30 días a un servicio de streaming de video.", imagen: "https://i.postimg.cc/zB0GJwWL/1760066881281.png" }
+            ],
+            "Lavado y Encerado": [
+                { id: 11, nombre: "Lavado Exterior + Cera", costo: 120, descripcion: "Servicio de lavado completo con aplicación de cera de carnauba.", imagen: "https://i.postimg.cc/Wz4Zw1T4/1761305072860.png" }
+            ],
+            "Sorpresa": [
+                { id: 4, nombre: "Producto Sorpresa VIP", costo: 4000, descripcion: "Un regalo exclusivo por ser un cliente fiel.", imagen: "https://i.postimg.cc/YS5kxn7r/1761305366994.png" }
+            ]
+        };
 
-        let usuarioLogueado = null;
+        const catalogoPremios = Object.values(categoriasPremios).flat();
+
+
+        let usuarioLogueado = null; 
+        let usuarioLogueadoUsername = null; 
         let puntosUsuario = 0;
         let usuarioEscaneado = null; 
+        let canjeTimerIntervals = {}; 
 
-        // --- MANEJO DE PUNTOS (Simulando BBDD) ---
+        // --- FUNCIONES DE SCROLL Y NAVEGACIÓN (Omitidas para concisión, no cambiaron) ---
 
+        function scrollFunction() {
+            const btn = document.getElementById("scrollToTopBtn");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+        }
+
+        function topFunction() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function scrollToContact() {
+             window.scrollTo({
+                top: document.getElementById('contacto-redes').offsetTop - 50,
+                behavior: 'smooth'
+            });
+        }
+
+        function toggleDropdown(button) {
+            const dropdown = document.getElementById('premios-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function scrollToCategory(categoryName) {
+            document.getElementById('premios-dropdown').classList.remove('show');
+            const categoryId = `cat-${categoryName.replace(/\s/g, '-')}`;
+            const targetElement = document.getElementById(categoryId);
+            if (targetElement) {
+                const offset = document.getElementById('nav-bar').offsetHeight + 20; 
+                window.scrollTo({ 
+                    top: targetElement.offsetTop - offset, 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+
+        function renderDropdownCategories() {
+            const dropdown = document.getElementById('premios-dropdown');
+            dropdown.innerHTML = '';
+            for (const categoria in categoriasPremios) {
+                const categoryLink = document.createElement('a');
+                categoryLink.textContent = categoria;
+                categoryLink.onclick = () => scrollToCategory(categoria);
+                dropdown.appendChild(categoryLink);
+            }
+        }
+        
+        // --- MANEJO DE PUNTOS, CANJES Y HISTORIAL ---
+        
+        // FUNCIONES DE ESTADÍSTICAS
+        function loadStats(key) {
+             try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveStat(key, userEmail, value) {
+            const allStats = loadStats(key);
+            allStats[userEmail] = value;
+            localStorage.setItem(key, JSON.stringify(allStats));
+        }
+
+        function getStatValue(key, userEmail) {
+            const allStats = loadStats(key);
+            return allStats[userEmail] || 0;
+        }
+
+        function incrementStat(key, userEmail) {
+            const currentValue = getStatValue(key, userEmail);
+            saveStat(key, userEmail, currentValue + 1);
+            return currentValue + 1;
+        }
+
+        // FUNCIONES DE HISTORIAL
+        function loadHistory(userEmail) {
+            try {
+                const allHistory = localStorage.getItem(CLAVE_HISTORIAL);
+                const historyObj = allHistory ? JSON.parse(allHistory) : {};
+                return historyObj[userEmail] || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistory(userEmail, historyArray) {
+            let allHistory = {};
+            try {
+                const storedHistory = localStorage.getItem(CLAVE_HISTORIAL);
+                allHistory = storedHistory ? JSON.parse(storedHistory) : {};
+            } catch (e) {
+                allHistory = {};
+            }
+            
+            allHistory[userEmail] = historyArray;
+            localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(allHistory));
+        }
+
+        function addMovementToHistory(userEmail, type, description) {
+            const history = loadHistory(userEmail);
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+            const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            
+            const newMovement = {
+                type: type, // 'scan' o 'redeem'
+                timestamp: now.getTime(),
+                date: `${dateStr} ${timeStr}`,
+                description: description
+            };
+
+            history.unshift(newMovement); // Añadir al principio
+            saveHistory(userEmail, history.slice(0, 50)); // Limitar a 50 movimientos
+        }
+        
+        function renderizarEstadisticas() {
+             if (!usuarioLogueado) return;
+
+             const totalScans = getStatValue(CLAVE_LOG_SCANS, usuarioLogueado);
+             const totalRedeems = getStatValue(CLAVE_LOG_REDEEMS, usuarioLogueado);
+
+             document.getElementById('total-scans').textContent = totalScans;
+             document.getElementById('total-redeems').textContent = totalRedeems;
+        }
+        
+        function openHistoryModal(type) {
+            if (!usuarioLogueado) return;
+
+            const history = loadHistory(usuarioLogueado);
+            const listElement = document.getElementById('history-list-popup');
+            const titleElement = document.getElementById('history-modal-title');
+            listElement.innerHTML = '';
+
+            const filteredHistory = history.filter(item => item.type === type);
+
+            if (type === 'scan') {
+                titleElement.textContent = 'Historial de Escaneos Realizados';
+            } else if (type === 'redeem') {
+                titleElement.textContent = 'Historial de Regalos Canjeados';
+            }
+
+            if (filteredHistory.length === 0) {
+                listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'escaneos' : 'canjes'}.</li>`;
+            } else {
+                filteredHistory.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = item.type === 'scan' ? 'scan-item' : 'redeem-item';
+                    
+                    let icon = item.type === 'scan' ? '⬆️' : '🎁';
+                    
+                    li.innerHTML = `<strong>${icon} ${item.description}</strong><br><span style="font-size: 0.9em; color: #6c757d;">${item.date}</span>`;
+                    listElement.appendChild(li);
+                });
+            }
+
+            document.getElementById('history-modal').style.display = 'block';
+        }
+
+
+        // FUNCIONES DE PUNTOS Y CANJES
         function cargarPuntosUsuarios() {
             try {
                 const data = localStorage.getItem(CLAVE_ALMACENAMIENTO_USUARIOS);
@@ -270,67 +1041,264 @@
                 return {};
             }
         }
-
         function guardarPuntosUsuario(email, puntos) {
             const todosLosPuntos = cargarPuntosUsuarios();
             todosLosPuntos[email] = puntos;
             localStorage.setItem(CLAVE_ALMACENAMIENTO_USUARIOS, JSON.stringify(todosLosPuntos));
         }
 
-        // --- MANEJO DE AUTENTICACIÓN ---
+        function cargarCanjes() {
+            try {
+                const data = localStorage.getItem(CLAVE_CANJES_PREMIOS);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+        function guardarCanje(email, idPremio, timestamp) {
+            const todosLosCanjes = cargarCanjes();
+            if (!todosLosCanjes[email]) {
+                todosLosCanjes[email] = {};
+            }
+            todosLosCanjes[email][idPremio] = timestamp;
+            localStorage.setItem(CLAVE_CANJES_PREMIOS, JSON.stringify(todosLosCanjes));
+        }
+
+        // --- LÓGICA DE CRONÓMETRO (Omitida para concisión, no cambió) ---
+
+        function formatTime(ms) {
+            if (ms <= 0) return "¡Listo!";
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        
+        function updateTimerDisplay(idPremio) {
+            const canjes = cargarCanjes();
+            const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0;
+            const now = Date.now();
+            const timeElapsed = now - lastTimestamp;
+            const timeLeft = RESTRICCION_CANJE_MS - timeElapsed;
+
+            const buttonElement = document.getElementById(`btn-canjear-${idPremio}`);
+
+            if (!buttonElement) {
+                clearInterval(canjeTimerIntervals[idPremio]);
+                delete canjeTimerIntervals[idPremio];
+                return;
+            }
+
+            if (timeLeft <= 0) {
+                buttonElement.disabled = false;
+                buttonElement.textContent = "Canjear";
+                buttonElement.style.backgroundColor = 'var(--color-secundario)';
+                clearInterval(canjeTimerIntervals[idPremio]);
+                delete canjeTimerIntervals[idPremio];
+            } else {
+                buttonElement.disabled = true;
+                buttonElement.textContent = formatTime(timeLeft); 
+            }
+        }
+
+        function startTimer(idPremio) {
+            if (canjeTimerIntervals[idPremio]) {
+                clearInterval(canjeTimerIntervals[idPremio]);
+            }
+            canjeTimerIntervals[idPremio] = setInterval(() => {
+                updateTimerDisplay(idPremio);
+            }, 1000);
+            updateTimerDisplay(idPremio);
+        }
+        
+        function stopAllTimers() {
+            Object.values(canjeTimerIntervals).forEach(clearInterval);
+            canjeTimerIntervals = {};
+        }
+
+
+        // --- LÓGICA DE AUTENTICACIÓN (Omitida para concisión, no cambió) ---
 
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('email').value.toLowerCase();
+            const username = document.getElementById('username').value.toLowerCase();
             const psw = document.getElementById('psw').value;
             const errorElement = document.getElementById('login-error');
 
-            if (USUARIOS_VALIDOS[email] === psw) {
+            if (USUARIOS_VALIDOS[username] && USUARIOS_VALIDOS[username].psw === psw) {
+                const email = USUARIOS_VALIDOS[username].email;
                 localStorage.setItem(CLAVE_USUARIO_ACTIVO, email);
-                iniciarSesion(email);
+                iniciarSesion(username, email);
             } else {
-                errorElement.textContent = "Correo o contraseña incorrectos.";
+                errorElement.textContent = "Usuario o contraseña incorrectos.";
             }
         });
 
-        function iniciarSesion(email) {
+        function iniciarSesion(username, email) {
             usuarioLogueado = email;
-            document.getElementById('user-display').textContent = email;
-            
+            usuarioLogueadoUsername = username;
+            document.getElementById('user-display').textContent = username;
             const todosLosPuntos = cargarPuntosUsuarios();
             puntosUsuario = todosLosPuntos[email] || 0;
 
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('lealtad-section').style.display = 'block';
+            
+            document.getElementById('login-nav-bar').style.display = 'none'; 
+            document.getElementById('nav-bar').style.display = 'flex'; 
 
+            renderDropdownCategories();
             actualizarInterfaz();
-            simularEscaneoQR(); 
+            simularEscaneoQR();
+            renderizarEstadisticas(); 
+            
+            document.getElementById('welcome-modal').style.display = 'block';
         }
 
         function logout() {
             localStorage.removeItem(CLAVE_USUARIO_ACTIVO);
+            stopAllTimers();
             usuarioLogueado = null;
+            usuarioLogueadoUsername = null;
             puntosUsuario = 0;
             
             document.getElementById('login-section').style.display = 'block';
             document.getElementById('lealtad-section').style.display = 'none';
+            
+            document.getElementById('login-nav-bar').style.display = 'block'; 
+            document.getElementById('nav-bar').style.display = 'none'; 
+            
             document.getElementById('login-error').textContent = '';
             document.getElementById('login-form').reset();
+            document.getElementById('username').value = '';
+            document.getElementById('psw').value = '';
             
             document.getElementById("qr-code").innerHTML = '';
         }
 
-        // --- LÓGICA PRINCIPAL DE PUNTOS Y QR ---
+        // --- LÓGICA DE CANJE Y REND. (Movimiento de historial añadido) ---
+
+        function canjearPremio(idPremio) {
+            if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
+            const premio = catalogoPremios.find(p => p.id === idPremio);
+            if (!premio) return;
+            
+            const canjes = cargarCanjes();
+            const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0;
+            const now = Date.now();
+            const isRestricted = (now - lastTimestamp) < RESTRICCION_CANJE_MS;
+
+            if (isRestricted) {
+                return alert("⚠️ Este premio ya fue canjeado. Debes esperar 24 horas para volver a canjearlo.");
+            }
+
+            if (puntosUsuario >= premio.costo) {
+                if (confirm(`¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
+                    puntosUsuario -= premio.costo;
+                    
+                    guardarCanje(usuarioLogueado, idPremio, Date.now());
+                    
+                    // INCREMENTAR CONTADOR Y REGISTRAR EN HISTORIAL
+                    incrementStat(CLAVE_LOG_REDEEMS, usuarioLogueado);
+                    addMovementToHistory(usuarioLogueado, 'redeem', `Canjeado: ${premio.nombre} (-${premio.costo} Pts)`);
+                    
+                    alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosUsuario}.`);
+                    actualizarInterfaz();
+                    renderizarEstadisticas();
+                }
+            } else {
+                alert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`);
+            }
+        }
+        
+        function renderizarCatalogo() {
+            const contenedorCatalogo = document.getElementById('catalogo-premios');
+            contenedorCatalogo.innerHTML = '';
+            stopAllTimers();
+            
+            if (!usuarioLogueado) return; 
+            
+            const canjes = cargarCanjes();
+            const now = Date.now();
+
+            for (const categoria in categoriasPremios) {
+                const premiosDeCategoria = categoriasPremios[categoria];
+                const categoryId = `cat-${categoria.replace(/\s/g, '-')}`;
+
+                const tituloCat = document.createElement('h2');
+                tituloCat.className = 'categoria-titulo';
+                tituloCat.id = categoryId;
+                tituloCat.textContent = categoria;
+                contenedorCatalogo.appendChild(tituloCat);
+
+                const catalogoCat = document.createElement('div');
+                catalogoCat.className = 'catalogo-categoria';
+
+                premiosDeCategoria.forEach(premio => {
+                    const puedeCanjearPorPuntos = puntosUsuario >= premio.costo;
+                    
+                    const lastTimestamp = canjes[usuarioLogueado]?.[premio.id] || 0;
+                    const timeElapsed = now - lastTimestamp;
+                    const isRestricted = timeElapsed < RESTRICCION_CANJE_MS;
+
+                    const puedeCanjear = puedeCanjearPorPuntos && !isRestricted;
+                    
+                    let buttonText = 'Canjear';
+                    let buttonStyle = '';
+
+                    if (!puedeCanjearPorPuntos) {
+                        buttonText = `Faltan ${premio.costo - puntosUsuario} Pts`;
+                        buttonStyle = 'background-color: #9e9e9e !important;'; 
+                    } else if (isRestricted) {
+                        const timeLeft = RESTRICCION_CANJE_MS - timeElapsed;
+                        buttonText = formatTime(timeLeft);
+                        buttonStyle = 'background-color: var(--color-principal);';
+                    }
+
+
+                    const divPremio = document.createElement('div');
+                    divPremio.className = 'premio';
+                    
+                    divPremio.innerHTML = `
+                        <img src="${premio.imagen}" alt="${premio.nombre}" loading="lazy">
+                        <h3>${premio.nombre}</h3>
+                        <p>${premio.descripcion}</p>
+                        <span class="puntos-costo">Costo: ${premio.costo} Puntos</span>
+                        <p class="cronometro-texto"></p> 
+                        <button 
+                            onclick="canjearPremio(${premio.id})" 
+                            class="btn-canjear" 
+                            id="btn-canjear-${premio.id}"
+                            ${!puedeCanjear ? 'disabled' : ''}
+                            style="${buttonStyle}"
+                        >
+                            ${buttonText}
+                        </button>
+                    `;
+                    catalogoCat.appendChild(divPremio);
+
+                    if (isRestricted) {
+                        startTimer(premio.id);
+                    }
+                });
+                contenedorCatalogo.appendChild(catalogoCat);
+            }
+        }
+        
+        // --- OTRAS LÓGICAS (Movimiento de historial añadido) ---
 
         function actualizarInterfaz() {
             document.getElementById('puntos-actuales').textContent = `${puntosUsuario} Puntos`;
             guardarPuntosUsuario(usuarioLogueado, puntosUsuario); 
             renderizarCatalogo(); 
+            renderizarEstadisticas();
         }
 
         function simularEscaneoQR() {
-            const URL_BASE = window.location.origin + window.location.pathname; 
-            const QR_DATA = `${URL_BASE}?action=addpoints&user=${usuarioLogueado}`;
+            const currentUsername = usuarioLogueadoUsername;
+            const URL_BASE = window.location.origin + window.location.pathname;
+            const QR_DATA = `${URL_BASE}?action=addpoints&user=${currentUsername}`;
             
             document.getElementById("qr-code").innerHTML = '';
             
@@ -342,18 +1310,10 @@
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
             });
-            document.getElementById('qr-info').textContent = `URL de escaneo: ${QR_DATA}`;
         }
         
-        function sumarPuntos(cantidad) {
-            puntosUsuario += cantidad;
-            // La alerta ya se muestra en procesarCanjeQR
-        }
-
-        // --- LÓGICA DEL MODAL DE CANJE ---
-
-        function mostrarModalCanje(user) {
-            usuarioEscaneado = user; 
+        function mostrarModalCanje(userEmail) {
+            usuarioEscaneado = userEmail;
             document.getElementById('modal-message').textContent = '';
             document.getElementById('redemption-code').value = '';
             document.getElementById('redemption-modal').style.display = 'block';
@@ -369,99 +1329,125 @@
                 return;
             }
 
-            if (codigoIngresado === CODIGO_SECRETO) {
+            const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
+
+            if (puntosASumar) {
+                // *** LÓGICA CLAVE: CÓDIGO CORRECTO ***
                 const todosLosPuntos = cargarPuntosUsuarios();
                 let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
-                puntosTemporales += PUNTOS_POR_ESCANEO;
+                puntosTemporales += puntosASumar;
                 
                 guardarPuntosUsuario(usuarioEscaneado, puntosTemporales); 
                 sessionStorage.setItem(sessionKey, 'true'); 
                 
-                document.getElementById('redemption-modal').style.display = 'none';
+                // INCREMENTAR CONTADOR Y REGISTRAR EN HISTORIAL (SOLO SI EL CÓDIGO FUE CORRECTO)
+                incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado);
+                addMovementToHistory(usuarioEscaneado, 'scan', `Escaneo QR y Canje de Código (+${puntosASumar} Pts)`);
                 
+                document.getElementById('redemption-modal').style.display = 'none';
+
                 if (usuarioLogueado === usuarioEscaneado) {
                      puntosUsuario = puntosTemporales;
                      actualizarInterfaz();
-                     alert(`🎉 ¡Código correcto! 100 puntos sumados a tu cuenta.`);
+                     renderizarEstadisticas(); 
+                     alert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`);
                 } else {
-                    alert(`✅ Puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`);
+                    alert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`);
                 }
             } else {
-                modalMessage.textContent = '❌ Código de canje incorrecto. No se sumaron puntos.';
+                // *** CÓDIGO INCORRECTO: NO SUMA PUNTOS NI CUENTA ESCANEO ***
+                modalMessage.textContent = '❌ Código de canje incorrecto o inválido. No se sumaron puntos.';
                 document.getElementById('redemption-code').value = ''; 
             }
         }
 
-        // --- LÓGICA DE ESCANEO REALISTA (al cargar la página) ---
-
         function verificarEscaneoAlCargar() {
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action');
-            const userFromQR = urlParams.get('user');
+            const userFromQR_Username = urlParams.get('user');
 
-            if (action === 'addpoints' && userFromQR) {
-                if (USUARIOS_VALIDOS.hasOwnProperty(userFromQR)) {
-                    const URL_BASE = window.location.origin + window.location.pathname; 
+            if (action === 'addpoints' && userFromQR_Username) {
+                 const userData = USUARIOS_VALIDOS[userFromQR_Username];
+                 const userEmailToCredit = userData ? userData.email : null;
+
+                if (userEmailToCredit) {
+                    const URL_BASE = window.location.origin + window.location.pathname;
                     history.replaceState(null, '', URL_BASE);
-
-                    mostrarModalCanje(userFromQR);
+                    mostrarModalCanje(userEmailToCredit);
                 } else {
                     alert('Error: Usuario del QR no encontrado.');
                 }
             }
         }
 
-        // --- LÓGICA DE CANJE Y RENDERIZADO (Resto de funciones) ---
+        function crearUsuarioWhatsapp() {
+            const newEmail = document.getElementById('new-email').value.trim();
+            const newUsername = document.getElementById('new-username').value.trim();
+            const newPsw = document.getElementById('new-psw').value.trim();
+            const createMessage = document.getElementById('create-message');
 
-        function canjearPremio(idPremio) {
-            if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
+            if (!newEmail || !newUsername || !newPsw) {
+                createMessage.style.color = 'red';
+                createMessage.textContent = 'Por favor, completa todos los campos.';
+                return;
+            }
+            if (USUARIOS_VALIDOS.hasOwnProperty(newUsername)) {
+                createMessage.style.color = 'red';
+                createMessage.textContent = 'El usuario ya existe. Intenta con otro.';
+                return;
+            }
 
-            const premio = catalogoPremios.find(p => p.id === idPremio);
-            if (!premio) return;
+            const mensaje = `¡SOLICITUD DE NUEVA CUENTA DE LEALTAD!%0A*Correo:* ${newEmail}%0A*Usuario:* ${newUsername}%0A*Contraseña deseada:* ${newPsw}%0A%0APor favor, registrar y confirmar la cuenta.`;
+            const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
+            
+            window.open(whatsappURL, '_blank');
 
-            if (puntosUsuario >= premio.costo) {
-                if (confirm(`¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
-                    puntosUsuario -= premio.costo;
-                    alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosUsuario}.`);
-                    actualizarInterfaz();
-                }
+            createMessage.style.color = 'green';
+            createMessage.textContent = 'Solicitud enviada a WhatsApp. Nos comunicaremos contigo pronto.';
+            document.getElementById('create-user-modal').style.display='none'; 
+        }
+
+        function recuperarContrasena() {
+            const recoverEmail = document.getElementById('recover-email').value.trim();
+            const recoverUsername = document.getElementById('recover-username').value.trim();
+            const recoverMessage = document.getElementById('recover-message');
+
+            recoverMessage.textContent = '';
+            const userEntry = USUARIOS_VALIDOS[recoverUsername];
+
+            if (userEntry && userEntry.email === recoverEmail) {
+                recoverMessage.style.color = 'green';
+                recoverMessage.innerHTML = `✅ ¡Encontrada! Tu contraseña es: <strong>${userEntry.psw}</strong>`;
             } else {
-                alert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`);
+                recoverMessage.style.color = 'red';
+                recoverMessage.textContent = '❌ Error: El Usuario y el Correo no coinciden.';
             }
         }
         
-        function renderizarCatalogo() {
-            const contenedorCatalogo = document.getElementById('catalogo-premios');
-            contenedorCatalogo.innerHTML = '';
-            if (!usuarioLogueado) return; 
-            
-            catalogoPremios.forEach(premio => {
-                const puedeCanjear = puntosUsuario >= premio.costo;
-                const divPremio = document.createElement('div');
-                divPremio.className = 'premio';
-                divPremio.innerHTML = `
-                    <img src="${premio.imagen}" alt="${premio.nombre}" loading="lazy">
-                    <h3>${premio.nombre}</h3>
-                    <p>${premio.descripcion}</p>
-                    <span class="puntos-costo">Costo: ${premio.costo} Puntos</span>
-                    <button onclick="canjearPremio(${premio.id})" class="btn-canjear" ${!puedeCanjear ? 'disabled' : ''}>
-                        ${puedeCanjear ? 'Canjear' : `Faltan ${premio.costo - puntosUsuario} Pts`}
-                    </button>
-                `;
-                contenedorCatalogo.appendChild(divPremio);
-            });
-        }
-        
-        // --- INICIALIZACIÓN DE LA APLICACIÓN ---
+        // --- INICIALIZACIÓN DE LA APLICACIÓN (Omitida para concisión, no cambió) ---
         
         verificarEscaneoAlCargar();
+        const usuarioEmailGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
         
-        const usuarioGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
-        if (usuarioGuardado) {
-            iniciarSesion(usuarioGuardado);
+        const loginNavBar = document.getElementById('login-nav-bar');
+        const navBar = document.getElementById('nav-bar');
+
+        if (usuarioEmailGuardado) {
+            loginNavBar.style.display = 'none';
+            navBar.style.display = 'flex';
+            
+            const currentUserEntry = Object.entries(USUARIOS_VALIDOS).find(([username, data]) => data.email === usuarioEmailGuardado);
+            if (currentUserEntry) {
+                const username = currentUserEntry[0];
+                iniciarSesion(username, usuarioEmailGuardado);
+            } else {
+                logout();
+            }
+        } else {
+            loginNavBar.style.display = 'block';
+            navBar.style.display = 'none';
         }
         
     </script>
 </body>
-  </html>
-  
+</html>
