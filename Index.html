@@ -566,6 +566,23 @@
         #btn-redeems {
             background-color: var(--color-secundario); /* Naranja */
         }
+        /* Estilo para el botón Acomular */
+        #btn-acumular {
+            background-color: var(--color-principal); /* Azul */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+            width: 90%;
+            max-width: 300px;
+        }
+        #btn-acumular:hover {
+            background-color: #0056b3; /* Azul más oscuro */
+        }
 
         /* Estilo específico para el modal de historial */
         .history-modal-content {
@@ -655,7 +672,7 @@
                     <img src="https://i.postimg.cc/vZyRpJjq/unnamed.png" alt="Logo Android"> 
                     ¡Descarga nuestra App Oficial! (Solo Android)
                 </p>
-                <a href="URL_DE_TU_ARCHIVO_APK_AQUI" download class="btn-download-apk" title="Descargar APK de la aplicación">
+                <a href="https://drive.google.com/uc?export=download&id=11_9ZHsAoF_NWbdSiGACiNYFjlOkQZjxx" download class="btn-download-apk" title="Descargar APK de la aplicación">
                     Descargar APK
                 </a>
                 
@@ -672,10 +689,14 @@
                 <h2>Escanea para Sumar Puntos</h2>
                 <p style="font-weight: bold;
                 color: #d32f2f;">
-                    👉 INSTRUCCIONES: Escanea este QR. Se te solicitará el código de canje para sumar puntos.
+                    👉 INSTRUCCIONES: Escanea este QR solo para "Navegador y Iphone" o haz clic en el botón "Acomular" si tienes la aplicación instalada en Android.
                 </p>
                 
                 <div id="qr-code"></div>
+
+                <button id="btn-acumular" onclick="openAcumularModal()">
+                    Acomular (Aplicación)
+                </button>
                 
                 <p id="qr-info" style="font-size: 0.8em; color: #777; display: none;"></p>
             </div>
@@ -752,6 +773,7 @@
             <button style="background-color: #6c757d;" onclick="document.getElementById('security-warning-modal').style.display='none'">Cancelar</button>
         </div>
     </div>
+    
     <div id="redemption-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('redemption-modal').style.display='none'">&times;</span>
@@ -762,6 +784,18 @@
             <p id="modal-message" style="color:red; margin-top:10px;"></p>
         </div>
     </div>
+
+    <div id="acumular-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('acumular-modal').style.display='none'">&times;</span>
+            <h2>Acomular Puntos (Código)</h2>
+            <p>Ingresa tu código de canje o código secreto para sumar puntos: el código de canje lo colocara el promotor de servicios</p>
+            <input type="text" id="secret-code" placeholder="Código Secreto/Canje" maxlength="9">
+            <button onclick="procesarCodigoSecreto()">Acomular Puntos</button>
+            <p id="acumular-modal-message" style="color:red; margin-top:10px;"></p>
+        </div>
+    </div>
+
 
     <div id="create-user-modal" class="modal">
         <div class="modal-content">
@@ -811,11 +845,20 @@
         const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000; 
         
         // ** PUNTOS Y CÓDIGOS DE CANJE **
+        // Se añade un objeto para rastrear si un código ya fue usado por CUALQUIER USUARIO (para códigos secretos de un solo uso).
+        const CLAVE_CODIGOS_USADOS = 'codigosUsados'; 
+        
         const CODIGOS_DE_CANJE = {
+            // Códigos de Escaneo QR (se supone que son reutilizables con restricción de tiempo/sesión)
             "10019950": 50,
             "100199100": 100,
             "100199200": 200,
-            "10019900": 10000
+            "10019900": 10000,
+            
+            // ** Códigos Secretos de UN SOLO USO (ejemplo) **
+            "SECRETO100": 100,
+            "PREMIUM500": 500,
+            "SUPER1000": 1000
         };
         
         // ** USUARIOS DE PRUEBA **
@@ -824,9 +867,9 @@
             "prueba1": { psw: "prueba1", email: "escuela100198@gmail.com" },
             "tprueba2": { psw: "prueba2", email: "juanzamora2025a@gmail.com" }
         };
-        const WHATSAPP_NUMBER = "5215512345678"; 
+        const WHATSAPP_NUMBER = "5217719624236"; 
         
-        // --- CATÁLOGO DE PREMIOS POR CATEGORÍA ---
+        // --- CATÁLOGO DE PREMIOS POR CATEGORÍA (Omitido para concisión, no se modificó) ---
         const categoriasPremios = {
             "Aceites": [
                 { id: 1, nombre: "Aditivo de Combustible", costo: 165, descripcion: "Potencia tu motor, maximiza tu rendimiento. Nuestro aditivo de gasolina elimina impurezas, reduce el consumo y prolonga la vida útil de tu motor. ¡Protege tu inversión, optimiza tu viaje!.", imagen: "https://i.postimg.cc/mDHF11wQ/tom7sc2i4a2gzq0hljda.jpg" },
@@ -867,7 +910,7 @@
         let usuarioEscaneado = null; 
         let canjeTimerIntervals = {}; 
 
-        // --- FUNCIONES DE SCROLL Y NAVEGACIÓN (Omitidas para concisión, no cambiaron) ---
+        // --- FUNCIONES DE SCROLL Y NAVEGACIÓN (Se mantienen) ---
 
         function scrollFunction() {
             const btn = document.getElementById("scrollToTopBtn");
@@ -919,7 +962,7 @@
             }
         }
         
-        // --- MANEJO DE PUNTOS, CANJES Y HISTORIAL ---
+        // --- MANEJO DE PUNTOS, CANJES Y HISTORIAL (Modificado: añadido load/save de códigos usados) ---
         
         // FUNCIONES DE ESTADÍSTICAS
         function loadStats(key) {
@@ -947,6 +990,29 @@
             saveStat(key, userEmail, currentValue + 1);
             return currentValue + 1;
         }
+
+        // FUNCIONES DE CÓDIGOS DE UN SOLO USO
+        function cargarCodigosUsados() {
+            try {
+                const data = localStorage.getItem(CLAVE_CODIGOS_USADOS);
+                return data ? new Set(JSON.parse(data)) : new Set();
+            } catch (e) {
+                return new Set();
+            }
+        }
+        
+        function marcarCodigoComoUsado(codigo) {
+            const codigosUsados = cargarCodigosUsados();
+            codigosUsados.add(codigo);
+            localStorage.setItem(CLAVE_CODIGOS_USADOS, JSON.stringify(Array.from(codigosUsados)));
+        }
+        
+        function esCodigoDeUnSoloUso(codigo) {
+            // Un código de un solo uso es aquel que existe en CODIGOS_DE_CANJE pero NO en la lista de Códigos de Escaneo QR
+            // Por simplicidad, consideraremos que todos los códigos que NO empiezan por "100199" son de un solo uso.
+            return codigo in CODIGOS_DE_CANJE && !codigo.startsWith("100199");
+        }
+
 
         // FUNCIONES DE HISTORIAL
         function loadHistory(userEmail) {
@@ -979,7 +1045,7 @@
             const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
             
             const newMovement = {
-                type: type, // 'scan' o 'redeem'
+                type: type, // 'scan' (QR) o 'redeem' (Premio) o 'secret' (Botón Acomular)
                 timestamp: now.getTime(),
                 date: `${dateStr} ${timeStr}`,
                 description: description
@@ -992,6 +1058,7 @@
         function renderizarEstadisticas() {
              if (!usuarioLogueado) return;
 
+             // El contador CLAVE_LOG_SCANS se usará para ambos tipos de acumulación (QR y Botón)
              const totalScans = getStatValue(CLAVE_LOG_SCANS, usuarioLogueado);
              const totalRedeems = getStatValue(CLAVE_LOG_REDEEMS, usuarioLogueado);
 
@@ -1007,22 +1074,22 @@
             const titleElement = document.getElementById('history-modal-title');
             listElement.innerHTML = '';
 
-            const filteredHistory = history.filter(item => item.type === type);
+            const filteredHistory = history.filter(item => item.type === type || (type === 'scan' && item.type === 'secret'));
 
             if (type === 'scan') {
-                titleElement.textContent = 'Historial de Escaneos Realizados';
+                titleElement.textContent = 'Historial de Puntos Acomulados (QR y Secreto)';
             } else if (type === 'redeem') {
                 titleElement.textContent = 'Historial de Regalos Canjeados';
             }
 
             if (filteredHistory.length === 0) {
-                listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'escaneos' : 'canjes'}.</li>`;
+                listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'acomulación de puntos' : 'canjes'}.</li>`;
             } else {
                 filteredHistory.forEach(item => {
                     const li = document.createElement('li');
-                    li.className = item.type === 'scan' ? 'scan-item' : 'redeem-item';
                     
-                    let icon = item.type === 'scan' ? '⬆️' : '🎁';
+                    let icon = item.type === 'redeem' ? '🎁' : '⬆️';
+                    li.className = item.type === 'redeem' ? 'redeem-item' : 'scan-item';
                     
                     li.innerHTML = `<strong>${icon} ${item.description}</strong><br><span style="font-size: 0.9em; color: #6c757d;">${item.date}</span>`;
                     listElement.appendChild(li);
@@ -1065,7 +1132,7 @@
             localStorage.setItem(CLAVE_CANJES_PREMIOS, JSON.stringify(todosLosCanjes));
         }
 
-        // --- LÓGICA DE CRONÓMETRO (Omitida para concisión, no cambió) ---
+        // --- LÓGICA DE CRONÓMETRO (Se mantiene) ---
 
         function formatTime(ms) {
             if (ms <= 0) return "¡Listo!";
@@ -1119,7 +1186,7 @@
         }
 
 
-        // --- LÓGICA DE AUTENTICACIÓN (Omitida para concisión, no cambió) ---
+        // --- LÓGICA DE AUTENTICACIÓN (Se mantiene) ---
 
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1178,7 +1245,7 @@
             document.getElementById("qr-code").innerHTML = '';
         }
 
-        // --- LÓGICA DE CANJE Y REND. (Movimiento de historial añadido) ---
+        // --- LÓGICA DE CANJE Y REND. (Se mantiene) ---
 
         function canjearPremio(idPremio) {
             if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
@@ -1287,7 +1354,81 @@
             }
         }
         
-        // --- OTRAS LÓGICAS (Movimiento de historial añadido) ---
+        // --- LÓGICA DE BOTÓN "ACOMULAR" (NUEVO) ---
+
+        function openAcumularModal() {
+            if (!usuarioLogueado) {
+                 alert("Por favor, inicia sesión para acumular puntos.");
+                 return;
+            }
+            document.getElementById('acumular-modal-message').textContent = '';
+            document.getElementById('secret-code').value = '';
+            document.getElementById('acumular-modal').style.display = 'block';
+        }
+
+        function procesarCodigoSecreto() {
+            const codigoIngresado = document.getElementById('secret-code').value.trim().toUpperCase();
+            const modalMessage = document.getElementById('acumular-modal-message');
+
+            const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
+            
+            if (!puntosASumar) {
+                modalMessage.textContent = '❌ Código incorrecto o inválido.';
+                document.getElementById('secret-code').value = '';
+                return;
+            }
+            
+            const isSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
+            const codigosUsados = cargarCodigosUsados();
+            
+            if (isSingleUse && codigosUsados.has(codigoIngresado)) {
+                modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.';
+                document.getElementById('secret-code').value = '';
+                return;
+            }
+            
+            // Si es un código de QR (100199...), no hacemos chequeo de uso global, solo el de sesión (que se hace en procesarCanjeQR)
+            if (!isSingleUse) {
+                // Para códigos QR que se puedan introducir manualmente, usamos la misma lógica de sesión/puntos que el escaneo
+                // y usamos 'usuarioLogueado' como el usuario a acreditar, en lugar de 'usuarioEscaneado'.
+                
+                const sessionKey = `puntosSumados_${usuarioLogueado}`;
+                if (sessionStorage.getItem(sessionKey)) {
+                    modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!';
+                    return;
+                }
+                
+                // Realizar la acreditación
+                const todosLosPuntos = cargarPuntosUsuarios();
+                puntosUsuario = todosLosPuntos[usuarioLogueado] || 0; 
+                puntosUsuario += puntosASumar;
+                
+                guardarPuntosUsuario(usuarioLogueado, puntosUsuario); 
+                sessionStorage.setItem(sessionKey, 'true'); // Marca como usado para la sesión
+                
+                incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
+                addMovementToHistory(usuarioLogueado, 'scan', `Código Manual QR (+${puntosASumar} Pts)`);
+                
+            } else if (isSingleUse) {
+                 // Lógica de UN SOLO USO
+                const todosLosPuntos = cargarPuntosUsuarios();
+                puntosUsuario = todosLosPuntos[usuarioLogueado] || 0; 
+                puntosUsuario += puntosASumar;
+                
+                guardarPuntosUsuario(usuarioLogueado, puntosUsuario); 
+                marcarCodigoComoUsado(codigoIngresado); // Marcar como usado globalmente
+                
+                incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
+                addMovementToHistory(usuarioLogueado, 'secret', `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`);
+            }
+            
+            // Finalizar proceso
+            document.getElementById('acumular-modal').style.display = 'none';
+            actualizarInterfaz();
+            alert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`);
+        }
+        
+        // --- OTRAS LÓGICAS (procesarCanjeQR modificado para diferenciar códigos de un solo uso) ---
 
         function actualizarInterfaz() {
             document.getElementById('puntos-actuales').textContent = `${puntosUsuario} Puntos`;
@@ -1314,7 +1455,8 @@
         }
         
         function mostrarModalCanje(userEmail) {
-            usuarioEscaneado = userEmail;
+            // El modal de canje QR siempre acreditará al usuario 'escaneado'
+            usuarioEscaneado = userEmail; 
             document.getElementById('modal-message').textContent = '';
             document.getElementById('redemption-code').value = '';
             document.getElementById('redemption-modal').style.display = 'block';
@@ -1333,6 +1475,18 @@
             const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
 
             if (puntosASumar) {
+                 // Chequeo de códigos de un solo uso para evitar que un QR dé un código secreto de mucho valor
+                if (esCodigoDeUnSoloUso(codigoIngresado) && cargarCodigosUsados().has(codigoIngresado)) {
+                     modalMessage.textContent = '❌ Código de canje ya utilizado.';
+                     document.getElementById('redemption-code').value = '';
+                     return;
+                }
+                
+                // Si es un código de un solo uso, lo marcamos globalmente
+                if (esCodigoDeUnSoloUso(codigoIngresado)) {
+                     marcarCodigoComoUsado(codigoIngresado);
+                }
+
                 // *** LÓGICA CLAVE: CÓDIGO CORRECTO ***
                 const todosLosPuntos = cargarPuntosUsuarios();
                 let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
@@ -1425,7 +1579,7 @@
             }
         }
         
-        // --- INICIALIZACIÓN DE LA APLICACIÓN (Omitida para concisión, no cambió) ---
+        // --- INICIALIZACIÓN DE LA APLICACIÓN (Se mantiene) ---
         
         verificarEscaneoAlCargar();
         const usuarioEmailGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
