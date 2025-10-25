@@ -327,20 +327,27 @@
         #daily-streak-card {
             background-color: #fce4ec;
             /* Fondo rosa claro */
-            padding: 10px; /* Reducido */
-            border-radius: 8px; /* Reducido */
+            padding: 10px;
+            /* Reducido */
+            border-radius: 8px;
+            /* Reducido */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 15px auto 30px auto; /* Centrado y más espacio abajo */
-            border: 1px solid var(--color-racha); /* Borde más fino */
-            max-width: 350px; /* Límite de ancho */
+            margin: 15px auto 30px auto;
+            /* Centrado y más espacio abajo */
+            border: 1px solid var(--color-racha);
+            /* Borde más fino */
+            max-width: 350px;
+            /* Límite de ancho */
             width: 90%;
             text-align: center;
         }
 
         #daily-streak-card h2 {
             color: var(--color-racha);
-            margin: 0 0 10px 0; /* Espacio reducido */
-            font-size: 1.3em; /* Más pequeño */
+            margin: 0 0 10px 0;
+            /* Espacio reducido */
+            font-size: 1.3em;
+            /* Más pequeño */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -348,30 +355,35 @@
         }
 
         .streak-info {
-            font-size: 0.9em; /* Más pequeño */
-            margin-bottom: 5px; /* Espacio reducido */
+            font-size: 0.9em;
+            /* Más pequeño */
+            margin-bottom: 5px;
+            /* Espacio reducido */
             line-height: 1.4;
         }
 
         .streak-value {
             font-weight: bold;
             color: var(--color-racha);
-            font-size: 1.2em; /* Más pequeño */
+            font-size: 1.2em;
+            /* Más pequeño */
         }
 
         #btn-claim-streak {
             background-color: var(--color-racha);
             /* Rosa/Rojo de Racha */
             color: white;
-            padding: 10px 20px; /* Reducido */
+            padding: 10px 20px;
+            /* Reducido */
             margin-top: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em; /* Más pequeño */
+            font-size: 1em;
+            /* Más pequeño */
             font-weight: bold;
             width: 100%;
-            max-width: 300px; 
+            max-width: 300px;
             transition: background-color 0.3s;
         }
 
@@ -391,7 +403,8 @@
             margin-top: 10px;
             color: var(--color-racha);
             font-weight: bold;
-            font-size: 0.85em; /* Más pequeño */
+            font-size: 0.85em;
+            /* Más pequeño */
         }
 
         /* Fin de estilos de Racha Diaria */
@@ -1047,7 +1060,6 @@
 
         const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000;
 
-        // ** PUNTOS Y CÓDIGOS DE CANJE **
         // Se añade un objeto para rastrear si un código ya fue usado por CUALQUIER USUARIO (para códigos secretos de un solo uso).
         const CLAVE_CODIGOS_USADOS = 'codigosUsados';
 
@@ -1070,44 +1082,44 @@
             "prueba1": { psw: "prueba1", email: "escuela100198@gmail.com" },
             "tprueba2": { psw: "prueba2", email: "juanzamora2025a@gmail.com" }
         };
-        const WHATSAPP_NUMBER = "5217719624236";
+        const WHATSAPP_NUMBER = "5217719624236"; // Número de WhatsApp para solicitudes de premio
 
-        // --- CATÁLOGO DE PREMIOS POR CATEGORÍA (Omitido para concisión, no se modificó) ---
+        // --- CATÁLOGO DE PREMIOS POR CATEGORÍA ---
         const categoriasPremios = {
             "Aceites": [
                 { id: 1, nombre: "Aditivo de Combustible", costo: 165, descripcion: "Potencia tu motor, maximiza tu rendimiento. Nuestro aditivo de gasolina elimina impurezas, reduce el consumo y prolonga la vida útil de tu motor. ¡Protege tu inversión, optimiza tu viaje!.", imagen: "https://i.postimg.cc/mDHF11wQ/tom7sc2i4a2gzq0hljda.jpg" },
-                { id: 1, nombre: "Limpiador Inyectores", costo: 187, descripcion: "Restaura la potencia de tu motor. Nuestro limpiador de inyectores elimina depósitos y suciedad, mejorando el rendimiento y reduciendo el consumo de combustible.", imagen: "https://i.postimg.cc/wMyJJgCj/56521585-800-auto.jpg" },
+                { id: 2, nombre: "Limpiador Inyectores", costo: 187, descripcion: "Restaura la potencia de tu motor. Nuestro limpiador de inyectores elimina depósitos y suciedad, mejorando el rendimiento y reduciendo el consumo de combustible.", imagen: "https://i.postimg.cc/wMyJJgCj/56521585-800-auto.jpg" },
 
-                { id: 5, nombre: "Anticongelante 33%", costo: 200, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/T3X3xgcW/162832-d.jpg" },
-                { id: 5, nombre: "Líquido de Frenos", costo: 175, descripcion: "Frena con confianza. Líquido de frenos de alta performance, garantiza una frenada segura y eficiente en cualquier condición.", imagen: "https://i.postimg.cc/gJYfn3dv/images-6.jpg" },
+                { id: 3, nombre: "Anticongelante 33%", costo: 200, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/T3X3xgcW/162832-d.jpg" },
+                { id: 4, nombre: "Líquido de Frenos", costo: 175, descripcion: "Frena con confianza. Líquido de frenos de alta performance, garantiza una frenada segura y eficiente en cualquier condición.", imagen: "https://i.postimg.cc/gJYfn3dv/images-6.jpg" },
                 { id: 5, nombre: "Limpia Parabrisas", costo: 160, descripcion: "Visión clara, conducción segura. Nuestro líquido limpia parabrisas elimina la suciedad y el agua para una visibilidad perfecta en cualquier clima.", imagen: "https://i.postimg.cc/tRvL41c2/149425-d.jpg" },
-                { id: 5, nombre: "Dirección Hidráulica", costo: 150, descripcion: "Dirige con suavidad y precisión. Nuestro líquido de dirección hidráulica lubrica y protege el sistema, garantizando una conducción suave y segura.", imagen: "https://i.postimg.cc/Y00ZxkvP/177506-d.jpg" },
-                { id: 5, nombre: "Anticongelante Rosa 50%", costo: 290, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/G3KpRH5D/images-7.jpg" },
+                { id: 6, nombre: "Dirección Hidráulica", costo: 150, descripcion: "Dirige con suavidad y precisión. Nuestro líquido de dirección hidráulica lubrica y protege el sistema, garantizando una conducción suave y segura.", imagen: "https://i.postimg.cc/Y00ZxkvP/177506-d.jpg" },
+                { id: 7, nombre: "Anticongelante Rosa 50%", costo: 290, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/G3KpRH5D/images-7.jpg" },
             ],
             "Gasolina": [
-                { id: 6, nombre: "Vale de $50 MXN", costo: 250, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/CL9FQrHQ/1761284472934.png" },
-                { id: 7, nombre: "Vale de $100", costo: 450, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/ZKWbjz3Y/1761284392265.png" },
-                { id: 7, nombre: "Vale de $200", costo: 800, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/bvhqzG5n/1761284478157.png" },
-                { id: 7, nombre: "Vale de $500", costo: 1750, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/3Rr7vs7f/1761284484288.png" },
-                { id: 7, nombre: "Vale de $1,000", costo: 4000, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/Y9X7fdCz/1761284573266.png" }
+                { id: 8, nombre: "Vale de $50 MXN", costo: 250, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/CL9FQrHQ/1761284472934.png" },
+                { id: 9, nombre: "Vale de $100", costo: 450, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/ZKWbjz3Y/1761284392265.png" },
+                { id: 10, nombre: "Vale de $200", costo: 800, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/bvhqzG5n/1761284478157.png" },
+                { id: 11, nombre: "Vale de $500", costo: 1750, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/3Rr7vs7f/1761284484288.png" },
+                { id: 12, nombre: "Vale de $1,000", costo: 4000, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/Y9X7fdCz/1761284573266.png" }
             ],
             "Revolution Wax": [
-                { id: 8, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
-                { id: 8, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" },
-                { id: 8, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
-                { id: 8, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" }
+                { id: 13, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
+                { id: 14, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" },
+                { id: 15, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
+                { id: 16, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" }
             ],
             "Streaming": [
-                { id: 10, nombre: "YouTube 1 mes", costo: 150, descripcion: "Una suscripción de 30 días a un servicio de streaming de video.", imagen: "https://i.postimg.cc/zB0GJwWL/1760066881281.png" },
-                { id: 10, nombre: "Canva Pro 1 mes", costo: 100, descripcion: "Una suscripción de 30 días a un servicio de Canva Pro.", imagen: "https://i.postimg.cc/RV1yyHph/1760068345205.png" },
-                { id: 10, nombre: "Netflix 1 mes", costo: 300, descripcion: "Una suscripción de 30 días a un servicio de Netflix Premium HD 4K.", imagen: "https://i.postimg.cc/02xKPTnw/1760045732343.png" },
-                { id: 10, nombre: "Disney 1 mes", costo: 200, descripcion: "Una suscripción de 30 días a un servicio de Disney Premium.", imagen: "https://i.postimg.cc/K81G2f6f/1760048661295.png" }
+                { id: 17, nombre: "YouTube 1 mes", costo: 150, descripcion: "Una suscripción de 30 días a un servicio de streaming de video.", imagen: "https://i.postimg.cc/zB0GJwWL/1760066881281.png" },
+                { id: 18, nombre: "Canva Pro 1 mes", costo: 100, descripcion: "Una suscripción de 30 días a un servicio de Canva Pro.", imagen: "https://i.postimg.cc/RV1yyHph/1760068345205.png" },
+                { id: 19, nombre: "Netflix 1 mes", costo: 300, descripcion: "Una suscripción de 30 días a un servicio de Netflix Premium HD 4K.", imagen: "https://i.postimg.cc/02xKPTnw/1760045732343.png" },
+                { id: 20, nombre: "Disney 1 mes", costo: 200, descripcion: "Una suscripción de 30 días a un servicio de Disney Premium.", imagen: "https://i.postimg.cc/K81G2f6f/1760048661295.png" }
             ],
             "Lavado y Encerado": [
-                { id: 11, nombre: "Lavado Exterior + Cera", costo: 135, descripcion: "Servicio de lavado completo con aplicación de cera de carnauba.", imagen: "https://i.postimg.cc/Wz4Zw1T4/1761305072860.png" }
+                { id: 21, nombre: "Lavado Exterior + Cera", costo: 135, descripcion: "Servicio de lavado completo con aplicación de cera de carnauba.", imagen: "https://i.postimg.cc/Wz4Zw1T4/1761305072860.png" }
             ],
             "Sorpresa": [
-                { id: 4, nombre: "Producto Sorpresa VIP", costo: 4000, descripcion: "Un regalo exclusivo por ser un cliente fiel.", imagen: "https://i.postimg.cc/YS5kxn7r/1761305366994.png" }
+                { id: 22, nombre: "Producto Sorpresa VIP", costo: 4000, descripcion: "Un regalo exclusivo por ser un cliente fiel.", imagen: "https://i.postimg.cc/YS5kxn7r/1761305366994.png" }
             ]
         };
 
@@ -1586,7 +1598,7 @@
             document.getElementById("qr-code").innerHTML = '';
         }
 
-        // --- LÓGICA DE CANJE Y REND. (Se mantiene) ---
+        // --- LÓGICA DE CANJE Y REND. (Modificado para WhatsApp) ---
 
         function canjearPremio(idPremio) {
             if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
@@ -1603,16 +1615,30 @@
             }
 
             if (puntosUsuario >= premio.costo) {
-                if (confirm(`¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
-                    puntosUsuario -= premio.costo;
+                if (confirm(`✅ CONFIRMAR CANJE: ¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
+                    
+                    const puntosRestantes = puntosUsuario - premio.costo;
+                    
+                    // 1. Notificación de Canje Exitoso y Puntos Restantes
+                    alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosRestantes}. Ahora, por favor, envía el mensaje de WhatsApp para solicitar tu premio.`);
 
+                    // 2. Generar y Enviar Mensaje de WhatsApp
+                    // Generamos un ID de canje único con el prefijo "A1000"
+                    const redemptionID = `A1000-${premio.id}-${Date.now()}`;
+                    const mensaje = `¡SOLICITUD DE PREMIO CANJEADO!%0A*ID de Canje:* ${redemptionID}%0A*Usuario:* ${usuarioLogueadoUsername} (${usuarioLogueado})%0A*Premio Solicitado:* ${premio.nombre}%0A*Puntos Descontados:* ${premio.costo}%0A*Puntos Restantes:* ${puntosRestantes}`;
+                    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
+
+                    window.open(whatsappURL, '_blank');
+                    
+                    // 3. Procesar el Canje (Guardar en LocalStorage y Actualizar Puntos)
+                    puntosUsuario = puntosRestantes; // Actualizar el saldo de puntos global
                     guardarCanje(usuarioLogueado, idPremio, Date.now());
 
                     // INCREMENTAR CONTADOR Y REGISTRAR EN HISTORIAL
                     incrementStat(CLAVE_LOG_REDEEMS, usuarioLogueado);
-                    addMovementToHistory(usuarioLogueado, 'redeem', `Canjeado: ${premio.nombre} (-${premio.costo} Pts)`);
+                    addMovementToHistory(usuarioLogueado, 'redeem', `Canjeado: ${premio.nombre} (-${premio.costo} Pts) | ID: ${redemptionID}`);
 
-                    alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosUsuario}.`);
+                    // 4. Actualizar la Interfaz
                     actualizarInterfaz();
                     renderizarEstadisticas();
                 }
@@ -1620,6 +1646,7 @@
                 alert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`);
             }
         }
+
 
         function renderizarCatalogo() {
             const contenedorCatalogo = document.getElementById('catalogo-premios');
