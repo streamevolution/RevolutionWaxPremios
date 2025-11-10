@@ -3,64 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎁 Revolution Wax - ¡Acomular y Gana!</title>
+    <title>🎁 Revolution Wax - ¡Acumula y Gana!</title>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --color-principal: #007bff;
-            /* Azul para Login */
-            --color-lealtad: #4CAF50;
-            /* Verde para Lealtad */
-            --color-secundario: #FF9800;
-            /* Naranja para el canje */
-            --color-racha: #e91e63;
-            /* Rosa/Rojo para la Racha */
-            --color-fondo: #f4f4f4;
-            --color-texto: #333;
-            --color-negro: #212529;
-            /* Negro para la barra de navegación */
+            --color-principal: #0056b3;
+            /* Azul Profesional */
+            --color-secundario: #dc3545;
+            /* Rojo (Alertas) */
+            --color-navbar: #ffffff;
+            /* Barra de navegación blanca */
+            --color-blanco: #ffffff;
+            --color-fondo: #f4f7f6;
+            --color-texto: #212529;
+            /* Negro suave para texto */
+            --color-border: #dee2e6;
+            /* Gris claro para bordes */
+            --color-tier-bronze: #cd7f32;
+            --color-tier-silver: #c0c0c0;
+            --color-tier-gold: #ffd700;
+            --color-tier-diamond: #b9f2ff;
         }
 
-        /* ===================================================================
-        === BARRA DE LOGIN NEÓN
-        ===================================================================
-        */
         #login-nav-bar {
-            background-color: var(--color-negro);
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
+            background-color: var(--color-navbar);
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid var(--color-border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .neon-text {
-            color: #FFFF00;
-            /* Amarillo Neón */
-            font-size: 1.5em;
-            font-weight: bold;
-            text-shadow: 0 0 5px #FFFF00, 0 0 10px #FFFF00;
-            animation: blinker 1s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+        #login-nav-bar .nav-logo img {
+            height: 40px;
+            width: auto;
         }
-
-        @keyframes blinker {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0.7;
-            }
-        }
-
-        /*
-        ===================================================================
-        === FIN DE ESTILOS DE BARRA DE LOGIN NEÓN
-        ===================================================================
-        */
 
         body {
             font-family: 'Arial', sans-serif;
@@ -71,26 +53,23 @@
             text-align: center;
         }
 
-        /* --- BARRA DE NAVEGACIÓN SUPERIOR (OCULTA POR DEFECTO EN EL HTML, MOSTRADA POR JS EN SESIÓN) --- */
         #nav-bar {
             display: none;
-            /* Oculto por defecto */
-            background-color: var(--color-negro);
-            color: white;
+            background-color: var(--color-navbar);
+            color: var(--color-texto);
             padding: 10px 25px;
-            /* Barra más grande */
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 50;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            border-bottom: 1px solid var(--color-border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         #nav-bar .nav-logo img {
             height: 40px;
-            /* Logo más grande y visible */
             width: auto;
         }
 
@@ -99,15 +78,13 @@
             align-items: center;
         }
 
-        #nav-bar .nav-links a,
-        #nav-bar .nav-links .dropdown-btn {
-            color: white;
+        #nav-bar .nav-links a {
+            color: var(--color-texto);
             text-decoration: none;
             margin-left: 25px;
             padding: 10px 0;
             font-weight: 600;
             font-size: 1.1em;
-            /* Texto más grande */
             cursor: pointer;
             background: none;
             border: none;
@@ -115,12 +92,62 @@
             transition: color 0.2s;
         }
 
-        #nav-bar .nav-links a:hover,
-        #nav-bar .nav-links .dropdown-btn:hover {
-            color: var(--color-lealtad);
+        #nav-bar .nav-links a:hover {
+            color: var(--color-principal);
         }
 
-        /* Dropdown Menu Styles */
+        #nav-bar .nav-links .dropdown-btn {
+            color: var(--color-texto);
+            margin-left: 25px;
+            padding: 10px 0;
+            font-weight: 600;
+            font-size: 1.1em;
+            cursor: pointer;
+            background: none;
+            border: none;
+            position: relative;
+            transition: color 0.2s;
+            font-family: inherit;
+        }
+
+        #nav-bar .nav-links .dropdown-btn:hover {
+            color: var(--color-principal);
+        }
+
+        .nav-icon-btn {
+            color: var(--color-texto);
+            font-size: 1.4em;
+            margin-left: 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .nav-icon-btn:hover {
+            color: var(--color-principal);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: -2px;
+            background-color: var(--color-secundario);
+            color: var(--color-blanco);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7em;
+            line-height: 18px;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid var(--color-blanco);
+            display: none;
+            /* Oculto por defecto */
+        }
+
         .dropdown {
             position: relative;
             display: inline-block;
@@ -129,36 +156,68 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: var(--color-negro);
-            min-width: 180px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+            background-color: var(--color-blanco);
+            min-width: 220px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
             z-index: 10;
-            top: 100%;
-            /* Posicionar debajo del botón */
-            left: -50px;
+            top: 120%;
+            right: 0;
+            left: auto;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
         }
 
         .dropdown-content a {
-            color: white !important;
+            color: var(--color-texto) !important;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
             text-align: left;
-            margin-left: 0;
-            font-size: 0.9em;
+            margin: 0;
+            font-size: 0.95em;
         }
 
         .dropdown-content a:hover {
-            background-color: #3e3e3e;
+            background-color: var(--color-fondo);
+            color: var(--color-principal) !important;
+        }
+
+        #premios-dropdown-content {
+            left: -50px;
+            right: auto;
+        }
+
+        .user-dropdown-header {
+            padding: 15px 16px;
+            border-bottom: 1px solid var(--color-border);
+            text-align: left;
+        }
+
+        #user-display-nav {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--color-texto);
+            display: block;
+        }
+
+        #user-tier-nav {
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .user-dropdown-logout {
+            font-weight: bold;
             color: var(--color-secundario) !important;
         }
 
-        /* La clase 'show' se usa en JS para mostrar el menú */
+        .user-dropdown-logout:hover {
+            background-color: #fdf0f1 !important;
+        }
+
         .dropdown-content.show {
             display: block;
         }
 
-        /* ESTILOS DEL BOTÓN "IR ARRIBA" */
         #scrollToTopBtn {
             display: none;
             position: fixed;
@@ -167,8 +226,8 @@
             z-index: 99;
             border: none;
             outline: none;
-            background-color: var(--color-lealtad);
-            color: white;
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
             cursor: pointer;
             padding: 15px;
             border-radius: 50%;
@@ -178,17 +237,16 @@
         }
 
         #scrollToTopBtn:hover {
-            background-color: #388e3c;
+            background-color: #00418a;
         }
 
-        /* --- Contenedor y Logo en Login --- */
         .logo-container {
-            padding-bottom: 20px;
+            padding-bottom: 15px;
             text-align: center;
         }
 
         .logo-container img {
-            max-width: 150px;
+            max-width: 120px;
             height: auto;
         }
 
@@ -196,47 +254,75 @@
             max-width: 900px;
             margin: 30px auto;
             padding: 20px;
-            background-color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background-color: var(--color-blanco);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            border: 1px solid var(--color-border);
         }
 
         h1 {
             color: var(--color-principal);
-            border-bottom: 3px solid var(--color-lealtad);
+            border-bottom: 3px solid var(--color-secundario);
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
 
-        /* --- Login Section Styling --- */
+        h2 {
+            color: var(--color-texto);
+        }
+
         #login-section {
-            background-color: #f8f9fa;
-            padding: 30px;
+            background-color: var(--color-blanco);
+            padding: 40px;
             border-radius: 8px;
             text-align: left;
             max-width: 400px;
             margin: 0 auto;
+            border-top: 5px solid var(--color-principal);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        #login-section .logo-container {
-            padding-top: 0;
-            padding-bottom: 15px;
-            margin-top: -15px;
+        #login-section h2 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #555;
+            font-size: 0.95em;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.9em;
         }
 
         #login-section input {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0 15px 0;
+            padding: 12px 12px 12px 45px !important;
+            margin: 0;
             display: inline-block;
-            border: 1px solid #ccc;
+            border: 1px solid var(--color-border);
             border-radius: 4px;
             box-sizing: border-box;
+            height: 48px;
+            font-size: 1em;
         }
 
-        .btn-login {
-            background-color: var(--color-secundario);
-            color: white;
+        .btn {
             padding: 14px 20px;
             margin: 8px 0;
             border: none;
@@ -244,6 +330,37 @@
             cursor: pointer;
             width: 100%;
             font-size: 1.1em;
+            font-weight: bold;
+            color: var(--color-blanco);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background-color: var(--color-principal);
+        }
+
+        .btn-primary:hover {
+            background-color: #00418a;
+        }
+
+        .btn-secondary {
+            background-color: var(--color-secundario);
+        }
+
+        .btn-secondary:hover {
+            background-color: #b02a37;
+        }
+
+        .btn-grey {
+            background-color: #6c757d;
+        }
+
+        .btn-grey:hover {
+            background-color: #5a6268;
         }
 
         .btn-link {
@@ -254,146 +371,148 @@
             cursor: pointer;
             font-size: 0.9em;
             padding: 5px 0;
-            display: block;
-            width: 100%;
+            display: inline-block;
+            width: auto;
             text-align: center;
         }
 
-        #login-section .btn-create {
-            background-color: var(--color-lealtad);
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            padding: 10px 20px;
-            border-radius: 4px;
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 0 5px;
         }
 
-        /* === ESTILOS PARA DESCARGA APK === */
         #apk-download-container {
             text-align: center;
-            padding: 15px 0;
-            border-top: 1px dashed #ccc;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        #apk-download-container img {
-            width: 40px;
-            height: auto;
-            vertical-align: middle;
-            margin-right: 10px;
+            padding-top: 25px;
+            border-top: 1px dashed var(--color-border);
+            margin-top: 25px;
+            margin-bottom: 0;
         }
 
         .btn-download-apk {
-            background-color: var(--color-lealtad);
-            /* Verde */
-            color: white;
-            padding: 10px 20px;
+            background-color: #28a745;
+            color: var(--color-blanco);
+            padding: 12px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
             text-decoration: none;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 0;
             transition: background-color 0.3s;
+            font-weight: bold;
         }
 
-        .btn-download-apk:hover {
-            background-color: #388e3c;
-            /* Verde más oscuro */
+        .btn-download-apk i {
+            margin-right: 8px;
         }
 
-        /* ======================================= */
-
-        /* --- Lealtad Section Styling (Hidden by default) --- */
         #lealtad-section {
             display: none;
+        }
+
+        #dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .dashboard-card {
+            background-color: var(--color-blanco);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-card h3 {
+            margin: 0 0 15px 0;
+            color: var(--color-texto);
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 10px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dashboard-card .card-icon {
+            color: var(--color-principal);
+            font-size: 1.2em;
         }
 
         #puntos-actuales {
             font-size: 2.5em;
             font-weight: bold;
-            color: var(--color-lealtad);
-            margin: 10px 0 20px 0;
-            padding: 10px;
-            border: 2px dashed var(--color-lealtad);
-            display: inline-block;
-            border-radius: 5px;
+            color: var(--color-principal);
+            margin: 0;
+            line-height: 1.1;
         }
 
-        /* ESTILOS PARA LA RACHA DIARIA (NUEVO y COMPACTO) */
-        #daily-streak-card {
-            background-color: #fce4ec;
-            /* Fondo rosa claro */
-            padding: 10px;
-            /* Reducido */
-            border-radius: 8px;
-            /* Reducido */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 15px auto 30px auto;
-            /* Centrado y más espacio abajo */
-            border: 1px solid var(--color-racha);
-            /* Borde más fino */
-            max-width: 350px;
-            /* Límite de ancho */
-            width: 90%;
-            text-align: center;
+        #user-tier {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
         }
 
-        #daily-streak-card h2 {
-            color: var(--color-racha);
-            margin: 0 0 10px 0;
-            /* Espacio reducido */
-            font-size: 1.3em;
-            /* Más pequeño */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
+        .tier-bronze {
+            color: var(--color-tier-bronze);
+        }
+
+        .tier-silver {
+            color: var(--color-tier-silver);
+        }
+
+        .tier-gold {
+            color: var(--color-tier-gold);
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .tier-diamond {
+            color: var(--color-tier-diamond);
+            text-shadow: 0 0 8px rgba(185, 242, 255, 0.7);
         }
 
         .streak-info {
-            font-size: 0.9em;
-            /* Más pequeño */
-            margin-bottom: 5px;
-            /* Espacio reducido */
+            font-size: 1em;
+            margin-bottom: 10px;
             line-height: 1.4;
         }
 
         .streak-value {
             font-weight: bold;
-            color: var(--color-racha);
-            font-size: 1.2em;
-            /* Más pequeño */
+            color: var(--color-secundario);
+            font-size: 1.1em;
         }
 
         #btn-claim-streak {
-            background-color: var(--color-racha);
-            /* Rosa/Rojo de Racha */
-            color: white;
-            padding: 10px 20px;
-            /* Reducido */
-            margin-top: 10px;
+            background-color: var(--color-secundario);
+            color: var(--color-blanco);
+            padding: 12px 20px;
+            margin-top: auto;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            /* Más pequeño */
             font-weight: bold;
             width: 100%;
-            max-width: 300px;
             transition: background-color 0.3s;
         }
 
         #btn-claim-streak:hover:not(:disabled) {
-            background-color: #c2185b;
+            background-color: #b02a37;
         }
 
         #btn-claim-streak:disabled {
-            background-color: #9c27b0;
-            /* Morado para deshabilitado de racha */
+            background-color: #6c757d;
             cursor: not-allowed;
             opacity: 0.8;
         }
@@ -401,46 +520,143 @@
         .cooldown-text {
             display: block;
             margin-top: 10px;
-            color: var(--color-racha);
+            color: var(--color-secundario);
             font-weight: bold;
-            font-size: 0.85em;
-            /* Más pequeño */
+            font-size: 0.9em;
         }
 
-        /* Fin de estilos de Racha Diaria */
+        .stats-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
 
-
-        /* Estilos para el listado por categoría */
-        .categoria-titulo {
-            /* Se añade un ID para poder navegar a este título */
+        .stat-button {
+            flex: 1;
+            padding: 15px 10px;
+            border: 2px solid var(--color-principal);
+            border-radius: 8px;
+            cursor: pointer;
             color: var(--color-principal);
-            background-color: #f0f0f0;
+            background-color: var(--color-blanco);
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .stat-button:hover {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            transform: translateY(-2px);
+        }
+
+        .stat-button .stat-value {
+            font-size: 1.8em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #acumular-section {
+            background-color: var(--color-blanco);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        #acumular-section h2 {
+            margin-top: 0;
+            color: var(--color-principal);
+        }
+
+        #qr-code {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 10px;
-            margin: 30px 0 15px 0;
+            background-color: var(--color-blanco);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        #quick-actions-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-action i {
+            margin-right: 8px;
+        }
+
+        .btn-action:hover {
+            background-color: #00418a;
+        }
+
+        .btn-action-refer {
+            background-color: #17a2b8;
+        }
+
+        .btn-action-refer:hover {
+            background-color: #138496;
+        }
+
+        .categoria-titulo {
+            color: var(--color-texto);
+            background-color: var(--color-fondo);
+            padding: 12px 20px;
+            margin: 40px 0 20px 0;
             border-radius: 5px;
             font-size: 1.5em;
             text-align: left;
             font-weight: bold;
+            border-left: 5px solid var(--color-principal);
         }
 
-        /* === MODIFICACIÓN PARA CARRUSEL === */
         .catalogo-categoria {
             display: flex;
             overflow-x: scroll;
-            padding: 10px;
+            padding: 20px 10px;
             gap: 20px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-principal) var(--color-border);
         }
 
         .catalogo-categoria::-webkit-scrollbar {
-            display: none;
+            height: 8px;
+        }
+
+        .catalogo-categoria::-webkit-scrollbar-track {
+            background: var(--color-border);
+            border-radius: 10px;
+        }
+
+        .catalogo-categoria::-webkit-scrollbar-thumb {
+            background-color: var(--color-principal);
+            border-radius: 10px;
         }
 
         .premio {
             flex-shrink: 0;
-            width: 250px;
-            border: 1px solid #ccc;
+            width: 260px;
+            border: 1px solid var(--color-border);
             padding: 15px;
             border-radius: 8px;
             background-color: #fff;
@@ -448,44 +664,60 @@
             text-align: left;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            min-height: 350px;
+            min-height: 380px;
             box-sizing: border-box;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        /* ================================= */
+        .premio:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
 
         .premio img {
-            max-width: 100%;
-            height: 120px;
+            width: 100%;
+            height: 150px;
             object-fit: cover;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--color-border);
+        }
+
+        .premio h3 {
+            font-size: 1.1em;
+            margin: 0 0 5px 0;
+        }
+
+        .premio p {
+            font-size: 0.9em;
+            color: #555;
+            flex-grow: 1;
         }
 
         .premio .puntos-costo {
             font-weight: bold;
-            color: var(--color-secundario);
-            font-size: 1.2em;
+            color: var(--color-principal);
+            font-size: 1.3em;
             display: block;
             margin: 10px 0;
+            text-align: center;
         }
 
         .btn-canjear {
-            background-color: var(--color-secundario);
+            background-color: var(--color-principal);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
             margin-top: auto;
             transition: background-color 0.3s;
+            font-weight: bold;
         }
 
         .btn-canjear:disabled {
-            background-color: var(--color-principal) !important;
+            background-color: var(--color-secundario) !important;
             color: white;
             cursor: not-allowed;
             font-weight: bold;
@@ -497,69 +729,63 @@
             padding-bottom: 10px;
         }
 
-        /* === ESTILOS MODIFICADOS PARA ICONOS DE REDES SOCIALES === */
         .social-links a {
-            font-size: 2.5em;
-            /* Iconos más grandes */
+            font-size: 2.2em;
             margin: 0 15px;
             transition: transform 0.3s, color 0.3s;
+            color: var(--color-texto);
         }
 
         .social-links a:hover {
             transform: scale(1.1);
-            /* Efecto de acercamiento al pasar el ratón */
-        }
-
-        /* Colores específicos para cada red social */
-        .fa-facebook-square {
-            color: #3b5998;
-            /* Azul de Facebook */
+            color: var(--color-principal);
         }
 
         .fa-instagram {
-            /* Degradado de Instagram */
             background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .fa-whatsapp {
-            color: #25d366;
-            /* Verde de WhatsApp */
-        }
-
-        /* ======================================================== */
-
-        /* --- MODALES --- */
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 200;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.6);
             padding-top: 60px;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
         }
 
-        /* Estilos para el modal de Bienvenida */
+        .modal-content {
+            background-color: var(--color-blanco);
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid var(--color-border);
+            width: 90%;
+            max-width: 450px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--color-principal);
+        }
+
         #welcome-modal .modal-content {
-            border: 5px solid var(--color-lealtad);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-        }
-
-        #welcome-modal .modal-content h2 {
-            color: var(--color-lealtad);
-            border-bottom: 2px solid var(--color-secundario);
-            padding-bottom: 10px;
+            border-top: 5px solid var(--color-principal);
         }
 
         .btn-facebook-link {
             background-color: #3b5998;
-            /* Azul de Facebook */
-            color: white;
+            color: var(--color-blanco);
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -568,66 +794,36 @@
             max-width: 300px;
             margin-top: 15px;
             text-decoration: none;
-            /* Asegura que no tenga subrayado */
             display: inline-block;
         }
 
-        /* Estilo para el modal de advertencia */
-        #security-warning-modal {
-            background-color: transparent;
-            z-index: 150;
-            padding-top: 10%;
-        }
-
         #security-warning-modal .modal-content {
-            background-color: white;
-            color: var(--color-principal);
-            border: 3px solid var(--color-secundario);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-top: 5px solid var(--color-secundario);
         }
 
         #security-warning-modal .modal-content h2 {
-            color: #d32f2f;
-            /* Rojo para la advertencia */
-        }
-
-        #security-warning-modal .modal-content button {
-            background-color: var(--color-secundario);
-            margin-top: 20px;
-        }
-
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 30px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 400px;
-            border-radius: 10px;
-            text-align: center;
+            color: var(--color-secundario);
         }
 
         .modal-content input[type=text],
         .modal-content input[type=password] {
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
             width: 90%;
-            border: 2px solid var(--color-lealtad);
+            border: 2px solid var(--color-border);
             border-radius: 5px;
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1.1em;
             box-sizing: border-box;
         }
 
-        .modal-content button {
-            background-color: var(--color-lealtad);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
+        .modal-content input[type=text]:focus,
+        .modal-content input[type=password]:focus {
+            border-color: var(--color-principal);
+            outline: none;
+        }
+
+        .modal-content .btn {
             width: 90%;
             max-width: 300px;
         }
@@ -635,19 +831,26 @@
         .close-btn {
             float: right;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 28px;
+            color: #aaa;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--color-secundario);
         }
 
         footer {
             margin-top: 30px;
-            padding: 15px;
-            background-color: #333;
-            color: white;
+            padding: 20px;
+            background-color: var(--color-blanco);
+            color: #6c757d;
             font-size: 0.9em;
+            border-top: 1px solid var(--color-border);
         }
 
         footer a {
-            color: white;
+            color: var(--color-principal);
             text-decoration: none;
             font-weight: bold;
         }
@@ -656,100 +859,6 @@
             text-decoration: underline;
         }
 
-        /* === ESTILO PARA BOTÓN CERRAR SESIÓN ROJO === */
-        .btn-logout {
-            background-color: #dc3545;
-            /* Rojo de Bootstrap */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 30px;
-            /* Para separarlo de los premios */
-            transition: background-color 0.3s;
-            width: 100%;
-            /* Ocupa todo el ancho disponible */
-            box-sizing: border-box;
-        }
-
-        .btn-logout:hover {
-            background-color: #c82333;
-            /* Rojo más oscuro al pasar el ratón */
-        }
-
-        /* === ESTILOS PARA LA TARJETA DE ESTADÍSTICAS Y BOTONES (NUEVOS) === */
-        #stats-card {
-            background-color: #f0f0f0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 1px solid #ccc;
-        }
-
-        .stats-buttons {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-        }
-
-        .stat-button {
-            flex: 1;
-            padding: 15px 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-            transition: opacity 0.3s;
-        }
-
-        .stat-button:hover {
-            opacity: 0.9;
-        }
-
-        .stat-button .stat-value {
-            font-size: 1.8em;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        #btn-scans {
-            background-color: var(--color-lealtad);
-            /* Verde */
-        }
-
-        #btn-redeems {
-            background-color: var(--color-secundario);
-            /* Naranja */
-        }
-
-        /* Estilo para el botón Acomular */
-        #btn-acumular {
-            background-color: var(--color-principal);
-            /* Azul */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 15px;
-            transition: background-color 0.3s;
-            width: 90%;
-            max-width: 300px;
-        }
-
-        #btn-acumular:hover {
-            background-color: #0056b3;
-            /* Azul más oscuro */
-        }
-
-        /* Estilo específico para el modal de historial */
         .history-modal-content {
             max-width: 600px;
             max-height: 80vh;
@@ -758,8 +867,6 @@
 
         .history-modal-content h2 {
             color: var(--color-principal);
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
         }
 
         .history-list-popup {
@@ -769,8 +876,8 @@
         }
 
         .history-list-popup li {
-            padding: 8px 0;
-            border-bottom: 1px dotted #ccc;
+            padding: 10px;
+            border-bottom: 1px dotted var(--color-border);
             font-size: 0.95em;
         }
 
@@ -779,114 +886,163 @@
         }
 
         .scan-item {
-            color: var(--color-lealtad);
-            /* Verde */
+            color: var(--color-principal);
         }
 
         .redeem-item {
             color: var(--color-secundario);
-            /* Naranja */
         }
 
         .streak-item {
-            color: var(--color-racha);
-            /* Rosa de Racha */
+            color: #e91e63;
         }
 
-        /* ======================================================== */
+        #referral-modal .modal-content h2 {
+            color: #17a2b8;
+        }
+
+        #referral-link {
+            display: block;
+            width: 90%;
+            margin: 15px auto;
+            padding: 10px;
+            border: 2px dashed var(--color-principal);
+            background-color: var(--color-fondo);
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+
+        .notification-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .notification-list li {
+            padding: 12px;
+            background-color: var(--color-fondo);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--color-principal);
+        }
+
+        .notification-list li strong {
+            display: block;
+            color: var(--color-texto);
+        }
+
+        .notification-list li span {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        #no-notifications {
+            color: #6c757d;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body onscroll="scrollFunction()">
 
+    <!-- Barra de Login V6 -->
     <div id="login-nav-bar">
-        <span class="neon-text">Revolution Wax Formula Premium</span>
+        <div class="nav-logo">
+            <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logo">
+        </div>
+        <div class="nav-links"></div>
     </div>
 
-    <div id="nav-bar" style="display: none;">
+    <!-- Barra de Navegación (Logueado) -->
+    <div id="nav-bar">
         <div class="nav-logo">
             <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logo">
         </div>
         <div class="nav-links">
             <a href="#" onclick="topFunction(); return false;">Inicio</a>
-
             <div class="dropdown">
-                <button class="dropdown-btn" onclick="toggleDropdown(this)">Premios <i
-                        class="fas fa-caret-down"></i></button>
-                <div class="dropdown-content" id="premios-dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown(this)">
+                    Premios <i class="fas fa-caret-down" style="font-size: 0.8em;"></i>
+                </button>
+                <div class="dropdown-content" id="premios-dropdown-content">
                 </div>
             </div>
-
-            <a href="#" onclick="scrollToContact(); return false;">Contacto</a>
+            <button class="nav-icon-btn" onclick="openNotificationsModal()" title="Notificaciones">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge"></span>
+            </button>
+            <div class="dropdown">
+                <button class="nav-icon-btn" onclick="toggleDropdown(this)" title="Mi Perfil">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+                <div class="dropdown-content" id="user-dropdown-content">
+                    <div class="user-dropdown-header">
+                        <span id="user-display-nav">Cargando...</span>
+                        <span id="user-tier-nav" class="tier-bronze">Nivel Bronce</span>
+                    </div>
+                    <a href="#" onclick="openHistoryModal('scan')"><i class="fas fa-history"
+                            style="width: 20px; margin-right: 5px;"></i> Mi Historial</a>
+                    <a href="#" onclick="openReferralModal()"><i class="fas fa-users"
+                            style="width: 20px; margin-right: 5px;"></i> Referir Amigo</a>
+                    <a href="#" onclick="logout()" class="user-dropdown-logout">
+                        <i class="fas fa-sign-out-alt" style="width: 20px; margin-right: 5px;"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+
 
     <div class="contenedor">
 
         <h1 id="main-title">🏁 Revolution Wax 🏁</h1>
 
+        <!-- Sección de Login V6 -->
         <div id="login-section">
-
-            <div class="logo-container">
-                <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logotipo de la Empresa">
-            </div>
-
-            <h2>Iniciar Sesión</h2>
-
+            <h2>Bienvenido de Nuevo</h2>
+            <p class="login-subtitle">Ingresa tus credenciales para acceder a tus puntos.</p>
             <form id="login-form">
-                <label for="username"><b>Usuario</b></label>
-                <input type="text" placeholder="Ingresa Usuario" name="username" id="username" required>
-
-                <label for="psw"><b>Contraseña</b></label>
-                <input type="password" placeholder="Ingresa Contraseña" name="psw" id="psw" required>
-
-                <button type="submit" class="btn-login">Iniciar Sesión</button>
-
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" placeholder="Ingresa Usuario" name="username" id="username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="Ingresa Contraseña" name="psw" id="psw" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
                 <p id="login-error" style="color:red; text-align:center;"></p>
             </form>
-
-            <button class="btn-create" onclick="document.getElementById('security-warning-modal').style.display='block'">Crear
-                Usuario</button>
-            <button class="btn-link"
-                onclick="document.getElementById('forgot-password-modal').style.display='block'">¿Olvidaste
-                contraseña?</button>
-
+            <div class="login-links">
+                <button class="btn-link"
+                    onclick="document.getElementById('forgot-password-modal').style.display='block'">
+                    ¿Olvidaste contraseña?
+                </button>
+                <button class="btn-link"
+                    onclick="document.getElementById('security-warning-modal').style.display='block'">
+                    <strong>Crear cuenta</strong>
+                </button>
+            </div>
             <div id="apk-download-container">
-                <p style="font-weight: bold; margin-bottom: 10px;">
-                    <img src="https://i.postimg.cc/vZyRpJjq/unnamed.png" alt="Logo Android">
-                    ¡Descarga nuestra App Oficial! (Solo Android)
-                </p>
                 <a href="https://www.mediafire.com/file/qlelmqbxrttba8o/RevolutionWaxPremios.apk/file" download
                     class="btn-download-apk" title="Descargar APK de la aplicación">
-                    Descargar APK
+                    <i class="fab fa-android"></i> Descargar App (Android)
                 </a>
-
             </div>
         </div>
 
+        <!-- Sección de Lealtad -->
         <div id="lealtad-section">
-            <p>Bienvenido, <strong id="user-display"></strong></p>
-
-            <div style="background-color: #e8f5e9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                <h2>Mi Saldo de Puntos</h2>
-                <span id="puntos-actuales">0 Puntos</span>
-
-                <h2>Escanea para Sumar Puntos</h2>
-                <p style="font-weight: bold;
-                color: #d32f2f;">
-                    👉 INSTRUCCIONES: Escanea este QR solo para "Navegador y Iphone" o haz clic en el botón "Acomular"
-                    si tienes la aplicación instalada en Android.
-                </p>
-
-                <div id="qr-code"></div>
-
-                <button id="btn-acumular" onclick="openAcumularModal()">
-                    Acomular (Aplicación)
-                </button>
-
-                <p id="qr-info" style="font-size: 0.8em; color: #777; display: none;"></p>
-                
-                <div id="daily-streak-card">
-                    <h2>🔥 Racha Diaria 🔥</h2>
+            <p style="font-size: 1.2em;">Resumen de tu cuenta</p>
+            <div id="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Mi Saldo <i class="fas fa-wallet card-icon"></i></h3>
+                    <span id="puntos-actuales">0</span>
+                    <small>Puntos Disponibles</small>
+                    <span id="user-tier" class="tier-bronze">🥉 Nivel Bronce</span>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Racha Diaria <i class="fas fa-fire card-icon" style="color: var(--color-secundario);"></i></h3>
                     <p class="streak-info">Día consecutivo: <span class="streak-value" id="current-streak">0</span></p>
                     <p class="streak-info">Puntos a ganar hoy: <span class="streak-value"
                             id="points-to-win">0</span></p>
@@ -896,31 +1052,45 @@
                     <span id="streak-cooldown-timer" class="cooldown-text" style="display: none;">Siguiente Canje
                         en:</span>
                 </div>
+                <div class="dashboard-card">
+                    <h3>Mi Historial <i class="fas fa-history card-icon"></i></h3>
+                    <div class="stats-buttons">
+                        <button id="btn-scans" class="stat-button" onclick="openHistoryModal('scan')">
+                            <span class="stat-value" id="total-scans">0</span>
+                            <span>Puntos Acumulados</span>
+                        </button>
+                        <button id="btn-redeems" class="stat-button" onclick="openHistoryModal('redeem')">
+                            <span class="stat-value" id="total-redeems">0</span>
+                            <span>Regalos Canjeados</span>
+                        </button>
+                    </div>
                 </div>
-
-            <h2 id="premios-section-title">🎁 Catálogo de Premios</h2>
-            <div id="catalogo-premios"></div>
-
-            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
-
-            <div id="stats-card">
-                <p style="font-weight: bold; margin-bottom: 15px; color: var(--color-negro);">Historial y Estadísticas
-                    Rápidas:</p>
-                <div class="stats-buttons">
-                    <button id="btn-scans" class="stat-button" onclick="openHistoryModal('scan')">
-                        <span class="stat-value" id="total-scans">0</span>
-                        <span>Escaneos Realizados</span>
+            </div>
+            <div id="acumular-section">
+                <h2>Acumula Puntos</h2>
+                <p style="font-weight: bold; color: var(--color-texto);">
+                    👉 Escanea este QR (Navegador/iPhone) o usa los botones de acción (App Android).
+                </p>
+                <div id="qr-code"></div>
+                <p id="qr-info" style="font-size: 0.8em; color: #777; display: none;"></p>
+                <div id="quick-actions-buttons">
+                    <button id="btn-acumular" class="btn-action" onclick="openAcumularModal()">
+                        <i class="fas fa-keyboard"></i> Ingresar Código
                     </button>
-                    <button id="btn-redeems" class="stat-button" onclick="openHistoryModal('redeem')">
-                        <span class="stat-value" id="total-redeems">0</span>
-                        <span>Regalos Canjeados</span>
+                    <button id="btn-referir" class="btn-action btn-action-refer" onclick="openReferralModal()">
+                        <i class="fas fa-users"></i> Referir Amigo
                     </button>
                 </div>
             </div>
+            <h2 id="premios-section-title"
+                style="color: var(--color-principal); border-bottom: 2px solid var(--color-border); padding-bottom: 10px; margin-top: 40px;">
+                🎁 Catálogo de Premios
+            </h2>
+            <div id="catalogo-premios"></div>
         </div>
-
     </div>
 
+    <!-- Contacto -->
     <div class="social-links" id="contacto-redes">
         <p style="font-weight: bold;">Síguenos y contáctanos:</p>
         <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" title="Visita nuestro Facebook">
@@ -934,6 +1104,7 @@
         </a>
     </div>
 
+    <!-- Modales -->
     <div id="history-modal" class="modal">
         <div class="modal-content history-modal-content">
             <span class="close-btn"
@@ -942,7 +1113,7 @@
             <ul id="history-list-popup" class="history-list-popup">
                 <li>Cargando historial...</li>
             </ul>
-            <button style="background-color: var(--color-principal);"
+            <button class="btn btn-primary"
                 onclick="document.getElementById('history-modal').style.display='none'">Cerrar</button>
         </div>
     </div>
@@ -952,35 +1123,29 @@
                 onclick="document.getElementById('welcome-modal').style.display='none'">&times;</span>
             <h2>¡Bienvenido al Programa de Lealtad!</h2>
             <p style="font-size: 1.1em; margin-bottom: 20px;">
-                Esta es tu aplicación de lealtad. Con ella, todas tus compras acumularán puntos que podrás canjear por
-                increíbles premios exclusivos 🎁.
+                Todas tus compras acumularán puntos que podrás canjear por increíbles premios exclusivos 🎁.
             </p>
-
             <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" class="btn-facebook-link">
                 <i class="fab fa-facebook-f"></i> Síguenos en Facebook
             </a>
         </div>
     </div>
-
     <div id="security-warning-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn"
                 onclick="document.getElementById('security-warning-modal').style.display='none'">&times;</span>
             <h2>⚠️ ¡ALERTA DE SEGURIDAD! ⚠️</h2>
-            <p style="font-size: 1.1em; font-weight: bold; color: var(--color-negro);">
+            <p style="font-size: 1.1em; font-weight: bold; color: var(--color-texto);">
                 Para proteger tus puntos de lealtad, NUNCA compartas tu usuario, contraseña o correo electrónico con
                 nadie.
-                <br><br>
-                Nosotros nunca te los solicitaremos por canales no oficiales.
             </p>
-            <button
+            <button class="btn btn-primary"
                 onclick="document.getElementById('security-warning-modal').style.display='none'; document.getElementById('create-user-modal').style.display='block'">Entendido,
                 continuar a Registro</button>
-            <button style="background-color: #6c757d;"
+            <button class="btn btn-grey"
                 onclick="document.getElementById('security-warning-modal').style.display='none'">Cancelar</button>
         </div>
     </div>
-
     <div id="redemption-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn"
@@ -988,41 +1153,37 @@
             <h2>¡Escaneo Detectado!</h2>
             <p>Para sumar puntos a tu cuenta, ingresa el código de canje proporcionado:</p>
             <input type="text" id="redemption-code" placeholder="Código de Puntos" maxlength="9">
-            <button onclick="procesarCanjeQR()">Confirmar Código</button>
-            <p id="modal-message" style="color:red; margin-top:10px;"></p>
+            <button class="btn btn-primary" onclick="procesarCanjeQR()">Confirmar Código</button>
+            <p id="modal-message" style="color:var(--color-secundario); margin-top:10px;"></p>
         </div>
     </div>
-
     <div id="acumular-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn"
                 onclick="document.getElementById('acumular-modal').style.display='none'">&times;</span>
-            <h2>Acomular Puntos (Código)</h2>
-            <p>Ingresa tu código de canje o código secreto para sumar puntos: el código de canje lo colocara el promotor
-                de servicios</p>
+            <h2>Ingresar Código de Puntos</h2>
+            <p>Ingresa tu código de canje o código secreto para sumar puntos:</p>
             <input type="text" id="secret-code" placeholder="Código Secreto/Canje" maxlength="9">
-            <button onclick="procesarCodigoSecreto()">Acomular Puntos</button>
-            <p id="acumular-modal-message" style="color:red; margin-top:10px;"></p>
+            <button class="btn btn-primary" onclick="procesarCodigoSecreto()">Acumular Puntos</button>
+            <p id="acumular-modal-message" style="color:var(--color-secundario); margin-top:10px;"></p>
         </div>
     </div>
-
-
     <div id="create-user-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn"
                 onclick="document.getElementById('create-user-modal').style.display='none'">&times;</span>
             <h2>Crear Nueva Cuenta / Contacto</h2>
-            <p>Envía un mensaje a WhatsApp para solicitar tu registro o contactar al administrador:</p>
+            <p>Envía un mensaje a WhatsApp para solicitar tu registro:</p>
             <form id="create-user-form">
                 <input type="text" placeholder="Correo Electrónico" id="new-email" required>
                 <input type="text" placeholder="Usuario" id="new-username" required>
                 <input type="password" placeholder="Contraseña" id="new-psw" required>
-                <button type="button" onclick="crearUsuarioWhatsapp()">Enviar Solicitud / Contactar</button>
+                <button typea="button" class="btn btn-primary" onclick="crearUsuarioWhatsapp()">Enviar Solicitud /
+                    Contactar</button>
             </form>
             <p id="create-message" style="color:green; margin-top:10px;"></p>
         </div>
     </div>
-
     <div id="forgot-password-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn"
@@ -1030,16 +1191,42 @@
             <h2>Recuperar Contraseña</h2>
             <input type="text" placeholder="Correo Electrónico" id="recover-email" required>
             <input type="text" placeholder="Usuario" id="recover-username" required>
-            <button onclick="recuperarContrasena()">Mostrar Contraseña</button>
+            <button class="btn btn-primary" onclick="recuperarContrasena()">Mostrar Contraseña</button>
             <p id="recover-message" style="margin-top:10px;"></p>
         </div>
     </div>
+    <div id="referral-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('referral-modal').style.display='none'">&times;</span>
+            <h2><i class="fas fa-users"></i> Referir un Amigo</h2>
+            <p>¡Comparte tu enlace de referido! Si un amigo se registra, ¡ambos ganan <strong>50 puntos
+                    extra</strong>!</p>
+            <p>(Esta es una función de demostración)</p>
+            <span id="referral-link">.../app.html?ref=12345</span>
+            <button class="btn btn-primary"
+                onclick="document.getElementById('referral-modal').style.display='none'">Cerrar</button>
+        </div>
+    </div>
+    <div id="notifications-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('notifications-modal').style.display='none'">&times;</span>
+            <h2><i class="fas fa-bell"></i> Notificaciones</h2>
+            <ul class="notification-list" id="notification-list-dynamic">
+                <!-- Los <li> se generarán aquí -->
+                <li id="no-notifications" style="display: none;">No tienes notificaciones nuevas.</li>
+            </ul>
+            <button class="btn btn-primary"
+                onclick="document.getElementById('notifications-modal').style.display='none'">Cerrar</button>
+        </div>
+    </div>
 
+    <!-- Footer -->
     <footer>
         &copy; 2025 Revolution Wax Premios. Todos los derechos reservados.<br>
         Creador de la página: <a href="mailto: mrandroidtutorialeshd@gmail.com">Juan Zamora</a>
     </footer>
-
     <button onclick="topFunction()" id="scrollToTopBtn" title="Ir arriba">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -1049,119 +1236,126 @@
         const CLAVE_ALMACENAMIENTO_USUARIOS = 'puntosUsuariosLealtad';
         const CLAVE_USUARIO_ACTIVO = 'usuarioActivo';
         const CLAVE_CANJES_PREMIOS = 'canjesPremios';
-        // CLAVES PARA EL HISTORIAL Y CONTADORES
         const CLAVE_LOG_SCANS = 'logScans';
         const CLAVE_LOG_REDEEMS = 'logRedeems';
         const CLAVE_HISTORIAL = 'movimientoHistory';
-
-        // CLAVES PARA LA RACHA DIARIA (NUEVO)
-        const CLAVE_RACHA_INFO = 'rachaDiariaInfo'; // { lastClaim: timestamp, streakCount: 0 }
-        const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 horas
-
-        const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000;
-
-        // Se añade un objeto para rastrear si un código ya fue usado por CUALQUIER USUARIO (para códigos secretos de un solo uso).
+        const CLAVE_RACHA_INFO = 'rachaDiariaInfo';
         const CLAVE_CODIGOS_USADOS = 'codigosUsados';
-
+        const CLAVE_NOTIFICACIONES = 'revolutionWaxNotifications'; // Clave para notificaciones
+        const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+        const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000;
+        const NIVELES = [
+            { nombre: "Bronce", puntos: 0, icono: "🥉", clase: "tier-bronze" },
+            { nombre: "Plata", puntos: 500, icono: "🥈", clase: "tier-silver" },
+            { nombre: "Oro", puntos: 2000, icono: "🥇", clase: "tier-gold" },
+            { nombre: "Diamante", puntos: 5000, icono: "💎", clase: "tier-diamond" }
+        ];
+        function getTier(points) {
+            for (let i = NIVELES.length - 1; i >= 0; i--) {
+                if (points >= NIVELES[i].puntos) {
+                    return NIVELES[i];
+                }
+            }
+            return NIVELES[0];
+        }
         const CODIGOS_DE_CANJE = {
-            // Códigos de Escaneo QR (se supone que son reutilizables con restricción de tiempo/sesión)
-            "10019950": 50,
-            "100199100": 100,
-            "100199200": 200,
-            "10019900": 10000,
-
-            // ** Códigos Secretos de UN SOLO USO (ejemplo) **
-            "SECRETO100": 100,
-            "PREMIUM500": 500,
-            "SUPER1000": 1000
+            "10019950": 50, "100199100": 100, "100199200": 200, "10019900": 10000,
+            "SECRETO100": 100, "PREMIUM500": 500, "SUPER1000": 1000
         };
-
-        // ** USUARIOS DE PRUEBA **
         const USUARIOS_VALIDOS = {
             "juanzamora": { psw: "prueba", email: "mrandroidtutorialeshd@gmail.com" },
             "prueba1": { psw: "prueba1", email: "escuela100198@gmail.com" },
             "tprueba2": { psw: "prueba2", email: "juanzamora2025a@gmail.com" }
         };
-        const WHATSAPP_NUMBER = "5217719624236"; // Número de WhatsApp para solicitudes de premio
+        const WHATSAPP_NUMBER = "5217719624236";
 
-        // --- CATÁLOGO DE PREMIOS POR CATEGORÍA ---
+        // --- Catálogo de Premios ---
         const categoriasPremios = {
             "Aceites": [
-                { id: 1, nombre: "Aditivo de Combustible", costo: 165, descripcion: "Potencia tu motor, maximiza tu rendimiento. Nuestro aditivo de gasolina elimina impurezas, reduce el consumo y prolonga la vida útil de tu motor. ¡Protege tu inversión, optimiza tu viaje!.", imagen: "https://i.postimg.cc/mDHF11wQ/tom7sc2i4a2gzq0hljda.jpg" },
-                { id: 2, nombre: "Limpiador Inyectores", costo: 187, descripcion: "Restaura la potencia de tu motor. Nuestro limpiador de inyectores elimina depósitos y suciedad, mejorando el rendimiento y reduciendo el consumo de combustible.", imagen: "https://i.postimg.cc/wMyJJgCj/56521585-800-auto.jpg" },
-
-                { id: 3, nombre: "Anticongelante 33%", costo: 200, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/T3X3xgcW/162832-d.jpg" },
-                { id: 4, nombre: "Líquido de Frenos", costo: 175, descripcion: "Frena con confianza. Líquido de frenos de alta performance, garantiza una frenada segura y eficiente en cualquier condición.", imagen: "https://i.postimg.cc/gJYfn3dv/images-6.jpg" },
-                { id: 5, nombre: "Limpia Parabrisas", costo: 160, descripcion: "Visión clara, conducción segura. Nuestro líquido limpia parabrisas elimina la suciedad y el agua para una visibilidad perfecta en cualquier clima.", imagen: "https://i.postimg.cc/tRvL41c2/149425-d.jpg" },
-                { id: 6, nombre: "Dirección Hidráulica", costo: 150, descripcion: "Dirige con suavidad y precisión. Nuestro líquido de dirección hidráulica lubrica y protege el sistema, garantizando una conducción suave y segura.", imagen: "https://i.postimg.cc/Y00ZxkvP/177506-d.jpg" },
-                { id: 7, nombre: "Anticongelante Rosa 50%", costo: 290, descripcion: "Protege tu motor del frío y la corrosión. Nuestro anticongelante de alta calidad garantiza un rendimiento óptimo y prolonga la vida útil de tu vehículo.", imagen: "https://i.postimg.cc/G3KpRH5D/images-7.jpg" },
+                { id: 1, nombre: "Aditivo de Combustible", costo: 165, descripcion: "Potencia tu motor...", imagen: "https://i.postimg.cc/mDHF11wQ/tom7sc2i4a2gzq0hljda.jpg" },
+                { id: 2, nombre: "Limpiador Inyectores", costo: 187, descripcion: "Restaura la potencia...", imagen: "https://i.postimg.cc/wMyJJgCj/56521585-800-auto.jpg" },
+                { id: 3, nombre: "Anticongelante 33%", costo: 200, descripcion: "Protege tu motor...", imagen: "https://i.postimg.cc/T3X3xgcW/162832-d.jpg" },
+                { id: 4, nombre: "Líquido de Frenos", costo: 175, descripcion: "Frena con confianza...", imagen: "https://i.postimg.cc/gJYfn3dv/images-6.jpg" },
+                { id: 5, nombre: "Limpia Parabrisas", costo: 160, descripcion: "Visión clara...", imagen: "https://i.postimg.cc/tRvL41c2/149425-d.jpg" },
+                { id: 6, nombre: "Dirección Hidráulica", costo: 150, descripcion: "Dirige con suavidad...", imagen: "https://i.postimg.cc/Y00ZxkvP/177506-d.jpg" },
+                { id: 7, nombre: "Anticongelante Rosa 50%", costo: 290, descripcion: "Protege tu motor...", imagen: "https://i.postimg.cc/G3KpRH5D/images-7.jpg" },
             ],
             "Gasolina": [
-                { id: 8, nombre: "Vale de $50 MXN", costo: 250, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/CL9FQrHQ/1761284472934.png" },
-                { id: 9, nombre: "Vale de $100", costo: 450, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/ZKWbjz3Y/1761284392265.png" },
-                { id: 10, nombre: "Vale de $200", costo: 800, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/bvhqzG5n/1761284478157.png" },
-                { id: 11, nombre: "Vale de $500", costo: 1750, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/3Rr7vs7f/1761284484288.png" },
-                { id: 12, nombre: "Vale de $1,000", costo: 4000, descripcion: "Aplicable en cualquier compra únicamente en gasolineras participantes.", imagen: "https://i.postimg.cc/Y9X7fdCz/1761284573266.png" }
+                { id: 8, nombre: "Vale de $50 MXN", costo: 250, descripcion: "Aplicable en gasolineras...", imagen: "https://i.postimg.cc/CL9FQrHQ/1761284472934.png" },
+                { id: 9, nombre: "Vale de $100", costo: 450, descripcion: "Aplicable en gasolineras...", imagen: "https://i.postimg.cc/ZKWbjz3Y/1761284392265.png" },
+                { id: 10, nombre: "Vale de $200", costo: 800, descripcion: "Aplicable en gasolineras...", imagen: "https://i.postimg.cc/bvhqzG5n/1761284478157.png" },
+                { id: 11, nombre: "Vale de $500", costo: 1750, descripcion: "Aplicable en gasolineras...", imagen: "https://i.postimg.cc/3Rr7vs7f/1761284484288.png" },
+                { id: 12, nombre: "Vale de $1,000", costo: 4000, descripcion: "Aplicable en gasolineras...", imagen: "https://i.postimg.cc/Y9X7fdCz/1761284573266.png" }
             ],
             "Revolution Wax": [
-                { id: 13, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
-                { id: 14, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase con 1Litro de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" },
-                { id: 15, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Frutal 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
-                { id: 16, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envase con 1Litro c/u de cera Revolution Wax aroma Fresas 5 en 1 para lavar en seco con cera de carnauba y para un brillo instantáneo.", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" }
+                { id: 13, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase 1Litro aroma Frutal...", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
+                { id: 14, nombre: "Fórmula Premium", costo: 300, descripcion: "1 Envase 1Litro aroma Fresas...", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" },
+                { id: 15, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envases 1Litro c/u Frutal...", imagen: "https://i.postimg.cc/9MqPGQV3/D-NQ-NP-827300-MLM92390346690-092025-O-2-revolution-wax-formula-premium-para-lavar-auto-en-seco-1l.webp" },
+                { id: 16, nombre: "Fórmula Premium", costo: 550, descripcion: "2 Envases 1Litro c/u Fresas...", imagen: "https://i.postimg.cc/Y2Yf00bg/D-NQ-NP-834678-MLM92797513859-092025-O-2-revolution-wax-aroma-fresa-formula-lavado-en-seco-1-litro.webp" }
             ],
             "Streaming": [
-                { id: 17, nombre: "YouTube 1 mes", costo: 150, descripcion: "Una suscripción de 30 días a un servicio de streaming de video.", imagen: "https://i.postimg.cc/zB0GJwWL/1760066881281.png" },
-                { id: 18, nombre: "Canva Pro 1 mes", costo: 100, descripcion: "Una suscripción de 30 días a un servicio de Canva Pro.", imagen: "https://i.postimg.cc/RV1yyHph/1760068345205.png" },
-                { id: 19, nombre: "Netflix 1 mes", costo: 300, descripcion: "Una suscripción de 30 días a un servicio de Netflix Premium HD 4K.", imagen: "https://i.postimg.cc/02xKPTnw/1760045732343.png" },
-                { id: 20, nombre: "Disney 1 mes", costo: 200, descripcion: "Una suscripción de 30 días a un servicio de Disney Premium.", imagen: "https://i.postimg.cc/K81G2f6f/1760048661295.png" }
+                { id: 17, nombre: "YouTube 1 mes", costo: 150, descripcion: "Suscripción 30 días...", imagen: "https://i.postimg.cc/zB0GJwWL/1760066881281.png" },
+                { id: 18, nombre: "Canva Pro 1 mes", costo: 100, descripcion: "Suscripción 30 días...", imagen: "https://i.postimg.cc/RV1yyHph/1760068345205.png" },
+                { id: 19, nombre: "Netflix 1 mes", costo: 300, descripcion: "Suscripción 30 días...", imagen: "https://i.postimg.cc/02xKPTnw/1760045732343.png" },
+                { id: 20, nombre: "Disney 1 mes", costo: 200, descripcion: "Suscripción 30 días...", imagen: "https://i.postimg.cc/K81G2f6f/1760048661295.png" }
             ],
             "Lavado y Encerado": [
-                { id: 21, nombre: "Lavado Exterior + Cera", costo: 135, descripcion: "Servicio de lavado completo con aplicación de cera de carnauba.", imagen: "https://i.postimg.cc/Wz4Zw1T4/1761305072860.png" }
+                { id: 21, nombre: "Lavado Exterior + Cera", costo: 135, descripcion: "Servicio completo con cera...", imagen: "https://i.postimg.cc/Wz4Zw1T4/1761305072860.png" }
             ],
             "Sorpresa": [
-                { id: 22, nombre: "Producto Sorpresa VIP", costo: 4000, descripcion: "Un regalo exclusivo por ser un cliente fiel.", imagen: "https://i.postimg.cc/YS5kxn7r/1761305366994.png" }
+                { id: 22, nombre: "Producto Sorpresa VIP", costo: 4000, descripcion: "Regalo exclusivo...", imagen: "https://i.postimg.cc/YS5kxn7r/1761305366994.png" }
             ]
         };
-
+        
         const catalogoPremios = Object.values(categoriasPremios).flat();
-
-
+        
         let usuarioLogueado = null;
         let usuarioLogueadoUsername = null;
         let puntosUsuario = 0;
         let usuarioEscaneado = null;
         let canjeTimerIntervals = {};
-        let streakTimerInterval = null; // Nuevo intervalo para la racha
+        let streakTimerInterval = null;
 
-        // --- FUNCIONES DE SCROLL Y NAVEGACIÓN (Se mantienen) ---
-
+        // --- FUNCIONES DE SCROLL Y NAVEGACIÓN ---
         function scrollFunction() {
             const btn = document.getElementById("scrollToTopBtn");
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                btn.style.display = "block";
-            } else {
-                btn.style.display = "none";
-            }
+            btn.style.display = (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) ? "block" : "none";
         }
-
-        function topFunction() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
+        function topFunction() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
         function scrollToContact() {
             window.scrollTo({
                 top: document.getElementById('contacto-redes').offsetTop - 50,
                 behavior: 'smooth'
             });
         }
-
-        function toggleDropdown(button) {
-            const dropdown = document.getElementById('premios-dropdown');
-            dropdown.classList.toggle('show');
+        function toggleDropdown(buttonElement) {
+            const dropdownContent = buttonElement.nextElementSibling;
+            closeAllDropdowns(dropdownContent); 
+            if (dropdownContent) {
+                dropdownContent.classList.toggle('show');
+            }
         }
+        function closeAllDropdowns(exceptThisOne = null) {
+            const dropdowns = document.getElementsByClassName('dropdown-content');
+            for (let i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i] !== exceptThisOne) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+        window.onclick = function (event) {
+            const isDropdownButton = event.target.closest('.dropdown-btn');
+            const isIconButton = event.target.closest('.nav-icon-btn');
+            const isDropdownLink = event.target.closest('.dropdown-content a');
 
+            if (!isDropdownButton && !isIconButton && !isDropdownLink) {
+                if (!event.target.closest('.dropdown-content')) {
+                    closeAllDropdowns();
+                }
+            }
+        }
         function scrollToCategory(categoryName) {
-            document.getElementById('premios-dropdown').classList.remove('show');
+            closeAllDropdowns();
             const categoryId = `cat-${categoryName.replace(/\s/g, '-')}`;
             const targetElement = document.getElementById(categoryId);
             if (targetElement) {
@@ -1173,9 +1367,8 @@
                 });
             }
         }
-
         function renderDropdownCategories() {
-            const dropdown = document.getElementById('premios-dropdown');
+            const dropdown = document.getElementById('premios-dropdown-content');
             dropdown.innerHTML = '';
             for (const categoria in categoriasPremios) {
                 const categoryLink = document.createElement('a');
@@ -1185,367 +1378,124 @@
             }
         }
 
-        // --- MANEJO DE PUNTOS, CANJES Y HISTORIAL (Modificado: añadido load/save de códigos usados y racha) ---
-
-        // FUNCIONES DE ESTADÍSTICAS
+        // --- MANEJO DE PUNTOS, CANJES Y HISTORIAL (Sin cambios) ---
         function loadStats(key) {
-            try {
-                const data = localStorage.getItem(key);
-                return data ? JSON.parse(data) : {};
-            } catch (e) {
-                return {};
-            }
+            try { const data = localStorage.getItem(key); return data ? JSON.parse(data) : {}; } catch (e) { return {}; }
         }
-
         function saveStat(key, userEmail, value) {
-            const allStats = loadStats(key);
-            allStats[userEmail] = value;
-            localStorage.setItem(key, JSON.stringify(allStats));
+            const allStats = loadStats(key); allStats[userEmail] = value; localStorage.setItem(key, JSON.stringify(allStats));
         }
-
         function getStatValue(key, userEmail) {
-            const allStats = loadStats(key);
-            return allStats[userEmail] || 0;
+            const allStats = loadStats(key); return allStats[userEmail] || 0;
         }
-
         function incrementStat(key, userEmail) {
-            const currentValue = getStatValue(key, userEmail);
-            saveStat(key, userEmail, currentValue + 1);
-            return currentValue + 1;
+            const currentValue = getStatValue(key, userEmail); saveStat(key, userEmail, currentValue + 1); return currentValue + 1;
         }
-
-        // FUNCIONES DE CÓDIGOS DE UN SOLO USO
         function cargarCodigosUsados() {
-            try {
-                const data = localStorage.getItem(CLAVE_CODIGOS_USADOS);
-                return data ? new Set(JSON.parse(data)) : new Set();
-            } catch (e) {
-                return new Set();
-            }
+            try { const data = localStorage.getItem(CLAVE_CODIGOS_USADOS); return data ? new Set(JSON.parse(data)) : new Set(); } catch (e) { return new Set(); }
         }
-
         function marcarCodigoComoUsado(codigo) {
-            const codigosUsados = cargarCodigosUsados();
-            codigosUsados.add(codigo);
-            localStorage.setItem(CLAVE_CODIGOS_USADOS, JSON.stringify(Array.from(codigosUsados)));
+            const codigosUsados = cargarCodigosUsados(); codigosUsados.add(codigo); localStorage.setItem(CLAVE_CODIGOS_USADOS, JSON.stringify(Array.from(codigosUsados)));
         }
-
         function esCodigoDeUnSoloUso(codigo) {
-            // Un código de un solo uso es aquel que existe en CODIGOS_DE_CANJE pero NO en la lista de Códigos de Escaneo QR
-            // Por simplicidad, consideraremos que todos los códigos que NO empiezan por "100199" son de un solo uso.
             return codigo in CODIGOS_DE_CANJE && !codigo.startsWith("100199");
         }
-
-
-        // FUNCIONES DE HISTORIAL
         function loadHistory(userEmail) {
-            try {
-                const allHistory = localStorage.getItem(CLAVE_HISTORIAL);
-                const historyObj = allHistory ? JSON.parse(allHistory) : {};
-                return historyObj[userEmail] || [];
-            } catch (e) {
-                return [];
-            }
+            try { const allHistory = localStorage.getItem(CLAVE_HISTORIAL); const historyObj = allHistory ? JSON.parse(allHistory) : {}; return historyObj[userEmail] || []; } catch (e) { return []; }
         }
-
         function saveHistory(userEmail, historyArray) {
-            let allHistory = {};
-            try {
-                const storedHistory = localStorage.getItem(CLAVE_HISTORIAL);
-                allHistory = storedHistory ? JSON.parse(storedHistory) : {};
-            } catch (e) {
-                allHistory = {};
-            }
-
-            allHistory[userEmail] = historyArray;
-            localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(allHistory));
+            let allHistory = {}; try { const storedHistory = localStorage.getItem(CLAVE_HISTORIAL); allHistory = storedHistory ? JSON.parse(storedHistory) : {}; } catch (e) { allHistory = {}; } allHistory[userEmail] = historyArray; localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(allHistory));
         }
-
         function addMovementToHistory(userEmail, type, description) {
-            const history = loadHistory(userEmail);
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-            const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-
-            const newMovement = {
-                type: type, // 'scan' (QR), 'redeem' (Premio), 'secret' (Botón Acomular), 'streak' (Racha Diaria)
-                timestamp: now.getTime(),
-                date: `${dateStr} ${timeStr}`,
-                description: description
-            };
-
-            history.unshift(newMovement); // Añadir al principio
-            saveHistory(userEmail, history.slice(0, 50)); // Limitar a 50 movimientos
+            const history = loadHistory(userEmail); const now = new Date(); const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }); const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }); const newMovement = { type: type, timestamp: now.getTime(), date: `${dateStr} ${timeStr}`, description: description }; history.unshift(newMovement); saveHistory(userEmail, history.slice(0, 50));
         }
-
         function renderizarEstadisticas() {
             if (!usuarioLogueado) return;
-
-            // El contador CLAVE_LOG_SCANS se usará para ambos tipos de acumulación (QR y Botón)
             const totalScans = getStatValue(CLAVE_LOG_SCANS, usuarioLogueado);
             const totalRedeems = getStatValue(CLAVE_LOG_REDEEMS, usuarioLogueado);
-
             document.getElementById('total-scans').textContent = totalScans;
             document.getElementById('total-redeems').textContent = totalRedeems;
         }
-
         function openHistoryModal(type) {
+            closeAllDropdowns();
             if (!usuarioLogueado) return;
-
             const history = loadHistory(usuarioLogueado);
             const listElement = document.getElementById('history-list-popup');
             const titleElement = document.getElementById('history-modal-title');
             listElement.innerHTML = '';
-
-            // Incluir el tipo 'streak' en el historial de 'scan' (puntos acomulados)
             const filteredHistory = history.filter(item => item.type === type || (type === 'scan' && (item.type === 'secret' || item.type === 'streak')));
-
-            if (type === 'scan') {
-                titleElement.textContent = 'Historial de Puntos Acomulados (QR, Secreto y Racha)';
-            } else if (type === 'redeem') {
-                titleElement.textContent = 'Historial de Regalos Canjeados';
-            }
-
-            if (filteredHistory.length === 0) {
-                listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'acomulación de puntos' : 'canjes'}.</li>`;
-            } else {
+            if (type === 'scan') { titleElement.textContent = 'Historial de Puntos Acomulados'; } else if (type === 'redeem') { titleElement.textContent = 'Historial de Regalos Canjeados'; }
+            if (filteredHistory.length === 0) { listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'acomulación de puntos' : 'canjes'}.</li>`; } else {
                 filteredHistory.forEach(item => {
-                    const li = document.createElement('li');
-
-                    let icon = item.type === 'redeem' ? '🎁' : item.type === 'streak' ? '🔥' : '⬆️';
-                    li.className = item.type === 'redeem' ? 'redeem-item' : item.type === 'streak' ? 'streak-item' : 'scan-item';
-
-                    li.innerHTML = `<strong>${icon} ${item.description}</strong><br><span style="font-size: 0.9em; color: #6c757d;">${item.date}</span>`;
-                    listElement.appendChild(li);
+                    const li = document.createElement('li'); let icon = item.type === 'redeem' ? '🎁' : item.type === 'streak' ? '🔥' : '⬆️'; li.className = item.type === 'redeem' ? 'redeem-item' : item.type === 'streak' ? 'streak-item' : 'scan-item'; li.innerHTML = `<strong>${icon} ${item.description}</strong><br><span style="font-size: 0.9em; color: #6c757d;">${item.date}</span>`; listElement.appendChild(li);
                 });
             }
-
             document.getElementById('history-modal').style.display = 'block';
         }
-
-
-        // FUNCIONES DE PUNTOS Y CANJES
         function cargarPuntosUsuarios() {
-            try {
-                const data = localStorage.getItem(CLAVE_ALMACENAMIENTO_USUARIOS);
-                return data ? JSON.parse(data) : {};
-            } catch (e) {
-                return {};
-            }
+            try { const data = localStorage.getItem(CLAVE_ALMACENAMIENTO_USUARIOS); return data ? JSON.parse(data) : {}; } catch (e) { return {}; }
         }
         function guardarPuntosUsuario(email, puntos) {
-            const todosLosPuntos = cargarPuntosUsuarios();
-            todosLosPuntos[email] = puntos;
-            localStorage.setItem(CLAVE_ALMACENAMIENTO_USUARIOS, JSON.stringify(todosLosPuntos));
+            const todosLosPuntos = cargarPuntosUsuarios(); todosLosPuntos[email] = puntos; localStorage.setItem(CLAVE_ALMACENAMIENTO_USUARIOS, JSON.stringify(todosLosPuntos));
         }
-
         function cargarCanjes() {
-            try {
-                const data = localStorage.getItem(CLAVE_CANJES_PREMIOS);
-                return data ? JSON.parse(data) : {};
-            } catch (e) {
-                return {};
-            }
+            try { const data = localStorage.getItem(CLAVE_CANJES_PREMIOS); return data ? JSON.parse(data) : {}; } catch (e) { return {}; }
         }
         function guardarCanje(email, idPremio, timestamp) {
-            const todosLosCanjes = cargarCanjes();
-            if (!todosLosCanjes[email]) {
-                todosLosCanjes[email] = {};
-            }
-            todosLosCanjes[email][idPremio] = timestamp;
-            localStorage.setItem(CLAVE_CANJES_PREMIOS, JSON.stringify(todosLosCanjes));
+            const todosLosCanjes = cargarCanjes(); if (!todosLosCanjes[email]) { todosLosCanjes[email] = {}; } todosLosCanjes[email][idPremio] = timestamp; localStorage.setItem(CLAVE_CANJES_PREMIOS, JSON.stringify(todosLosCanjes));
         }
 
-        // --- LÓGICA DE RACHA DIARIA (Mantenida) ---
-
+        // --- LÓGICA DE RACHA DIARIA (MODIFICADA V7) ---
         function loadStreakInfo() {
-            try {
-                const allInfo = localStorage.getItem(CLAVE_RACHA_INFO);
-                const infoObj = allInfo ? JSON.parse(allInfo) : {};
-                const userEmail = usuarioLogueado || 'guest';
-                return infoObj[userEmail] || { lastClaim: 0, streakCount: 0 };
-            } catch (e) {
-                return { lastClaim: 0, streakCount: 0 };
-            }
+            try { const allInfo = localStorage.getItem(CLAVE_RACHA_INFO); const infoObj = allInfo ? JSON.parse(allInfo) : {}; const userEmail = usuarioLogueado || 'guest'; return infoObj[userEmail] || { lastClaim: 0, streakCount: 0 }; } catch (e) { return { lastClaim: 0, streakCount: 0 }; }
         }
-
         function saveStreakInfo(info) {
-            const allInfo = loadStats(CLAVE_RACHA_INFO); // Reutilizar loadStats para la estructura general
-            const userEmail = usuarioLogueado || 'guest';
-            allInfo[userEmail] = info;
-            localStorage.setItem(CLAVE_RACHA_INFO, JSON.stringify(allInfo));
+            const allInfo = loadStats(CLAVE_RACHA_INFO); const userEmail = usuarioLogueado || 'guest'; allInfo[userEmail] = info; localStorage.setItem(CLAVE_RACHA_INFO, JSON.stringify(allInfo));
         }
-
         function updateStreakDisplay() {
             if (!usuarioLogueado) return;
-            const streakInfo = loadStreakInfo();
-            const now = Date.now();
-            const lastClaimDate = new Date(streakInfo.lastClaim).setHours(0, 0, 0, 0); // Solo la fecha
-            const todayDate = new Date(now).setHours(0, 0, 0, 0); // Solo la fecha
-
-            const timeElapsed = now - streakInfo.lastClaim;
-            const timeLeft = COOLDOWN_MS - timeElapsed;
-
-            const btn = document.getElementById('btn-claim-streak');
-            const timerDisplay = document.getElementById('streak-cooldown-timer');
-            const streakDisplay = document.getElementById('current-streak');
-            const pointsToWinDisplay = document.getElementById('points-to-win');
-
-            streakDisplay.textContent = streakInfo.streakCount;
-            pointsToWinDisplay.textContent = streakInfo.streakCount + 1; // El premio es el día + 1 punto
-
-            if (streakTimerInterval) {
-                clearInterval(streakTimerInterval);
-            }
-
-            // Si ha pasado al menos 24 horas O es el primer reclamo (lastClaim === 0)
+            const streakInfo = loadStreakInfo(); const now = Date.now(); const timeElapsed = now - streakInfo.lastClaim; const btn = document.getElementById('btn-claim-streak'); const timerDisplay = document.getElementById('streak-cooldown-timer'); const streakDisplay = document.getElementById('current-streak'); const pointsToWinDisplay = document.getElementById('points-to-win'); streakDisplay.textContent = streakInfo.streakCount; pointsToWinDisplay.textContent = streakInfo.streakCount + 1; if (streakTimerInterval) { clearInterval(streakTimerInterval); }
             if (timeElapsed >= COOLDOWN_MS || streakInfo.lastClaim === 0) {
-                // Si la última reclamación fue hace más de 48 horas (dos días), se resetea la racha
-                const twoDaysAgo = now - (COOLDOWN_MS * 2);
-                if (streakInfo.lastClaim !== 0 && streakInfo.lastClaim < twoDaysAgo) {
-                    streakInfo.streakCount = 0;
-                    saveStreakInfo(streakInfo);
-                    streakDisplay.textContent = 0;
-                    pointsToWinDisplay.textContent = 1;
-                    // No alertamos en cada renderizado, solo si se intenta canjear
-                }
-
-                btn.disabled = false;
-                btn.textContent = `Canjear (${streakInfo.streakCount + 1} Pts)`;
-                timerDisplay.style.display = 'none';
-
+                const twoDaysAgo = now - (COOLDOWN_MS * 2); if (streakInfo.lastClaim !== 0 && streakInfo.lastClaim < twoDaysAgo) { streakInfo.streakCount = 0; saveStreakInfo(streakInfo); streakDisplay.textContent = 0; pointsToWinDisplay.textContent = 1; }
+                btn.disabled = false; btn.textContent = `Canjear (${streakInfo.streakCount + 1} Pts)`; timerDisplay.style.display = 'none';
             } else {
-                // Cooldown activo
-                btn.disabled = true;
-                timerDisplay.style.display = 'block';
-
-                const updateTimer = () => {
-                    const timeLeft = COOLDOWN_MS - (Date.now() - streakInfo.lastClaim);
-                    if (timeLeft <= 0) {
-                        updateStreakDisplay(); // Recargar para habilitar el botón
-                        return;
-                    }
-                    timerDisplay.textContent = `Siguiente Canje en: ${formatTime(timeLeft)}`;
-                    btn.textContent = "Recargando...";
-                };
-
-                updateTimer();
-                streakTimerInterval = setInterval(updateTimer, 1000);
+                btn.disabled = true; timerDisplay.style.display = 'block'; const updateTimer = () => { const timeLeft = COOLDOWN_MS - (Date.now() - streakInfo.lastClaim); if (timeLeft <= 0) { updateStreakDisplay(); return; } timerDisplay.textContent = `Siguiente Canje en: ${formatTime(timeLeft)}`; btn.textContent = "Recargando..."; }; updateTimer(); streakTimerInterval = setInterval(updateTimer, 1000);
             }
         }
-
         function claimDailyStreak() {
-            if (!usuarioLogueado) {
-                alert("Debes iniciar sesión para canjear la racha diaria.");
-                return;
-            }
-
-            const streakInfo = loadStreakInfo();
-            const now = Date.now();
-            const timeElapsed = now - streakInfo.lastClaim;
+            if (!usuarioLogueado) { alert("Debes iniciar sesión para canjear la racha diaria."); return; }
+            const streakInfo = loadStreakInfo(); const now = Date.now(); const timeElapsed = now - streakInfo.lastClaim; const twoDaysAgo = now - (COOLDOWN_MS * 2); if (streakInfo.lastClaim !== 0 && streakInfo.lastClaim < twoDaysAgo) { streakInfo.streakCount = 0; saveStreakInfo(streakInfo); alert('⚠️ Se ha roto tu racha diaria de puntos. ¡Empieza de nuevo hoy!'); }
+            if (timeElapsed < COOLDOWN_MS && streakInfo.lastClaim !== 0) { alert("⚠️ Debes esperar 24 horas desde el último canje para reclamar la racha diaria."); return; }
+            const newStreakCount = streakInfo.streakCount + 1; const pointsToSum = newStreakCount; puntosUsuario += pointsToSum; guardarPuntosUsuario(usuarioLogueado, puntosUsuario); streakInfo.lastClaim = now; streakInfo.streakCount = newStreakCount; saveStreakInfo(streakInfo); addMovementToHistory(usuarioLogueado, 'streak', `Racha Diaria: Día ${newStreakCount} (+${pointsToSum} Pts)`); 
             
-            // Chequeo de ruptura de racha antes de canjear
-            const twoDaysAgo = now - (COOLDOWN_MS * 2);
-            if (streakInfo.lastClaim !== 0 && streakInfo.lastClaim < twoDaysAgo) {
-                 // Si se rompió la racha
-                streakInfo.streakCount = 0;
-                saveStreakInfo(streakInfo);
-                alert('⚠️ Se ha roto tu racha diaria de puntos. ¡Empieza de nuevo hoy!');
-            }
-
-            if (timeElapsed < COOLDOWN_MS && streakInfo.lastClaim !== 0) {
-                alert("⚠️ Debes esperar 24 horas desde el último canje para reclamar la racha diaria.");
-                return;
-            }
-
-            // Calcular puntos a sumar (Día 1 = 1, Día 2 = 2, etc.)
-            const newStreakCount = streakInfo.streakCount + 1;
-            const pointsToSum = newStreakCount;
-
-            // 1. Sumar puntos
-            puntosUsuario += pointsToSum;
-            guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
-
-            // 2. Actualizar la racha
-            streakInfo.lastClaim = now;
-            streakInfo.streakCount = newStreakCount;
-            saveStreakInfo(streakInfo);
-
-            // 3. Registrar en historial
-            addMovementToHistory(usuarioLogueado, 'streak', `Racha Diaria: Día ${newStreakCount} (+${pointsToSum} Pts)`);
-
-            // 4. Actualizar interfaz y notificar
-            actualizarInterfaz();
+            addNotification("🔥 ¡Racha Diaria!", `¡Racha de ${newStreakCount} días! Has ganado ${pointsToSum} puntos.`);
+            
+            actualizarInterfaz(); 
             alert(`🎉 ¡Racha de ${newStreakCount} días! Has ganado ${pointsToSum} puntos. Total: ${puntosUsuario} puntos.`);
         }
 
-
-        // --- LÓGICA DE CRONÓMETRO (Se mantiene) ---
-
+        // --- LÓGICA DE CRONÓMETRO (Sin cambios) ---
         function formatTime(ms) {
-            if (ms <= 0) return "¡Listo!";
-            const totalSeconds = Math.floor(ms / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            if (ms <= 0) return "¡Listo!"; const totalSeconds = Math.floor(ms / 1000); const hours = Math.floor(totalSeconds / 3600); const minutes = Math.floor((totalSeconds % 3600) / 60); const seconds = totalSeconds % 60; return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
-
         function updateTimerDisplay(idPremio) {
-            const canjes = cargarCanjes();
-            const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0;
-            const now = Date.now();
-            const timeElapsed = now - lastTimestamp;
-            const timeLeft = RESTRICCION_CANJE_MS - timeElapsed;
-
-            const buttonElement = document.getElementById(`btn-canjear-${idPremio}`);
-
-            if (!buttonElement) {
-                clearInterval(canjeTimerIntervals[idPremio]);
-                delete canjeTimerIntervals[idPremio];
-                return;
-            }
-
-            if (timeLeft <= 0) {
-                buttonElement.disabled = false;
-                buttonElement.textContent = "Canjear";
-                buttonElement.style.backgroundColor = 'var(--color-secundario)';
-                clearInterval(canjeTimerIntervals[idPremio]);
-                delete canjeTimerIntervals[idPremio];
-            } else {
-                buttonElement.disabled = true;
-                buttonElement.textContent = formatTime(timeLeft);
-            }
+            const canjes = cargarCanjes(); const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0; const now = Date.now(); const timeElapsed = now - lastTimestamp; const timeLeft = RESTRICCION_CANJE_MS - timeElapsed; const buttonElement = document.getElementById(`btn-canjear-${idPremio}`); if (!buttonElement) { clearInterval(canjeTimerIntervals[idPremio]); delete canjeTimerIntervals[idPremio]; return; }
+            if (timeLeft <= 0) { buttonElement.disabled = false; buttonElement.textContent = "Canjear"; buttonElement.style.backgroundColor = 'var(--color-principal)'; clearInterval(canjeTimerIntervals[idPremio]); delete canjeTimerIntervals[idPremio]; } else { buttonElement.disabled = true; buttonElement.textContent = formatTime(timeLeft); }
         }
-
         function startTimer(idPremio) {
-            if (canjeTimerIntervals[idPremio]) {
-                clearInterval(canjeTimerIntervals[idPremio]);
-            }
-            canjeTimerIntervals[idPremio] = setInterval(() => {
-                updateTimerDisplay(idPremio);
-            }, 1000);
-            updateTimerDisplay(idPremio);
+            if (canjeTimerIntervals[idPremio]) { clearInterval(canjeTimerIntervals[idPremio]); }
+            canjeTimerIntervals[idPremio] = setInterval(() => { updateTimerDisplay(idPremio); }, 1000); updateTimerDisplay(idPremio);
         }
-
         function stopAllTimers() {
-            Object.values(canjeTimerIntervals).forEach(clearInterval);
-            canjeTimerIntervals = {};
-            if (streakTimerInterval) {
-                clearInterval(streakTimerInterval);
-                streakTimerInterval = null;
-            }
+            Object.values(canjeTimerIntervals).forEach(clearInterval); canjeTimerIntervals = {}; if (streakTimerInterval) { clearInterval(streakTimerInterval); streakTimerInterval = null; }
         }
 
-
-        // --- LÓGICA DE AUTENTICACIÓN (Se mantiene) ---
-
+        // --- LÓGICA DE AUTENTICACIÓN (MODIFICADA V8) ---
         document.getElementById('login-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const username = document.getElementById('username').value.toLowerCase();
             const psw = document.getElementById('psw').value;
             const errorElement = document.getElementById('login-error');
-
             if (USUARIOS_VALIDOS[username] && USUARIOS_VALIDOS[username].psw === psw) {
                 const email = USUARIOS_VALIDOS[username].email;
                 localStorage.setItem(CLAVE_USUARIO_ACTIVO, email);
@@ -1558,87 +1508,67 @@
         function iniciarSesion(username, email) {
             usuarioLogueado = email;
             usuarioLogueadoUsername = username;
-            document.getElementById('user-display').textContent = username;
+            document.getElementById('user-display-nav').textContent = username;
             const todosLosPuntos = cargarPuntosUsuarios();
             puntosUsuario = todosLosPuntos[email] || 0;
-
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('lealtad-section').style.display = 'block';
-
+            document.getElementById('login-section').style.display = 'none'; 
+            document.getElementById('lealtad-section').style.display = 'block'; 
             document.getElementById('login-nav-bar').style.display = 'none';
             document.getElementById('nav-bar').style.display = 'flex';
-
-            renderDropdownCategories();
+            renderDropdownCategories(); 
             actualizarInterfaz();
             simularEscaneoQR();
             renderizarEstadisticas();
-            updateStreakDisplay(); // Inicializar el display de la racha
-
-            document.getElementById('welcome-modal').style.display = 'block';
+            updateStreakDisplay();
+            updateNotificationBadge(); 
+            
+            // *** INICIO: CORRECCIÓN DE BUG V8 ***
+            // Mostrar bienvenida solo una vez por sesión del navegador
+            if (!sessionStorage.getItem('welcomeModalShown')) {
+                document.getElementById('welcome-modal').style.display = 'block';
+                sessionStorage.setItem('welcomeModalShown', 'true');
+            }
+            // *** FIN: CORRECCIÓN DE BUG V8 ***
         }
 
         function logout() {
+            closeAllDropdowns();
             localStorage.removeItem(CLAVE_USUARIO_ACTIVO);
+            sessionStorage.removeItem('welcomeModalShown'); // *** CORRECCIÓN V8: Limpiar bandera ***
             stopAllTimers();
             usuarioLogueado = null;
             usuarioLogueadoUsername = null;
             puntosUsuario = 0;
-
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('lealtad-section').style.display = 'none';
-
-            document.getElementById('login-nav-bar').style.display = 'block';
+            document.getElementById('login-section').style.display = 'block'; 
+            document.getElementById('lealtad-section').style.display = 'none'; 
+            document.getElementById('login-nav-bar').style.display = 'flex'; 
             document.getElementById('nav-bar').style.display = 'none';
-
             document.getElementById('login-error').textContent = '';
             document.getElementById('login-form').reset();
-            document.getElementById('username').value = '';
-            document.getElementById('psw').value = '';
-
             document.getElementById("qr-code").innerHTML = '';
         }
 
-        // --- LÓGICA DE CANJE Y REND. (Modificado para WhatsApp) ---
-
+        // --- LÓGICA DE CANJE Y REND. (MODIFICADA V7) ---
         function canjearPremio(idPremio) {
             if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
-            const premio = catalogoPremios.find(p => p.id === idPremio);
-            if (!premio) return;
-
-            const canjes = cargarCanjes();
-            const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0;
-            const now = Date.now();
-            const isRestricted = (now - lastTimestamp) < RESTRICCION_CANJE_MS;
-
-            if (isRestricted) {
-                return alert("⚠️ Este premio ya fue canjeado. Debes esperar 24 horas para volver a canjearlo.");
-            }
-
+            const premio = catalogoPremios.find(p => p.id === idPremio); if (!premio) return;
+            const canjes = cargarCanjes(); const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0; const now = Date.now(); const isRestricted = (now - lastTimestamp) < RESTRICCION_CANJE_MS;
+            if (isRestricted) { return alert("⚠️ Este premio ya fue canjeado. Debes esperar 24 horas para volver a canjearlo."); }
             if (puntosUsuario >= premio.costo) {
                 if (confirm(`✅ CONFIRMAR CANJE: ¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
-                    
                     const puntosRestantes = puntosUsuario - premio.costo;
-                    
-                    // 1. Notificación de Canje Exitoso y Puntos Restantes
                     alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosRestantes}. Ahora, por favor, envía el mensaje de WhatsApp para solicitar tu premio.`);
-
-                    // 2. Generar y Enviar Mensaje de WhatsApp
-                    // Generamos un ID de canje único con el prefijo "A1000"
                     const redemptionID = `A1000-${premio.id}-${Date.now()}`;
                     const mensaje = `¡SOLICITUD DE PREMIO CANJEADO!%0A*ID de Canje:* ${redemptionID}%0A*Usuario:* ${usuarioLogueadoUsername} (${usuarioLogueado})%0A*Premio Solicitado:* ${premio.nombre}%0A*Puntos Descontados:* ${premio.costo}%0A*Puntos Restantes:* ${puntosRestantes}`;
                     const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
-
                     window.open(whatsappURL, '_blank');
-                    
-                    // 3. Procesar el Canje (Guardar en LocalStorage y Actualizar Puntos)
-                    puntosUsuario = puntosRestantes; // Actualizar el saldo de puntos global
+                    puntosUsuario = puntosRestantes;
                     guardarCanje(usuarioLogueado, idPremio, Date.now());
-
-                    // INCREMENTAR CONTADOR Y REGISTRAR EN HISTORIAL
                     incrementStat(CLAVE_LOG_REDEEMS, usuarioLogueado);
                     addMovementToHistory(usuarioLogueado, 'redeem', `Canjeado: ${premio.nombre} (-${premio.costo} Pts) | ID: ${redemptionID}`);
+                    
+                    addNotification("🎁 ¡Canje Exitoso!", `Has canjeado "${premio.nombre}" por ${premio.costo} puntos.`);
 
-                    // 4. Actualizar la Interfaz
                     actualizarInterfaz();
                     renderizarEstadisticas();
                 }
@@ -1646,62 +1576,45 @@
                 alert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`);
             }
         }
-
-
         function renderizarCatalogo() {
             const contenedorCatalogo = document.getElementById('catalogo-premios');
             contenedorCatalogo.innerHTML = '';
             stopAllTimers();
-
             if (!usuarioLogueado) return;
-
             const canjes = cargarCanjes();
             const now = Date.now();
-
             for (const categoria in categoriasPremios) {
                 const premiosDeCategoria = categoriasPremios[categoria];
                 const categoryId = `cat-${categoria.replace(/\s/g, '-')}`;
-
                 const tituloCat = document.createElement('h2');
                 tituloCat.className = 'categoria-titulo';
                 tituloCat.id = categoryId;
                 tituloCat.textContent = categoria;
                 contenedorCatalogo.appendChild(tituloCat);
-
                 const catalogoCat = document.createElement('div');
                 catalogoCat.className = 'catalogo-categoria';
-
                 premiosDeCategoria.forEach(premio => {
                     const puedeCanjearPorPuntos = puntosUsuario >= premio.costo;
-
                     const lastTimestamp = canjes[usuarioLogueado]?.[premio.id] || 0;
                     const timeElapsed = now - lastTimestamp;
                     const isRestricted = timeElapsed < RESTRICCION_CANJE_MS;
-
                     const puedeCanjear = puedeCanjearPorPuntos && !isRestricted;
-
                     let buttonText = 'Canjear';
                     let buttonStyle = '';
-
                     if (!puedeCanjearPorPuntos) {
                         buttonText = `Faltan ${premio.costo - puntosUsuario} Pts`;
-                        buttonStyle = 'background-color: #9e9e9e !important;';
                     } else if (isRestricted) {
                         const timeLeft = RESTRICCION_CANJE_MS - timeElapsed;
                         buttonText = formatTime(timeLeft);
-                        buttonStyle = 'background-color: var(--color-principal);';
+                        buttonStyle = 'background-color: var(--color-secundario);';
                     }
-
-
                     const divPremio = document.createElement('div');
                     divPremio.className = 'premio';
-
                     divPremio.innerHTML = `
                         <img src="${premio.imagen}" alt="${premio.nombre}" loading="lazy">
                         <h3>${premio.nombre}</h3>
                         <p>${premio.descripcion}</p>
                         <span class="puntos-costo">Costo: ${premio.costo} Puntos</span>
-                        <p class="cronometro-texto"></p>
                         <button
                             onclick="canjearPremio(${premio.id})"
                             class="btn-canjear"
@@ -1713,8 +1626,7 @@
                         </button>
                     `;
                     catalogoCat.appendChild(divPremio);
-
-                    if (isRestricted) {
+                    if (isRestricted && puedeCanjearPorPuntos) {
                         startTimer(premio.id);
                     }
                 });
@@ -1722,154 +1634,105 @@
             }
         }
 
-        // --- LÓGICA DE BOTÓN "ACOMULAR" (NUEVO) ---
-
+        // --- LÓGICA DE BOTÓN "ACOMULAR" (MODIFICADA V7) ---
         function openAcumularModal() {
-            if (!usuarioLogueado) {
-                alert("Por favor, inicia sesión para acumular puntos.");
-                return;
-            }
+            if (!usuarioLogueado) { alert("Por favor, inicia sesión para acumular puntos."); return; }
             document.getElementById('acumular-modal-message').textContent = '';
             document.getElementById('secret-code').value = '';
             document.getElementById('acumular-modal').style.display = 'block';
         }
-
         function procesarCodigoSecreto() {
             const codigoIngresado = document.getElementById('secret-code').value.trim().toUpperCase();
             const modalMessage = document.getElementById('acumular-modal-message');
-
             const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
-
-            if (!puntosASumar) {
-                modalMessage.textContent = '❌ Código incorrecto o inválido.';
-                document.getElementById('secret-code').value = '';
-                return;
-            }
-
+            if (!puntosASumar) { modalMessage.textContent = '❌ Código incorrecto o inválido.'; document.getElementById('secret-code').value = ''; return; }
             const isSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
             const codigosUsados = cargarCodigosUsados();
-
-            if (isSingleUse && codigosUsados.has(codigoIngresado)) {
-                modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.';
-                document.getElementById('secret-code').value = '';
-                return;
-            }
-
-            // Si es un código de QR (100199...), no hacemos chequeo de uso global, solo el de sesión (que se hace en procesarCanjeQR)
+            if (isSingleUse && codigosUsados.has(codigoIngresado)) { modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.'; document.getElementById('secret-code').value = ''; return; }
             if (!isSingleUse) {
-                // Para códigos QR que se puedan introducir manualmente, usamos la misma lógica de sesión/puntos que el escaneo
-                // y usamos 'usuarioLogueado' como el usuario a acreditar, en lugar de 'usuarioEscaneado'.
-
                 const sessionKey = `puntosSumados_${usuarioLogueado}`;
-                if (sessionStorage.getItem(sessionKey)) {
-                    modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!';
-                    return;
-                }
-
-                // Realizar la acreditación
+                if (sessionStorage.getItem(sessionKey)) { modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!'; return; }
                 const todosLosPuntos = cargarPuntosUsuarios();
                 puntosUsuario = todosLosPuntos[usuarioLogueado] || 0;
                 puntosUsuario += puntosASumar;
-
                 guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
-                sessionStorage.setItem(sessionKey, 'true'); // Marca como usado para la sesión
-
+                sessionStorage.setItem(sessionKey, 'true');
                 incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
                 addMovementToHistory(usuarioLogueado, 'scan', `Código Manual QR (+${puntosASumar} Pts)`);
-
             } else if (isSingleUse) {
-                // Lógica de UN SOLO USO
                 const todosLosPuntos = cargarPuntosUsuarios();
                 puntosUsuario = todosLosPuntos[usuarioLogueado] || 0;
                 puntosUsuario += puntosASumar;
-
                 guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
-                marcarCodigoComoUsado(codigoIngresado); // Marcar como usado globalmente
-
+                marcarCodigoComoUsado(codigoIngresado);
                 incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
                 addMovementToHistory(usuarioLogueado, 'secret', `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`);
             }
+            
+            addNotification("⬆️ ¡Puntos Sumados!", `Código correcto. Has ganado ${puntosASumar} puntos.`);
 
-            // Finalizar proceso
             document.getElementById('acumular-modal').style.display = 'none';
             actualizarInterfaz();
             alert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`);
         }
 
-        // --- OTRAS LÓGICAS (procesarCanjeQR modificado para diferenciar códigos de un solo uso) ---
-
+        // --- OTRAS LÓGICAS (MODIFICADA V7) ---
         function actualizarInterfaz() {
-            document.getElementById('puntos-actuales').textContent = `${puntosUsuario} Puntos`;
+            if (!usuarioLogueado) return; 
+            document.getElementById('puntos-actuales').textContent = `${puntosUsuario}`;
             guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
+            const userTier = getTier(puntosUsuario);
+            const tierElementDashboard = document.getElementById('user-tier');
+            tierElementDashboard.textContent = `${userTier.icono} Nivel ${userTier.nombre}`;
+            tierElementDashboard.className = userTier.clase;
+            const tierElementNav = document.getElementById('user-tier-nav');
+            tierElementNav.textContent = `Nivel ${userTier.nombre}`;
+            tierElementNav.className = userTier.clase;
             renderizarCatalogo();
             renderizarEstadisticas();
             updateStreakDisplay();
+            updateNotificationBadge(); // Actualizar badge
         }
 
         function simularEscaneoQR() {
             const currentUsername = usuarioLogueadoUsername;
             const URL_BASE = window.location.origin + window.location.pathname;
             const QR_DATA = `${URL_BASE}?action=addpoints&user=${currentUsername}`;
-
             document.getElementById("qr-code").innerHTML = '';
-
             new QRCode(document.getElementById("qr-code"), {
-                text: QR_DATA,
-                width: 150,
-                height: 150,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
+                text: QR_DATA, width: 150, height: 150,
+                colorDark: "#000000", colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
         }
-
         function mostrarModalCanje(userEmail) {
-            // El modal de canje QR siempre acreditará al usuario 'escaneado'
             usuarioEscaneado = userEmail;
             document.getElementById('modal-message').textContent = '';
             document.getElementById('redemption-code').value = '';
             document.getElementById('redemption-modal').style.display = 'block';
         }
-
         function procesarCanjeQR() {
             const codigoIngresado = document.getElementById('redemption-code').value.trim();
             const modalMessage = document.getElementById('modal-message');
-
             const sessionKey = `puntosSumados_${usuarioEscaneado}`;
-            if (sessionStorage.getItem(sessionKey)) {
-                modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!';
-                return;
-            }
-
+            if (sessionStorage.getItem(sessionKey)) { modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!'; return; }
             const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
-
             if (puntosASumar) {
-                // Chequeo de códigos de un solo uso para evitar que un QR dé un código secreto de mucho valor
-                if (esCodigoDeUnSoloUso(codigoIngresado) && cargarCodigosUsados().has(codigoIngresado)) {
-                    modalMessage.textContent = '❌ Código de canje ya utilizado.';
-                    document.getElementById('redemption-code').value = '';
-                    return;
-                }
-
-                // Si es un código de un solo uso, lo marcamos globalmente
-                if (esCodigoDeUnSoloUso(codigoIngresado)) {
-                    marcarCodigoComoUsado(codigoIngresado);
-                }
-
-                // *** LÓGICA CLAVE: CÓDIGO CORRECTO ***
+                if (esCodigoDeUnSoloUso(codigoIngresado) && cargarCodigosUsados().has(codigoIngresado)) { modalMessage.textContent = '❌ Código de canje ya utilizado.'; document.getElementById('redemption-code').value = ''; return; }
+                if (esCodigoDeUnSoloUso(codigoIngresado)) { marcarCodigoComoUsado(codigoIngresado); }
                 const todosLosPuntos = cargarPuntosUsuarios();
                 let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
                 puntosTemporales += puntosASumar;
-
                 guardarPuntosUsuario(usuarioEscaneado, puntosTemporales);
                 sessionStorage.setItem(sessionKey, 'true');
-
-                // INCREMENTAR CONTADOR Y REGISTRAR EN HISTORIAL (SOLO SI EL CÓDIGO FUE CORRECTO)
                 incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado);
                 addMovementToHistory(usuarioEscaneado, 'scan', `Escaneo QR y Canje de Código (+${puntosASumar} Pts)`);
+                
+                if (usuarioLogueado === usuarioEscaneado) {
+                    addNotification("⬆️ ¡Puntos Sumados!", `Escaneo QR correcto. Has ganado ${puntosASumar} puntos.`);
+                }
 
                 document.getElementById('redemption-modal').style.display = 'none';
-
                 if (usuarioLogueado === usuarioEscaneado) {
                     puntosUsuario = puntosTemporales;
                     actualizarInterfaz();
@@ -1879,21 +1742,17 @@
                     alert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`);
                 }
             } else {
-                // *** CÓDIGO INCORRECTO: NO SUMA PUNTOS NI CUENTA ESCANEO ***
                 modalMessage.textContent = '❌ Código de canje incorrecto o inválido. No se sumaron puntos.';
                 document.getElementById('redemption-code').value = '';
             }
         }
-
         function verificarEscaneoAlCargar() {
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action');
             const userFromQR_Username = urlParams.get('user');
-
             if (action === 'addpoints' && userFromQR_Username) {
                 const userData = USUARIOS_VALIDOS[userFromQR_Username];
                 const userEmailToCredit = userData ? userData.email : null;
-
                 if (userEmailToCredit) {
                     const URL_BASE = window.location.origin + window.location.pathname;
                     history.replaceState(null, '', URL_BASE);
@@ -1903,42 +1762,26 @@
                 }
             }
         }
-
         function crearUsuarioWhatsapp() {
             const newEmail = document.getElementById('new-email').value.trim();
             const newUsername = document.getElementById('new-username').value.trim();
             const newPsw = document.getElementById('new-psw').value.trim();
             const createMessage = document.getElementById('create-message');
-
-            if (!newEmail || !newUsername || !newPsw) {
-                createMessage.style.color = 'red';
-                createMessage.textContent = 'Por favor, completa todos los campos.';
-                return;
-            }
-            if (USUARIOS_VALIDOS.hasOwnProperty(newUsername)) {
-                createMessage.style.color = 'red';
-                createMessage.textContent = 'El usuario ya existe. Intenta con otro.';
-                return;
-            }
-
+            if (!newEmail || !newUsername || !newPsw) { createMessage.style.color = 'red'; createMessage.textContent = 'Por favor, completa todos los campos.'; return; }
+            if (USUARIOS_VALIDOS.hasOwnProperty(newUsername)) { createMessage.style.color = 'red'; createMessage.textContent = 'El usuario ya existe. Intenta con otro.'; return; }
             const mensaje = `¡SOLICITUD DE NUEVA CUENTA DE LEALTAD!%0A*Correo:* ${newEmail}%0A*Usuario:* ${newUsername}%0A*Contraseña deseada:* ${newPsw}%0A%0APor favor, registrar y confirmar la cuenta.`;
             const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
-
             window.open(whatsappURL, '_blank');
-
             createMessage.style.color = 'green';
             createMessage.textContent = 'Solicitud enviada a WhatsApp. Nos comunicaremos contigo pronto.';
             document.getElementById('create-user-modal').style.display = 'none';
         }
-
         function recuperarContrasena() {
             const recoverEmail = document.getElementById('recover-email').value.trim();
             const recoverUsername = document.getElementById('recover-username').value.trim();
             const recoverMessage = document.getElementById('recover-message');
-
             recoverMessage.textContent = '';
             const userEntry = USUARIOS_VALIDOS[recoverUsername];
-
             if (userEntry && userEntry.email === recoverEmail) {
                 recoverMessage.style.color = 'green';
                 recoverMessage.innerHTML = `✅ ¡Encontrada! Tu contraseña es: <strong>${userEntry.psw}</strong>`;
@@ -1948,30 +1791,116 @@
             }
         }
 
-        // --- INICIALIZACIÓN DE LA APLICACIÓN (Se mantiene) ---
+        /* --- FUNCIONES DE NOTIFICACIÓN V7 --- */
+        
+        function loadAllNotifications() {
+            try {
+                const data = localStorage.getItem(CLAVE_NOTIFICACIONES);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+        function loadNotifications() {
+            if (!usuarioLogueado) return [];
+            const allNotifications = loadAllNotifications();
+            return allNotifications[usuarioLogueado] || [];
+        }
+        function saveNotifications(userNotifications) {
+            if (!usuarioLogueado) return;
+            const allNotifications = loadAllNotifications();
+            allNotifications[usuarioLogueado] = userNotifications;
+            localStorage.setItem(CLAVE_NOTIFICACIONES, JSON.stringify(allNotifications));
+        }
+        function addNotification(title, message) {
+            if (!usuarioLogueado) return;
+            const notifications = loadNotifications();
+            const newNotification = {
+                id: Date.now(),
+                title: title,
+                message: message,
+                timestamp: Date.now(),
+                isRead: false 
+            };
+            notifications.unshift(newNotification); 
+            saveNotifications(notifications.slice(0, 30)); 
+            updateNotificationBadge(); 
+        }
+        function updateNotificationBadge() {
+            if (!usuarioLogueado) return;
+            const notifications = loadNotifications();
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            
+            const badge = document.querySelector('.notification-badge');
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+        function openNotificationsModal() {
+            if (!usuarioLogueado) return;
+            closeAllDropdowns(); 
+            
+            const notifications = loadNotifications();
+            const listElement = document.getElementById('notification-list-dynamic');
+            listElement.innerHTML = ''; 
 
+            if (notifications.length === 0) {
+                listElement.innerHTML = '<li id="no-notifications">No tienes notificaciones.</li>';
+            } else {
+                notifications.forEach(n => {
+                    const li = document.createElement('li');
+                    if (!n.isRead) {
+                        li.style.backgroundColor = 'var(--color-fondo)';
+                    }
+                    li.innerHTML = `
+                        <strong>${n.title}</strong>
+                        <span>${n.message}</span>
+                        <span style="font-size: 0.8em; color: #6c757d; display: block; margin-top: 5px;">
+                            ${new Date(n.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                    `;
+                    listElement.appendChild(li);
+                });
+            }
+
+            const updatedNotifications = notifications.map(n => ({ ...n, isRead: true }));
+            saveNotifications(updatedNotifications);
+            updateNotificationBadge();
+            
+            document.getElementById('notifications-modal').style.display = 'block';
+        }
+        
+        function openReferralModal() {
+            closeAllDropdowns();
+            const referralLink = `${window.location.origin + window.location.pathname}?ref=${usuarioLogueadoUsername || 'user'}`;
+            document.getElementById('referral-link').textContent = referralLink;
+            document.getElementById('referral-modal').style.display = 'block';
+        }
+
+        // --- INICIALIZACIÓN DE LA APLICACIÓN ---
         verificarEscaneoAlCargar();
         const usuarioEmailGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
-
         const loginNavBar = document.getElementById('login-nav-bar');
         const navBar = document.getElementById('nav-bar');
-
         if (usuarioEmailGuardado) {
             loginNavBar.style.display = 'none';
             navBar.style.display = 'flex';
-
             const currentUserEntry = Object.entries(USUARIOS_VALIDOS).find(([username, data]) => data.email === usuarioEmailGuardado);
             if (currentUserEntry) {
                 const username = currentUserEntry[0];
                 iniciarSesion(username, usuarioEmailGuardado);
             } else {
-                logout();
+                logout(); 
             }
         } else {
-            loginNavBar.style.display = 'block';
+            loginNavBar.style.display = 'flex'; 
             navBar.style.display = 'none';
         }
-
     </script>
 </body>
 </html>
