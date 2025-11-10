@@ -862,6 +862,31 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
+        
+        /*
+         * =============================================
+         * === INICIO: CSS PARA NUEVO MODAL DE ALERTA
+         * =============================================
+         */
+        #customAlertModal .modal-content {
+            max-width: 400px;
+            border-top: 5px solid var(--color-principal);
+        }
+        
+        #customAlertModal h3 {
+            color: var(--color-principal);
+            margin-top: 0;
+            font-size: 1.5em;
+            transition: color 0.3s ease;
+        }
+        
+        #customAlertModal p {
+            font-size: 1.1em;
+            line-height: 1.5;
+            color: var(--color-texto);
+        }
+        /* === FIN: CSS PARA NUEVO MODAL DE ALERTA === */
+
 
         .modal-content h2 {
             margin-top: 0;
@@ -1276,6 +1301,16 @@
         </a>
     </div>
 
+    <div id="customAlertModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeCustomAlert()">&times;</span>
+            <h3 id="customAlertTitle" style="color: var(--color-principal); margin-top: 0;">Aviso</h3>
+            <p id="customAlertMessage" style="margin-top: 15px; font-size: 1.1em;"></p>
+            <button onclick="closeCustomAlert()" class="btn btn-primary" style="margin-top: 20px; max-width: 200px;">
+                Aceptar
+            </button>
+        </div>
+    </div>
     <div id="history-modal" class="modal">
         <div class="modal-content history-modal-content">
             <span class="close-btn"
@@ -1711,15 +1746,26 @@
             }
         }
         function claimDailyStreak() {
-            if (!usuarioLogueado) { alert("Debes iniciar sesión para canjear la racha diaria."); return; }
-            const streakInfo = loadStreakInfo(); const now = Date.now(); const timeElapsed = now - streakInfo.lastClaim; const twoDaysAgo = now - (COOLDOWN_MS * 2); if (streakInfo.lastClaim !== 0 && streakInfo.lastClaim < twoDaysAgo) { streakInfo.streakCount = 0; saveStreakInfo(streakInfo); alert('⚠️ Se ha roto tu racha diaria de puntos. ¡Empieza de nuevo hoy!'); }
-            if (timeElapsed < COOLDOWN_MS && streakInfo.lastClaim !== 0) { alert("⚠️ Debes esperar 24 horas desde el último canje para reclamar la racha diaria."); return; }
+            if (!usuarioLogueado) { 
+                showAlert("Debes iniciar sesión para canjear la racha diaria."); 
+                return; 
+            }
+            const streakInfo = loadStreakInfo(); const now = Date.now(); const timeElapsed = now - streakInfo.lastClaim; const twoDaysAgo = now - (COOLDOWN_MS * 2); 
+            if (streakInfo.lastClaim !== 0 && streakInfo.lastClaim < twoDaysAgo) { 
+                streakInfo.streakCount = 0; 
+                saveStreakInfo(streakInfo); 
+                showAlert('⚠️ Se ha roto tu racha diaria de puntos. ¡Empieza de nuevo hoy!', 'Racha Rota'); 
+            }
+            if (timeElapsed < COOLDOWN_MS && streakInfo.lastClaim !== 0) { 
+                showAlert("⚠️ Debes esperar 24 horas desde el último canje para reclamar la racha diaria.", 'Espera'); 
+                return; 
+            }
             const newStreakCount = streakInfo.streakCount + 1; const pointsToSum = newStreakCount; puntosUsuario += pointsToSum; guardarPuntosUsuario(usuarioLogueado, puntosUsuario); streakInfo.lastClaim = now; streakInfo.streakCount = newStreakCount; saveStreakInfo(streakInfo); addMovementToHistory(usuarioLogueado, 'streak', `Racha Diaria: Día ${newStreakCount} (+${pointsToSum} Pts)`); 
             
             addNotification("🔥 ¡Racha Diaria!", `¡Racha de ${newStreakCount} días! Has ganado ${pointsToSum} puntos.`);
             
             actualizarInterfaz(); 
-            alert(`🎉 ¡Racha de ${newStreakCount} días! Has ganado ${pointsToSum} puntos. Total: ${puntosUsuario} puntos.`);
+            showAlert(`🎉 ¡Racha de ${newStreakCount} días! Has ganado ${pointsToSum} puntos. Total: ${puntosUsuario} puntos.`, '¡Racha Diaria!');
         }
 
         // --- LÓGICA DE CRONÓMETRO (Sin cambios) ---
@@ -1795,18 +1841,30 @@
 
         // --- LÓGICA DE CANJE Y REND. (MODIFICADA V7) ---
         function canjearPremio(idPremio) {
-            if (!usuarioLogueado) return alert("Debes iniciar sesión para canjear premios.");
+            if (!usuarioLogueado) {
+                showAlert("Debes iniciar sesión para canjear premios.");
+                return;
+            }
             const premio = catalogoPremios.find(p => p.id === idPremio); if (!premio) return;
             const canjes = cargarCanjes(); const lastTimestamp = canjes[usuarioLogueado]?.[idPremio] || 0; const now = Date.now(); const isRestricted = (now - lastTimestamp) < RESTRICCION_CANJE_MS;
-            if (isRestricted) { return alert("⚠️ Este premio ya fue canjeado. Debes esperar 24 horas para volver a canjearlo."); }
+            if (isRestricted) { 
+                showAlert("⚠️ Este premio ya fue canjeado. Debes esperar 24 horas para volver a canjearlo.", 'Premio Bloqueado');
+                return; 
+            }
             if (puntosUsuario >= premio.costo) {
                 if (confirm(`✅ CONFIRMAR CANJE: ¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
                     const puntosRestantes = puntosUsuario - premio.costo;
-                    alert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosRestantes}. Ahora, por favor, envía el mensaje de WhatsApp para solicitar tu premio.`);
+                    
+                    // Primero, mostrar la alerta personalizada
+                    showAlert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosRestantes}. Ahora, por favor, envía el mensaje de WhatsApp para solicitar tu premio.`, '¡Canje Exitoso!');
+                    
+                    // Luego, abrir WhatsApp
                     const redemptionID = `A1000-${premio.id}-${Date.now()}`;
                     const mensaje = `¡SOLICITUD DE PREMIO CANJEADO!%0A*ID de Canje:* ${redemptionID}%0A*Usuario:* ${usuarioLogueadoUsername} (${usuarioLogueado})%0A*Premio Solicitado:* ${premio.nombre}%0A*Puntos Descontados:* ${premio.costo}%0A*Puntos Restantes:* ${puntosRestantes}`;
                     const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
                     window.open(whatsappURL, '_blank');
+                    
+                    // Finalmente, actualizar el estado de la app
                     puntosUsuario = puntosRestantes;
                     guardarCanje(usuarioLogueado, idPremio, Date.now());
                     incrementStat(CLAVE_LOG_REDEEMS, usuarioLogueado);
@@ -1818,7 +1876,7 @@
                     renderizarEstadisticas();
                 }
             } else {
-                alert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`);
+                showAlert(`⚠️ ¡Puntos insuficientes! Necesitas ${premio.costo} puntos y solo tienes ${puntosUsuario}.`, 'Puntos Insuficientes');
             }
         }
         function renderizarCatalogo() {
@@ -1881,7 +1939,10 @@
 
         // --- LÓGICA DE BOTÓN "ACOMULAR" (MODIFICADA V7) ---
         function openAcumularModal() {
-            if (!usuarioLogueado) { alert("Por favor, inicia sesión para acumular puntos."); return; }
+            if (!usuarioLogueado) { 
+                showAlert("Por favor, inicia sesión para acumular puntos."); 
+                return; 
+            }
             document.getElementById('acumular-modal-message').textContent = '';
             document.getElementById('secret-code').value = '';
             document.getElementById('acumular-modal').style.display = 'block';
@@ -1914,11 +1975,11 @@
                 addMovementToHistory(usuarioLogueado, 'secret', `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`);
             }
             
-            addNotification("⬆️ ¡Puntos Sumados!", `Código ${codigoIngresado} correcto. Has ganado ${puntosASumar} puntos.`);
+            addNotification("⬆️ ¡Puntos Sumados!", `Código correcto. Has ganado ${puntosASumar} puntos.`);
 
             document.getElementById('acumular-modal').style.display = 'none';
             actualizarInterfaz();
-            alert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`);
+            showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
         }
 
         // --- OTRAS LÓGICAS (MODIFICADA V7) ---
@@ -1982,9 +2043,9 @@
                     puntosUsuario = puntosTemporales;
                     actualizarInterfaz();
                     renderizarEstadisticas();
-                    alert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`);
+                    showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
                 } else {
-                    alert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`);
+                    showAlert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`, 'Puntos Sumados');
                 }
             } else {
                 modalMessage.textContent = '❌ Código de canje incorrecto o inválido. No se sumaron puntos.';
@@ -2003,7 +2064,7 @@
                     history.replaceState(null, '', URL_BASE);
                     mostrarModalCanje(userEmailToCredit);
                 } else {
-                    alert('Error: Usuario del QR no encontrado.');
+                    showAlert('Error: Usuario del QR no encontrado.', 'Error', 'var(--color-secundario)');
                 }
             }
         }
@@ -2205,6 +2266,48 @@
             buyOptionsContainer.classList.remove('show');
         }
         /* === FIN: NUEVAS FUNCIONES DE COMPRA (V9) === */
+
+        
+        /*
+         * =============================================
+         * === INICIO: JS DEL NUEVO MODAL DE ALERTA
+         * =============================================
+        */
+        
+        /**
+         * Muestra el modal de alerta personalizado.
+         * @param {string} message - El mensaje a mostrar.
+         * @param {string} [title='Aviso'] - El título del modal.
+         * @param {string} [titleColor='var(--color-principal)'] - El color del título.
+         */
+        function showAlert(message, title = 'Aviso', titleColor = 'var(--color-principal)') {
+            const modal = document.getElementById('customAlertModal');
+            const messageEl = document.getElementById('customAlertMessage');
+            const titleEl = document.getElementById('customAlertTitle');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Usamos textContent para seguridad y evitar inyección XSS
+            messageEl.textContent = message;
+            titleEl.textContent = title;
+            
+            // Aplicar estilos dinámicos
+            titleEl.style.color = titleColor;
+            
+            // Si es un error, usa el color secundario para el borde
+            if (titleColor === 'var(--color-secundario)') {
+                modalContent.style.borderColor = 'var(--color-secundario)';
+            } else {
+                modalContent.style.borderColor = 'var(--color-principal)';
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeCustomAlert() {
+            const modal = document.getElementById('customAlertModal');
+            modal.style.display = 'none';
+        }
+        /* === FIN: JS DEL NUEVO MODAL DE ALERTA === */
 
 
         // --- INICIALIZACIÓN DE LA APLICACIÓN ---
