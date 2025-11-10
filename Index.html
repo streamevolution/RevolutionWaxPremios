@@ -8,24 +8,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
+            /* Colores por defecto (Tema 'Actual') */
             --color-principal: #0056b3;
-            /* Azul Profesional */
             --color-secundario: #dc3545;
-            /* Rojo (Alertas) */
+            
             --color-navbar: #ffffff;
-            /* Barra de navegación blanca */
             --color-blanco: #ffffff;
             --color-fondo: #f4f7f6;
             --color-texto: #212529;
-            /* Negro suave para texto */
             --color-border: #dee2e6;
-            /* Gris claro para bordes */
             --color-tier-bronze: #cd7f32;
             --color-tier-silver: #c0c0c0;
             --color-tier-gold: #ffd700;
             --color-tier-diamond: #b9f2ff;
         }
 
+        /* ... (Estilos de login-nav-bar, body, nav-bar, dropdowns, etc. sin cambios) ... */
         #login-nav-bar {
             background-color: var(--color-navbar);
             padding: 10px 25px;
@@ -51,6 +49,7 @@
             margin: 0;
             padding: 0;
             text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         #nav-bar {
@@ -66,6 +65,7 @@
             z-index: 100;
             border-bottom: 1px solid var(--color-border);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         #nav-bar .nav-logo img {
@@ -145,7 +145,7 @@
             font-weight: bold;
             border: 2px solid var(--color-blanco);
             display: none;
-            /* Oculto por defecto */
+            transition: background-color 0.3s ease;
         }
 
         .dropdown {
@@ -233,11 +233,80 @@
             border-radius: 50%;
             font-size: 18px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: opacity 0.3s;
+            transition: background-color 0.3s ease, opacity 0.3s;
         }
 
         #scrollToTopBtn:hover {
-            background-color: #00418a;
+            opacity: 0.85;
+        }
+
+        #buy-fab-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        #buy-fab-btn i {
+            margin-right: 8px;
+        }
+        #buy-fab-btn:hover {
+            transform: scale(1.05); 
+            opacity: 0.9;
+        }
+
+         #buy-options-container {
+            position: fixed;
+            bottom: 85px; 
+            left: 20px;
+            z-index: 98;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            visibility: hidden;
+            transition: all 0.2s ease-out;
+        }
+        #buy-options-container.show {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+        .buy-option-btn {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            width: 160px;
+        }
+        .buy-option-btn i {
+            margin-right: 8px;
+            width: 20px; 
+            text-align: center;
+        }
+        .buy-option-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
         }
 
         .logo-container {
@@ -258,6 +327,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             border: 1px solid var(--color-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         h1 {
@@ -265,6 +335,7 @@
             border-bottom: 3px solid var(--color-secundario);
             padding-bottom: 10px;
             margin-bottom: 20px;
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
 
         h2 {
@@ -280,6 +351,7 @@
             margin: 0 auto;
             border-top: 5px solid var(--color-principal);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
         }
 
         #login-section h2 {
@@ -344,7 +416,7 @@
         }
 
         .btn-primary:hover {
-            background-color: #00418a;
+            opacity: 0.85;
         }
 
         .btn-secondary {
@@ -352,7 +424,7 @@
         }
 
         .btn-secondary:hover {
-            background-color: #b02a37;
+            opacity: 0.85;
         }
 
         .btn-grey {
@@ -374,6 +446,7 @@
             display: inline-block;
             width: auto;
             text-align: center;
+            transition: color 0.3s ease;
         }
 
         .login-links {
@@ -446,6 +519,7 @@
         .dashboard-card .card-icon {
             color: var(--color-principal);
             font-size: 1.2em;
+            transition: color 0.3s ease;
         }
 
         #puntos-actuales {
@@ -454,6 +528,7 @@
             color: var(--color-principal);
             margin: 0;
             line-height: 1.1;
+            transition: color 0.3s ease;
         }
 
         #user-tier {
@@ -491,6 +566,7 @@
             font-weight: bold;
             color: var(--color-secundario);
             font-size: 1.1em;
+            transition: color 0.3s ease;
         }
 
         #btn-claim-streak {
@@ -508,7 +584,7 @@
         }
 
         #btn-claim-streak:hover:not(:disabled) {
-            background-color: #b02a37;
+            opacity: 0.85;
         }
 
         #btn-claim-streak:disabled {
@@ -523,6 +599,7 @@
             color: var(--color-secundario);
             font-weight: bold;
             font-size: 0.9em;
+            transition: color 0.3s ease;
         }
 
         .stats-buttons {
@@ -541,7 +618,7 @@
             color: var(--color-principal);
             background-color: var(--color-blanco);
             font-weight: bold;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .stat-button:hover {
@@ -568,6 +645,7 @@
         #acumular-section h2 {
             margin-top: 0;
             color: var(--color-principal);
+            transition: color 0.3s ease;
         }
 
         #qr-code {
@@ -599,7 +677,7 @@
             cursor: pointer;
             font-size: 1em;
             font-weight: bold;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .btn-action i {
@@ -607,7 +685,7 @@
         }
 
         .btn-action:hover {
-            background-color: #00418a;
+            opacity: 0.85;
         }
 
         .btn-action-refer {
@@ -628,6 +706,7 @@
             text-align: left;
             font-weight: bold;
             border-left: 5px solid var(--color-principal);
+            transition: border-color 0.3s ease, background-color 0.3s ease;
         }
 
         .catalogo-categoria {
@@ -651,6 +730,7 @@
         .catalogo-categoria::-webkit-scrollbar-thumb {
             background-color: var(--color-principal);
             border-radius: 10px;
+            transition: background-color 0.3s ease;
         }
 
         .premio {
@@ -677,7 +757,15 @@
         .premio img {
             width: 100%;
             height: 150px;
-            object-fit: cover;
+            /* * =============================================
+             * === INICIO: CORRECCIÓN DE IMAGEN (V10)
+             * =============================================
+             */
+            object-fit: contain; /* MODIFICADO: 'cover' a 'contain' */
+            /* * =============================================
+             * === FIN: CORRECCIÓN DE IMAGEN (V10)
+             * =============================================
+             */
             border-radius: 5px;
             margin-bottom: 15px;
             border: 1px solid var(--color-border);
@@ -701,6 +789,7 @@
             display: block;
             margin: 10px 0;
             text-align: center;
+            transition: color 0.3s ease;
         }
 
         .btn-canjear {
@@ -712,7 +801,7 @@
             cursor: pointer;
             width: 100%;
             margin-top: auto;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
             font-weight: bold;
         }
 
@@ -777,10 +866,12 @@
         .modal-content h2 {
             margin-top: 0;
             color: var(--color-principal);
+            transition: color 0.3s ease;
         }
 
         #welcome-modal .modal-content {
             border-top: 5px solid var(--color-principal);
+            transition: border-color 0.3s ease;
         }
 
         .btn-facebook-link {
@@ -799,10 +890,12 @@
 
         #security-warning-modal .modal-content {
             border-top: 5px solid var(--color-secundario);
+            transition: border-color 0.3s ease;
         }
 
         #security-warning-modal .modal-content h2 {
             color: var(--color-secundario);
+            transition: color 0.3s ease;
         }
 
         .modal-content input[type=text],
@@ -847,12 +940,14 @@
             color: #6c757d;
             font-size: 0.9em;
             border-top: 1px solid var(--color-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         footer a {
             color: var(--color-principal);
             text-decoration: none;
             font-weight: bold;
+            transition: color 0.3s ease;
         }
 
         footer a:hover {
@@ -910,6 +1005,7 @@
             background-color: var(--color-fondo);
             font-weight: bold;
             word-wrap: break-word;
+            transition: border-color 0.3s ease;
         }
 
         .notification-list {
@@ -924,6 +1020,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
             border-left: 4px solid var(--color-principal);
+            transition: border-color 0.3s ease, background-color 0.3s ease;
         }
 
         .notification-list li strong {
@@ -941,11 +1038,88 @@
             padding: 20px;
             text-align: center;
         }
+
+        #theme-options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            max-height: 40vh;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .theme-option-btn {
+            width: 100px;
+            padding: 10px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            background-color: var(--color-blanco);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .theme-option-btn:hover {
+            transform: scale(1.05);
+            border-color: var(--color-principal);
+        }
+
+        .theme-option-btn .swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 8px auto;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #buy-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); 
+            z-index: 250; 
+            padding: 0;
+            margin: 0;
+        }
+
+        .buy-modal-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        #buy-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #fff; 
+        }
+
+        .close-btn-fullscreen {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: #ffffff; 
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 251; 
+            text-shadow: 0 0 5px rgba(0,0,0,0.5); 
+        }
+        .close-btn-fullscreen:hover {
+            color: #ccc;
+        }
     </style>
 </head>
 <body onscroll="scrollFunction()">
 
-    <!-- Barra de Login V6 -->
     <div id="login-nav-bar">
         <div class="nav-logo">
             <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logo">
@@ -953,7 +1127,6 @@
         <div class="nav-links"></div>
     </div>
 
-    <!-- Barra de Navegación (Logueado) -->
     <div id="nav-bar">
         <div class="nav-logo">
             <img src="https://i.postimg.cc/3W5Sj9KD/1759816774563.png" alt="Logo">
@@ -984,6 +1157,8 @@
                             style="width: 20px; margin-right: 5px;"></i> Mi Historial</a>
                     <a href="#" onclick="openReferralModal()"><i class="fas fa-users"
                             style="width: 20px; margin-right: 5px;"></i> Referir Amigo</a>
+                    <a href="#" onclick="openThemeModal()"><i class="fas fa-palette"
+                            style="width: 20px; margin-right: 5px;"></i> Temas</a>
                     <a href="#" onclick="logout()" class="user-dropdown-logout">
                         <i class="fas fa-sign-out-alt" style="width: 20px; margin-right: 5px;"></i> Cerrar Sesión
                     </a>
@@ -997,7 +1172,6 @@
 
         <h1 id="main-title">🏁 Revolution Wax 🏁</h1>
 
-        <!-- Sección de Login V6 -->
         <div id="login-section">
             <h2>Bienvenido de Nuevo</h2>
             <p class="login-subtitle">Ingresa tus credenciales para acceder a tus puntos.</p>
@@ -1031,7 +1205,6 @@
             </div>
         </div>
 
-        <!-- Sección de Lealtad -->
         <div id="lealtad-section">
             <p style="font-size: 1.2em;">Resumen de tu cuenta</p>
             <div id="dashboard-grid">
@@ -1090,7 +1263,6 @@
         </div>
     </div>
 
-    <!-- Contacto -->
     <div class="social-links" id="contacto-redes">
         <p style="font-weight: bold;">Síguenos y contáctanos:</p>
         <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" title="Visita nuestro Facebook">
@@ -1104,7 +1276,6 @@
         </a>
     </div>
 
-    <!-- Modales -->
     <div id="history-modal" class="modal">
         <div class="modal-content history-modal-content">
             <span class="close-btn"
@@ -1214,22 +1385,53 @@
                 onclick="document.getElementById('notifications-modal').style.display='none'">&times;</span>
             <h2><i class="fas fa-bell"></i> Notificaciones</h2>
             <ul class="notification-list" id="notification-list-dynamic">
-                <!-- Los <li> se generarán aquí -->
                 <li id="no-notifications" style="display: none;">No tienes notificaciones nuevas.</li>
             </ul>
             <button class="btn btn-primary"
                 onclick="document.getElementById('notifications-modal').style.display='none'">Cerrar</button>
         </div>
     </div>
+    
+    <div id="theme-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('theme-modal').style.display='none'">&times;</span>
+            <h2>Elige un Tema</h2>
+            <p style="font-size: 0.9em; color: #555;">Elige el color principal y secundario de la aplicación.</p>
+            <div id="theme-options-container">
+            </div>
+        </div>
+    </div>
 
-    <!-- Footer -->
+    <div id="buy-modal">
+        <div class="buy-modal-content">
+            <span class="close-btn-fullscreen" onclick="closeBuyModal()">&times;</span>
+            <iframe id="buy-iframe" src="about:blank" frameborder="0"></iframe>
+        </div>
+    </div>
+
     <footer>
         &copy; 2025 Revolution Wax Premios. Todos los derechos reservados.<br>
         Creador de la página: <a href="mailto: mrandroidtutorialeshd@gmail.com">Juan Zamora</a>
     </footer>
+    
     <button onclick="topFunction()" id="scrollToTopBtn" title="Ir arriba">
         <i class="fas fa-arrow-up"></i>
     </button>
+    
+    <div id="buy-options-container">
+        <button class="buy-option-btn" onclick="openBuyModal('pagina')">
+            <i class="fas fa-globe"></i> Nuestra Página
+        </button>
+        <button class="buy-option-btn" onclick="openBuyModal('mercadolibre')">
+            <i class="fas fa-store"></i> Mercado Libre
+        </button>
+    </div>
+    
+    <button onclick="toggleBuyOptions()" id="buy-fab-btn" title="Comprar Productos">
+        <i class="fas fa-shopping-cart"></i> Comprar
+    </button>
+
 
     <script>
         // --- CONFIGURACIÓN GENERAL ---
@@ -1241,9 +1443,13 @@
         const CLAVE_HISTORIAL = 'movimientoHistory';
         const CLAVE_RACHA_INFO = 'rachaDiariaInfo';
         const CLAVE_CODIGOS_USADOS = 'codigosUsados';
-        const CLAVE_NOTIFICACIONES = 'revolutionWaxNotifications'; // Clave para notificaciones
+        const CLAVE_NOTIFICACIONES = 'revolutionWaxNotifications';
+        const CLAVE_TEMA = 'revolutionWaxTheme'; 
+
         const COOLDOWN_MS = 24 * 60 * 60 * 1000;
         const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000;
+
+        // --- NIVLES (TIERS) ---
         const NIVELES = [
             { nombre: "Bronce", puntos: 0, icono: "🥉", clase: "tier-bronze" },
             { nombre: "Plata", puntos: 500, icono: "🥈", clase: "tier-silver" },
@@ -1258,6 +1464,8 @@
             }
             return NIVELES[0];
         }
+
+        // --- CÓDIGOS Y USUARIOS ---
         const CODIGOS_DE_CANJE = {
             "10019950": 50, "100199100": 100, "100199200": 200, "10019900": 10000,
             "SECRETO100": 100, "PREMIUM500": 500, "SUPER1000": 1000
@@ -1269,7 +1477,7 @@
         };
         const WHATSAPP_NUMBER = "5217719624236";
 
-        // --- Catálogo de Premios ---
+        // --- CATÁLOGO DE PREMIOS ---
         const categoriasPremios = {
             "Aceites": [
                 { id: 1, nombre: "Aditivo de Combustible", costo: 165, descripcion: "Potencia tu motor...", imagen: "https://i.postimg.cc/mDHF11wQ/tom7sc2i4a2gzq0hljda.jpg" },
@@ -1306,9 +1514,34 @@
                 { id: 22, nombre: "Producto Sorpresa VIP", costo: 4000, descripcion: "Regalo exclusivo...", imagen: "https://i.postimg.cc/YS5kxn7r/1761305366994.png" }
             ]
         };
-        
         const catalogoPremios = Object.values(categoriasPremios).flat();
         
+        // --- DATOS DE TEMAS (V8) ---
+        const THEME_COLORS = {
+            'actual': { principal: '#0056b3', secundario: '#dc3545' },
+            'azul_claro': { principal: '#03a9f4', secundario: '#dc3545' },
+            'azul_medio': { principal: '#2196F3', secundario: '#dc3545' },
+            'azul_obscuro': { principal: '#303f9f', secundario: '#dc3545' },
+            'rosa': { principal: '#e91e63', secundario: '#f06292' },
+            'rojo': { principal: '#d32f2f', secundario: '#f44336' },
+            'morado': { principal: '#9c27b0', secundario: '#dc3545' },
+            'verde': { principal: '#4CAF50', secundario: '#dc3545' },
+            'naranja': { principal: '#ff9800', secundario: '#dc3545' },
+            'amarillo': { principal: '#fbc02d', secundario: '#dc3545' },
+            'obscuro': { principal: '#212529', secundario: '#dc3545' },
+            'gris': { principal: '#607d8b', secundario: '#dc3545' },
+            'magenta': { principal: '#ff4081', secundario: '#dc3545' },
+            'turquesa': { principal: '#009688', secundario: '#dc3545' },
+            'violeta': { principal: '#673ab7', secundario: '#dc3545' }
+        };
+
+        // --- URLs DE TIENDA (V9) ---
+        const SHOP_URLS = {
+            'pagina': "https://revolutionwax.pages.dev/Index",
+            'mercadolibre': "https://listado.mercadolibre.com.mx/_CustId_195578470?item_id=MLM3765615086&category_id=MLM172378&seller_id=195578470&client=recoview-selleritems&recos_listing=true#origin=vip&component=sellerData&typeSeller=classic"
+        };
+
+        // --- VARIABLES GLOBALES ---
         let usuarioLogueado = null;
         let usuarioLogueadoUsername = null;
         let puntosUsuario = 0;
@@ -1316,10 +1549,19 @@
         let canjeTimerIntervals = {};
         let streakTimerInterval = null;
 
+        // --- Elementos DOM de Compra (V9) ---
+        const buyModal = document.getElementById('buy-modal');
+        const buyIframe = document.getElementById('buy-iframe');
+        const buyOptionsContainer = document.getElementById('buy-options-container'); 
+
         // --- FUNCIONES DE SCROLL Y NAVEGACIÓN ---
         function scrollFunction() {
             const btn = document.getElementById("scrollToTopBtn");
-            btn.style.display = (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) ? "block" : "none";
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
         }
         function topFunction() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
         function scrollToContact() {
@@ -1331,6 +1573,7 @@
         function toggleDropdown(buttonElement) {
             const dropdownContent = buttonElement.nextElementSibling;
             closeAllDropdowns(dropdownContent); 
+            buyOptionsContainer.classList.remove('show'); // Ocultar opciones de compra
             if (dropdownContent) {
                 dropdownContent.classList.toggle('show');
             }
@@ -1347,10 +1590,15 @@
             const isDropdownButton = event.target.closest('.dropdown-btn');
             const isIconButton = event.target.closest('.nav-icon-btn');
             const isDropdownLink = event.target.closest('.dropdown-content a');
+            const isBuyButton = event.target.closest('#buy-fab-btn'); 
+            const isBuyOption = event.target.closest('.buy-option-btn'); 
 
-            if (!isDropdownButton && !isIconButton && !isDropdownLink) {
+            if (!isDropdownButton && !isIconButton && !isDropdownLink && !isBuyButton && !isBuyOption) { 
                 if (!event.target.closest('.dropdown-content')) {
                     closeAllDropdowns();
+                }
+                if (!event.target.closest('#buy-options-container')) {
+                    buyOptionsContainer.classList.remove('show');
                 }
             }
         }
@@ -1522,19 +1770,16 @@
             updateStreakDisplay();
             updateNotificationBadge(); 
             
-            // *** INICIO: CORRECCIÓN DE BUG V8 ***
-            // Mostrar bienvenida solo una vez por sesión del navegador
             if (!sessionStorage.getItem('welcomeModalShown')) {
                 document.getElementById('welcome-modal').style.display = 'block';
                 sessionStorage.setItem('welcomeModalShown', 'true');
             }
-            // *** FIN: CORRECCIÓN DE BUG V8 ***
         }
 
         function logout() {
             closeAllDropdowns();
             localStorage.removeItem(CLAVE_USUARIO_ACTIVO);
-            sessionStorage.removeItem('welcomeModalShown'); // *** CORRECCIÓN V8: Limpiar bandera ***
+            sessionStorage.removeItem('welcomeModalShown');
             stopAllTimers();
             usuarioLogueado = null;
             usuarioLogueadoUsername = null;
@@ -1669,7 +1914,7 @@
                 addMovementToHistory(usuarioLogueado, 'secret', `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`);
             }
             
-            addNotification("⬆️ ¡Puntos Sumados!", `Código correcto. Has ganado ${puntosASumar} puntos.`);
+            addNotification("⬆️ ¡Puntos Sumados!", `Código ${codigoIngresado} correcto. Has ganado ${puntosASumar} puntos.`);
 
             document.getElementById('acumular-modal').style.display = 'none';
             actualizarInterfaz();
@@ -1691,7 +1936,7 @@
             renderizarCatalogo();
             renderizarEstadisticas();
             updateStreakDisplay();
-            updateNotificationBadge(); // Actualizar badge
+            updateNotificationBadge();
         }
 
         function simularEscaneoQR() {
@@ -1882,8 +2127,91 @@
             document.getElementById('referral-modal').style.display = 'block';
         }
 
+        /* --- FUNCIONES DE TEMA (V8) --- */
+        
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem(CLAVE_TEMA);
+            if (savedTheme && savedTheme !== 'actual' && THEME_COLORS[savedTheme]) {
+                applyTheme(savedTheme, false);
+            }
+        }
+        function applyTheme(themeName, closeModal = true) {
+            const theme = THEME_COLORS[themeName];
+            if (!theme) {
+                console.error('Tema no encontrado:', themeName);
+                return;
+            }
+            
+            const root = document.documentElement;
+            root.style.setProperty('--color-principal', theme.principal);
+            root.style.setProperty('--color-secundario', theme.secundario);
+            
+            localStorage.setItem(CLAVE_TEMA, themeName);
+            
+            if (closeModal) {
+                document.getElementById('theme-modal').style.display = 'none';
+            }
+        }
+        function openThemeModal() {
+            closeAllDropdowns();
+            const container = document.getElementById('theme-options-container');
+            container.innerHTML = ''; 
+
+            for (const themeName in THEME_COLORS) {
+                const colors = THEME_COLORS[themeName];
+                const themeTitle = themeName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                const btn = document.createElement('button');
+                btn.className = 'theme-option-btn';
+                btn.onclick = () => applyTheme(themeName, true);
+                
+                const swatch = document.createElement('div');
+                swatch.className = 'swatch';
+                swatch.style.background = `linear-gradient(135deg, ${colors.principal} 50%, ${colors.secundario} 51%)`;
+                
+                btn.appendChild(swatch);
+                btn.appendChild(document.createTextNode(themeTitle));
+                container.appendChild(btn);
+            }
+            
+            document.getElementById('theme-modal').style.display = 'block';
+        }
+        
+        /* * =============================================
+         * === INICIO: NUEVAS FUNCIONES DE COMPRA (V9)
+         * =============================================
+         */
+        
+        function toggleBuyOptions() {
+            buyOptionsContainer.classList.toggle('show');
+            closeAllDropdowns(); // Cierra el menú de perfil si está abierto
+        }
+
+        function openBuyModal(urlKey) {
+            const url = SHOP_URLS[urlKey];
+            if (!url) {
+                console.error('URL no encontrada para la clave:', urlKey);
+                return;
+            }
+
+            buyIframe.src = url;
+            buyModal.style.display = 'block';
+            buyOptionsContainer.classList.remove('show');
+        }
+
+        function closeBuyModal() {
+            buyModal.style.display = 'none';
+            buyIframe.src = 'about:blank';
+            buyOptionsContainer.classList.remove('show');
+        }
+        /* === FIN: NUEVAS FUNCIONES DE COMPRA (V9) === */
+
+
         // --- INICIALIZACIÓN DE LA APLICACIÓN ---
+        
+        loadSavedTheme(); // Cargar tema guardado
         verificarEscaneoAlCargar();
+        
         const usuarioEmailGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
         const loginNavBar = document.getElementById('login-nav-bar');
         const navBar = document.getElementById('nav-bar');
