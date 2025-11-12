@@ -881,10 +881,7 @@
             transition: color 0.3s ease;
         }
 
-        #welcome-modal .modal-content {
-            border-top: 5px solid var(--color-principal);
-            transition: border-color 0.3s ease;
-        }
+        /* El modal #welcome-modal fue eliminado */
 
         .btn-facebook-link {
             background-color: #3b5998;
@@ -1198,6 +1195,152 @@
             background-color: #5a6268;
         }
         /* === FIN: ESTILOS MODAL ESCÁNER QR === */
+
+        /*
+         * =============================================
+         * === INICIO: ESTILOS MODAL PUBLICIDAD (ACTUALIZADO)
+         * =============================================
+        */
+        #ad-modal {
+            display: none; 
+            align-items: center;
+            justify-content: center;
+        }
+
+        #ad-modal-content {
+            padding: 0; 
+            max-width: 400px; /* <-- MODIFICADO: Más angosto y elegante */
+            width: 90%;
+            background-color: transparent; 
+            border: none;
+            box-shadow: none;
+            margin: auto; 
+            position: relative;
+            overflow: visible; 
+        }
+
+        /* ----- INICIO: CAMBIO BOTÓN CERRAR ----- */
+        #ad-modal-content .close-btn {
+            position: absolute;
+            top: -12px;      /* Ajustado */
+            right: -12px;     /* Ajustado */
+            color: #fff;
+            background-color: transparent; /* Minimalista */
+            border: none;                  /* Minimalista */
+            border-radius: 50%;
+            width: auto;                   /* Auto-ajustable */
+            height: auto;                  /* Auto-ajustable */
+            line-height: 1;                /* Limpio */
+            font-size: 34px;               /* Más grande y fácil de tocar */
+            font-weight: 300;              /* Más elegante */
+            text-align: center;
+            z-index: 1001;
+            cursor: pointer;
+            padding: 5px;                  /* Área de toque */
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8); /* Visibilidad */
+        }
+        /* ----- FIN: CAMBIO BOTÓN CERRAR ----- */
+
+        .ad-slider-container {
+            position: relative;
+            width: 100%;
+            /* Ajustar altura para ser más largo verticalmente */
+            padding-top: 160%; /* <-- MODIFICADO: (Ratio 5:8) */
+            margin: auto;
+            overflow: hidden; 
+            border-radius: 10px;
+            background-color: #333; /* Fondo mientras carga */
+        }
+
+        .ad-slide {
+            /* Usar position absolute para el efecto de opacidad */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* Oculto por defecto */
+            transition: opacity 0.5s ease-in-out; /* Transición de opacidad */
+        }
+        
+        .ad-slide.active {
+            opacity: 1; /* Visible */
+            z-index: 2; /* Poner slide activo por encima */
+        }
+
+        .ad-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Mantiene la foto completa */
+            border-radius: 10px;
+        }
+
+        /* ----- INICIO: CAMBIO BOTONES NAVEGACIÓN ----- */
+        .ad-prev, .ad-next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 12px; /* Más pequeño */
+            margin-top: -24px; /* Re-centrado */
+            color: white;
+            font-weight: bold;
+            font-size: 20px; /* Más pequeño */
+            transition: 0.3s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0, 0, 0, 0.3); /* Más sutil */
+            z-index: 3; /* Encima del slide activo */
+        }
+        /* ----- FIN: CAMBIO BOTONES NAVEGACIÓN ----- */
+
+        .ad-next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+        
+        .ad-prev {
+            left: 0;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .ad-prev:hover, .ad-next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* ----- INICIO: CAMBIO BARRA PROGRESO ----- */
+        #ad-progress-bar-container {
+            position: absolute;
+            bottom: -12px; /* Un poco más cerca */
+            left: 0;
+            width: 100%;
+            height: 4px; /* Más delgada */
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 3;
+        }
+        /* ----- FIN: CAMBIO BARRA PROGRESO ----- */
+
+        #ad-progress-bar {
+            width: 0;
+            height: 100%;
+            background-color: var(--color-principal); /* Usa el color del tema */
+            border-radius: 5px;
+        }
+
+        /* Clase para activar la animación de la barra */
+        #ad-modal.ads-running #ad-progress-bar {
+            /* El tiempo de animación debe coincidir con el JS (3000ms) */
+            animation: ad-progress 3s linear forwards;
+        }
+
+        /* Animación para reiniciar en cada slide */
+        @keyframes ad-progress {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        /* === FIN: ESTILOS MODAL PUBLICIDAD === */
     </style>
 </head>
 <body onscroll="scrollFunction()">
@@ -1359,6 +1502,32 @@
         </a>
     </div>
 
+    <div id="ad-modal" class="modal" style="padding-top: 0; display: none; background-color: rgba(0, 0, 0, 0.8);">
+        <div class="modal-content" id="ad-modal-content">
+            
+            <span class="close-btn" onclick="closeAdModal()">&times;</span>
+            
+            <div class="ad-slider-container">
+                <div class="ad-slide">
+                    <img src="https://i.postimg.cc/1txbSKcq/1ba902be-1976-42f1-a8ec-befe78d45cfb-20251112-115609-0000.png" alt="Publicidad 1">
+                </div>
+                <div class="ad-slide">
+                    <img src="https://i.postimg.cc/y6y2qcJF/6631093b-fc5a-4518-ad38-813b8dbf5ff2-20251112-115500-0000.png" alt="Publicidad 2">
+                </div>
+                <div class="ad-slide">
+                    <img src="https://i.postimg.cc/gcwFhnrr/image.png" alt="Publicidad 3">
+                </div>
+
+                <a class="ad-prev" onclick="manualChangeAdSlide(-1)">&#10094;</a>
+                <a class="ad-next" onclick="manualChangeAdSlide(1)">&#10095;</a>
+            </div>
+
+            <div id="ad-progress-bar-container">
+                <div id="ad-progress-bar"></div>
+            </div>
+
+        </div>
+    </div>
     <div id="customAlertModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeCustomAlert()">&times;</span>
@@ -1381,19 +1550,7 @@
                 onclick="document.getElementById('history-modal').style.display='none'">Cerrar</button>
         </div>
     </div>
-    <div id="welcome-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn"
-                onclick="document.getElementById('welcome-modal').style.display='none'">&times;</span>
-            <h2>¡Bienvenido al Programa de Lealtad!</h2>
-            <p style="font-size: 1.1em; margin-bottom: 20px;">
-                Todas tus compras acumularán puntos que podrás canjear por increíbles premios exclusivos 🎁.
-            </p>
-            <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" class="btn-facebook-link">
-                <i class="fab fa-facebook-f"></i> Síguenos en Facebook
-            </a>
-        </div>
-    </div>
+    
     <div id="security-warning-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn"
@@ -1710,7 +1867,7 @@
         const buyIframe = document.getElementById('buy-iframe');
         const buyOptionsContainer = document.getElementById('buy-options-container'); 
 
-        // --- FUNCIONES DE SCROLL Y NAVEGACIÓN ---
+        // --- FUNCIONES DE SCROLL Y NAVEGAClÓN ---
         function scrollFunction() {
             const btn = document.getElementById("scrollToTopBtn");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -1970,10 +2127,7 @@
                 adminBtn.style.display = 'none';
             }
             
-            if (!sessionStorage.getItem('welcomeModalShown')) {
-                document.getElementById('welcome-modal').style.display = 'block';
-                sessionStorage.setItem('welcomeModalShown', 'true');
-            }
+            // El bloque if() que mostraba #welcome-modal fue eliminado
         }
 
         function logout() {
@@ -2733,6 +2887,100 @@
             buyOptionsContainer.classList.remove('show');
         }
         
+        /* --- FUNCIONES MODAL PUBLICIDAD (ACTUALIZADO) --- */
+        let currentAdSlide = 1;
+        let adSlideInterval = null;
+        const AD_SLIDE_DURATION = 3000; // 3000ms = 3 segundos
+
+        function openAdModal() {
+            const modal = document.getElementById('ad-modal');
+            modal.style.display = 'flex'; 
+            
+            // Reiniciar al primer slide
+            currentAdSlide = 1;
+            showAdSlide(currentAdSlide);
+            
+            // Iniciar el temporizador automático
+            startAdTimer();
+            sessionStorage.setItem('adModalShown', 'true'); 
+        }
+
+        function closeAdModal() {
+            document.getElementById('ad-modal').style.display = 'none';
+            // Detener el temporizador al cerrar
+            clearInterval(adSlideInterval);
+            adSlideInterval = null;
+        }
+
+        // Función para los botones < >
+        function manualChangeAdSlide(n) {
+            // Detener el temporizador automático
+            clearInterval(adSlideInterval);
+            adSlideInterval = null;
+            // Quitar la clase que anima la barra de progreso
+            document.getElementById('ad-modal').classList.remove('ads-running');
+            
+            // Mostrar el slide seleccionado
+            showAdSlide(currentAdSlide += n);
+        }
+        
+        // Función para el temporizador automático
+        function nextAdSlide() {
+            showAdSlide(currentAdSlide += 1);
+        }
+
+        function startAdTimer() {
+            // Limpiar cualquier temporizador anterior
+            clearInterval(adSlideInterval);
+            
+            // Añadir clase para que la animación de la barra se ejecute
+            const modal = document.getElementById('ad-modal');
+            modal.classList.add('ads-running');
+            
+            // Iniciar nuevo temporizador
+            adSlideInterval = setInterval(nextAdSlide, AD_SLIDE_DURATION);
+        }
+
+        function showAdSlide(n) {
+            let i;
+            let slides = document.getElementsByClassName("ad-slide");
+            let progressBar = document.getElementById("ad-progress-bar");
+            if (!slides || slides.length === 0) return; 
+
+            // Lógica para el carrusel infinito
+            if (n > slides.length) { 
+                currentAdSlide = 1; // Vuelve al primero
+            }
+            if (n < 1) { 
+                currentAdSlide = slides.length; // Vuelve al último
+            }
+
+            // Ocultar todos los slides
+            for (i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+
+            // Mostrar el slide actual
+            slides[currentAdSlide - 1].classList.add('active');
+
+            // Ocultar/Mostrar botones en los extremos (Opcional, pero buena UX)
+            const prevBtn = document.querySelector('.ad-prev');
+            const nextBtn = document.querySelector('.ad-next');
+            if (prevBtn) prevBtn.style.display = 'block'; // Siempre visibles
+            if (nextBtn) nextBtn.style.display = 'block'; // Siempre visibles
+            
+            // Si el temporizador está activo, reiniciar la animación de la barra
+            if (adSlideInterval) {
+                const modal = document.getElementById('ad-modal');
+                // Forzar el reinicio de la animación CSS
+                modal.classList.remove('ads-running');
+                // void progressBar.offsetWidth; // Truco para forzar el reflow
+                setTimeout(() => {
+                   modal.classList.add('ads-running');
+                }, 10); // Un pequeño delay
+            }
+        }
+
         /* --- MODAL DE ALERTA --- */
         
         function showAlert(message, title = 'Aviso', titleColor = 'var(--color-principal)') {
@@ -2765,6 +3013,13 @@
         loadSavedTheme(); // Cargar tema guardado
         verificarEscaneoAlCargar();
         
+        // --- NUEVO: MOSTRAR MODAL DE PUBLICIDAD AL INICIO ---
+        if (!sessionStorage.getItem('adModalShown')) {
+            // Retrasar 500ms para que cargue la UI antes de mostrar el modal
+            setTimeout(openAdModal, 500);
+        }
+        // --- FIN NUEVO ---
+        
         const usuarioEmailGuardado = localStorage.getItem(CLAVE_USUARIO_ACTIVO);
         const loginNavBar = document.getElementById('login-nav-bar');
         const navBar = document.getElementById('nav-bar');
@@ -2785,3 +3040,4 @@
     </script>
 </body>
 </html>
+
