@@ -1603,8 +1603,8 @@
 
         // --- CÓDIGOS Y USUARIOS ---
         const CODIGOS_DE_CANJE = {
-            "10019950": 50, "100199100": 100, "100199200": 200, "10019900": 10000,
-            "SECRETO100": 100, "PREMIUM500": 500, "SUPER1000": 1000
+            "RW00850": 50, "RW008100": 100, "RW008200": 200, "10019900": 10000,
+            "CH00825": 25, "AR00825": 25, "AM00825": 25
         };
         
         const ADMIN_QR_OPTIONS = {
@@ -2148,8 +2148,10 @@
                 isTempCode = true;
                 
                 // De-activate code immediately upon use
-                delete tempCodes[codigoIngresado];
-                localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+                // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
+                // delete tempCodes[codigoIngresado];
+                // localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+                // --- FIN DE CAMBIO ---
             }
 
             // 2. Check for permanent codes (if not found in temp)
@@ -2170,24 +2172,27 @@
             // 4. Handle code usage rules
             if (isTempCode) {
                 // It's a temporary admin code. Add points directly.
+            
+            // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
             } else if (isPermanentSingleUse) {
                 // It's a permanent single-use code (e.g., SECRETO100)
-                const codigosUsados = cargarCodigosUsados();
-                if (codigosUsados.has(codigoIngresado)) {
-                    modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.';
-                    document.getElementById('secret-code').value = '';
-                    return;
-                }
-                marcarCodigoComoUsado(codigoIngresado);
+                // const codigosUsados = cargarCodigosUsados();
+                // if (codigosUsados.has(codigoIngresado)) {
+                //     modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.';
+                //     document.getElementById('secret-code').value = '';
+                //     return;
+                // }
+                // marcarCodigoComoUsado(codigoIngresado);
             } else {
                 // It's a multi-use code (e.g., 10019950)
-                const sessionKey = `puntosSumados_${usuarioLogueado}`;
-                if (sessionStorage.getItem(sessionKey)) {
-                    modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!';
-                    return;
-                }
-                sessionStorage.setItem(sessionKey, 'true');
+                // const sessionKey = `puntosSumados_${usuarioLogueado}`;
+                // if (sessionStorage.getItem(sessionKey)) {
+                //     modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!';
+                //     return;
+                // }
+                // sessionStorage.setItem(sessionKey, 'true');
             }
+            // --- FIN DE CAMBIO ---
 
             // 5. Add points and history
             const todosLosPuntos = cargarPuntosUsuarios();
@@ -2197,17 +2202,19 @@
             
             incrementStat(CLAVE_LOG_SCANS, usuarioLogueado); // <-- ¡NUEVA LÍNEA AÑADIDA!
             
+            // --- INICIO DE CAMBIO: OCULTAR CÓDIGO EN HISTORIAL ---
             let historyMessage = '';
             if (isTempCode) {
-                historyMessage = `Código Admin ${codigoIngresado} (+${puntosASumar} Pts)`;
+                historyMessage = `Código Admin Canjeado (+${puntosASumar} Pts)`;
                 addMovementToHistory(usuarioLogueado, 'scan', historyMessage);
             } else if (isPermanentSingleUse) {
-                historyMessage = `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`;
+                historyMessage = `Código Secreto Canjeado (+${puntosASumar} Pts)`;
                 addMovementToHistory(usuarioLogueado, 'secret', historyMessage);
             } else {
-                historyMessage = `Código Manual QR (+${puntosASumar} Pts)`;
+                historyMessage = `Código Manual Canjeado (+${puntosASumar} Pts)`;
                 addMovementToHistory(usuarioLogueado, 'scan', historyMessage);
             }
+            // --- FIN DE CAMBIO ---
             
             addNotification("⬆️ ¡Puntos Sumados!", `Código correcto. Has ganado ${puntosASumar} puntos.`);
             
@@ -2267,8 +2274,10 @@
                 isTempCode = true;
                 
                 // De-activate code immediately upon use
-                delete tempCodes[codigoIngresado];
-                localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+                // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
+                // delete tempCodes[codigoIngresado];
+                // localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+                // --- FIN DE CAMBIO ---
             }
 
             // 2. Check for permanent codes (if not found in temp)
@@ -2289,24 +2298,27 @@
             // 4. Handle code usage rules
             if (isTempCode) {
                 // It's a temporary admin code. Add points directly.
+            
+            // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
             } else if (isPermanentSingleUse) {
                 // It's a permanent single-use code (e.g., SECRETO100)
-                const codigosUsados = cargarCodigosUsados();
-                if (codigosUsados.has(codigoIngresado)) {
-                    modalMessage.textContent = '❌ Código de canje ya utilizado.';
-                    document.getElementById('redemption-code').value = '';
-                    return;
-                }
-                marcarCodigoComoUsado(codigoIngresado);
+                // const codigosUsados = cargarCodigosUsados();
+                // if (codigosUsados.has(codigoIngresado)) {
+                //     modalMessage.textContent = '❌ Código de canje ya utilizado.';
+                //     document.getElementById('redemption-code').value = '';
+                //     return;
+                // }
+                // marcarCodigoComoUsado(codigoIngresado);
             } else {
                 // It's a multi-use code (e.g., 10019950)
-                const sessionKey = `puntosSumados_${usuarioEscaneado}`;
-                if (sessionStorage.getItem(sessionKey)) {
-                    modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!';
-                    return;
-                }
-                sessionStorage.setItem(sessionKey, 'true');
+                // const sessionKey = `puntosSumados_${usuarioEscaneado}`;
+                // if (sessionStorage.getItem(sessionKey)) {
+                //     modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!';
+                //     return;
+                // }
+                // sessionStorage.setItem(sessionKey, 'true');
             }
+            // --- FIN DE CAMBIO ---
 
             // 5. Add points and history
             const todosLosPuntos = cargarPuntosUsuarios();
@@ -2316,17 +2328,19 @@
             
             incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado); // <-- ¡NUEVA LÍNEA AÑADIDA!
             
+            // --- INICIO DE CAMBIO: OCULTAR CÓDIGO EN HISTORIAL ---
             let historyMessage = '';
             if (isTempCode) {
-                historyMessage = `Código Admin ${codigoIngresado} (+${puntosASumar} Pts)`;
+                historyMessage = `Código Admin Canjeado (+${puntosASumar} Pts)`;
                 addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
             } else if (isPermanentSingleUse) {
-                historyMessage = `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`;
+                historyMessage = `Código Secreto Canjeado (+${puntosASumar} Pts)`;
                 addMovementToHistory(usuarioEscaneado, 'secret', historyMessage);
             } else {
-                historyMessage = `Escaneo QR y Canje de Código (+${puntosASumar} Pts)`;
+                historyMessage = `Código de Escaneo Canjeado (+${puntosASumar} Pts)`;
                 addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
             }
+            // --- FIN DE CAMBIO ---
             
             if (usuarioLogueado === usuarioEscaneado) {
                 addNotification("⬆️ ¡Puntos Sumados!", `Escaneo QR correcto. Has ganado ${puntosASumar} puntos.`);
