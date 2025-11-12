@@ -6,6 +6,8 @@
     <title>🎁 Revolution Wax - ¡Acumula y Gana!</title>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         :root {
             /* Colores por defecto (Tema 'Actual') */
@@ -671,11 +673,11 @@
         .btn-action {
             background-color: var(--color-principal);
             color: var(--color-blanco);
-            padding: 12px 25px;
+            padding: 15px 30px; /* Aumentado de 12px 25px */
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.1em; /* Aumentado de 1em */
             font-weight: bold;
             transition: background-color 0.3s ease;
         }
@@ -757,15 +759,7 @@
         .premio img {
             width: 100%;
             height: 150px;
-            /* * =============================================
-             * === INICIO: CORRECCIÓN DE IMAGEN (V10)
-             * =============================================
-             */
-            object-fit: contain; /* MODIFICADO: 'cover' a 'contain' */
-            /* * =============================================
-             * === FIN: CORRECCIÓN DE IMAGEN (V10)
-             * =============================================
-             */
+            object-fit: contain; 
             border-radius: 5px;
             margin-bottom: 15px;
             border: 1px solid var(--color-border);
@@ -863,11 +857,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
-        /*
-         * =============================================
-         * === INICIO: CSS PARA NUEVO MODAL DE ALERTA
-         * =============================================
-         */
         #customAlertModal .modal-content {
             max-width: 400px;
             border-top: 5px solid var(--color-principal);
@@ -885,8 +874,6 @@
             line-height: 1.5;
             color: var(--color-texto);
         }
-        /* === FIN: CSS PARA NUEVO MODAL DE ALERTA === */
-
 
         .modal-content h2 {
             margin-top: 0;
@@ -924,7 +911,8 @@
         }
 
         .modal-content input[type=text],
-        .modal-content input[type=password] {
+        .modal-content input[type=password],
+        .modal-content select {
             padding: 12px;
             margin: 10px 0;
             width: 90%;
@@ -933,10 +921,16 @@
             text-align: center;
             font-size: 1.1em;
             box-sizing: border-box;
+            background-color: white;
+            cursor: pointer;
         }
-
+        .modal-content select {
+            text-align-last: center; /* Para centrar el texto en select */
+        }
+        
         .modal-content input[type=text]:focus,
-        .modal-content input[type=password]:focus {
+        .modal-content input[type=password]:focus,
+        .modal-content select:focus {
             border-color: var(--color-principal);
             outline: none;
         }
@@ -1141,6 +1135,69 @@
         .close-btn-fullscreen:hover {
             color: #ccc;
         }
+        
+        #admin-qr-output {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: var(--color-fondo);
+            border: 2px dashed var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        #admin-qr-output img {
+            width: 100%;
+            height: 100%;
+        }
+        #admin-qr-timer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--color-secundario);
+            display: block;
+            margin-top: 10px;
+        }
+        #admin-qr-message {
+            font-size: 0.9em;
+            color: var(--color-texto);
+            margin-top: 5px;
+        }
+
+        /*
+         * =============================================
+         * === INICIO: ESTILOS MODAL ESCÁNER QR
+         * =============================================
+        */
+        #qr-reader {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            overflow: hidden; /* Para contener el video */
+        }
+        /* Estilos para los botones dentro del modal de acumular */
+        .qr-actions-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .qr-actions-buttons .btn {
+            flex: 1; /* Ocupan espacio flexible */
+            margin: 0;
+        }
+        .qr-actions-buttons .btn-primary {
+            flex: 2; /* El botón de acumular es más grande */
+        }
+        .qr-actions-buttons .btn-scanner {
+            background-color: #6c757d; /* Color gris para el botón de escanear */
+        }
+        .qr-actions-buttons .btn-scanner:hover {
+            background-color: #5a6268;
+        }
+        /* === FIN: ESTILOS MODAL ESCÁNER QR === */
     </style>
 </head>
 <body onscroll="scrollFunction()">
@@ -1184,6 +1241,9 @@
                             style="width: 20px; margin-right: 5px;"></i> Referir Amigo</a>
                     <a href="#" onclick="openThemeModal()"><i class="fas fa-palette"
                             style="width: 20px; margin-right: 5px;"></i> Temas</a>
+                    <a href="#" onclick="openGenerateQRModal(); return false;" id="admin-qr-btn" style="display: none;">
+                        <i class="fas fa-qrcode" style="width: 20px; margin-right: 5px;"></i> Generar QR
+                    </a>
                     <a href="#" onclick="logout()" class="user-dropdown-logout">
                         <i class="fas fa-sign-out-alt" style="width: 20px; margin-right: 5px;"></i> Cerrar Sesión
                     </a>
@@ -1267,13 +1327,11 @@
             <div id="acumular-section">
                 <h2>Acumula Puntos</h2>
                 <p style="font-weight: bold; color: var(--color-texto);">
-                    👉 Escanea este QR (Navegador/iPhone) o usa los botones de acción (App Android).
+                    👇 ¡Toca "Acumular Puntos" y transforma tus compras en premios!
                 </p>
-                <div id="qr-code"></div>
-                <p id="qr-info" style="font-size: 0.8em; color: #777; display: none;"></p>
                 <div id="quick-actions-buttons">
                     <button id="btn-acumular" class="btn-action" onclick="openAcumularModal()">
-                        <i class="fas fa-keyboard"></i> Ingresar Código
+                        <i class="fas fa-plus"></i> Acumular Puntos
                     </button>
                     <button id="btn-referir" class="btn-action btn-action-refer" onclick="openReferralModal()">
                         <i class="fas fa-users"></i> Referir Amigo
@@ -1363,15 +1421,36 @@
             <p id="modal-message" style="color:var(--color-secundario); margin-top:10px;"></p>
         </div>
     </div>
+    
     <div id="acumular-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn"
-                onclick="document.getElementById('acumular-modal').style.display='none'">&times;</span>
-            <h2>Ingresar Código de Puntos</h2>
-            <p>Ingresa tu código de canje o código secreto para sumar puntos:</p>
-            <input type="text" id="secret-code" placeholder="Código Secreto/Canje" maxlength="9">
-            <button class="btn btn-primary" onclick="procesarCodigoSecreto()">Acumular Puntos</button>
-            <p id="acumular-modal-message" style="color:var(--color-secundario); margin-top:10px;"></p>
+            <span class="close-btn" onclick="closeAcumularModal()">&times;</span>
+            
+            <div id="qr-reader-container" style="display: none;">
+                <h2 style="margin-top: 0;">📸 Escanear Código 📸</h2>
+                <div id="qr-reader"></div>
+                <button class="btn btn-grey" onclick="stopScannerAndShowForm()" style="margin-top: 15px; width: 90%;">
+                    Cancelar Escaneo
+                </button>
+            </div>
+
+            <div id="qr-form-container">
+                <h2 style="margin-top: 0;">🎟️ Ingresar Código Manual 🎟️</h2>
+                <p>¡Escribe tu código de canje o secreto para sumar tus puntos al instante!</p>
+                
+                <input type="password" id="secret-code" placeholder="Código Secreto/Canje" maxlength="9">
+                
+                <div class="qr-actions-buttons">
+                    <button class="btn btn-scanner" onclick="startScanner()">
+                        <i class="fas fa-qrcode"></i> Escanear
+                    </button>
+                    <button class="btn btn-primary" onclick="procesarCodigoSecreto()">
+                        Acumular Puntos
+                    </button>
+                </div>
+                
+                <p id="acumular-modal-message" style="color:var(--color-secundario); margin-top:10px;"></p>
+            </div>
         </div>
     </div>
     <div id="create-user-modal" class="modal">
@@ -1438,6 +1517,27 @@
         </div>
     </div>
 
+    <div id="admin-qr-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                onclick="document.getElementById('admin-qr-modal').style.display='none'">&times;</span>
+            <h2><i class="fas fa-qrcode"></i> Generar Código de Puntos</h2>
+            
+            <select id="admin-qr-select" onchange="generateAdminQR()">
+                <option value="">-- Selecciona un producto --</option>
+                </select>
+
+            <div id="admin-qr-output">
+                </div>
+            
+            <span id="admin-qr-timer"></span>
+            <p id="admin-qr-message">Selecciona un producto para generar un código.</p>
+
+            <button class="btn btn-primary" style="margin-top: 20px;"
+                onclick="document.getElementById('admin-qr-modal').style.display='none'">Cerrar</button>
+        </div>
+    </div>
+
     <div id="buy-modal">
         <div class="buy-modal-content">
             <span class="close-btn-fullscreen" onclick="closeBuyModal()">&times;</span>
@@ -1480,6 +1580,7 @@
         const CLAVE_CODIGOS_USADOS = 'codigosUsados';
         const CLAVE_NOTIFICACIONES = 'revolutionWaxNotifications';
         const CLAVE_TEMA = 'revolutionWaxTheme'; 
+        const CLAVE_TEMP_CODES = 'tempGeneratedCodes';
 
         const COOLDOWN_MS = 24 * 60 * 60 * 1000;
         const RESTRICCION_CANJE_MS = 24 * 60 * 60 * 1000;
@@ -1505,11 +1606,29 @@
             "10019950": 50, "100199100": 100, "100199200": 200, "10019900": 10000,
             "SECRETO100": 100, "PREMIUM500": 500, "SUPER1000": 1000
         };
-        const USUARIOS_VALIDOS = {
-            "juanzamora": { psw: "prueba", email: "mrandroidtutorialeshd@gmail.com" },
-            "prueba1": { psw: "prueba1", email: "escuela100198@gmail.com" },
-            "tprueba2": { psw: "prueba2", email: "juanzamora2025a@gmail.com" }
+        
+        const ADMIN_QR_OPTIONS = {
+            "RW00850": { name: "1 pz Revolution Wax", points: 50 },
+            "RW008100": { name: "2x1 Revolution Wax", points: 100 },
+            "CH00825": { name: "1 pz Crema Hidratante", points: 25 },
+            "AR00825": { name: "1pz Aromatizante", points: 25 },
+            "AM00825": { name: "1pz Ambientador", points: 25 }
         };
+
+        const USUARIOS_VALIDOS = {
+            "Administrador": { psw: "Zamora.01", email: "admin@revolutionwax.com" },
+            "usuario1": { psw: "usuario1", email: "mrandroidtutorialeshd@gmail.com" },
+            "usuario2": { psw: "usuario2", email: "escuela100198@gmail.com" },
+            "usuario3": { psw: "usuario3", email: "juanzamora2025a@gmail.com" },
+            "usuario4": { psw: "usuario4", email: "escuela1001981@gmail.com" },
+            "usuario5": { psw: "usuario5", email: "escuela1001982@gmail.com" },
+            "usuario6": { psw: "usuario6", email: "escuela1001983@gmail.com" },
+            "usuario7": { psw: "usuario7", email: "escuela1001984@gmail.com" },
+            "usuario8": { psw: "usuario8", email: "escuela1001985@gmail.com" },
+            "usuario9": { psw: "usuario9", email: "escuela1001986@gmail.com" },
+            "usuario10": { psw: "usuario10", email: "escuela1001987@gmail.com" }            
+        };
+        
         const WHATSAPP_NUMBER = "5217719624236";
 
         // --- CATÁLOGO DE PREMIOS ---
@@ -1583,6 +1702,8 @@
         let usuarioEscaneado = null;
         let canjeTimerIntervals = {};
         let streakTimerInterval = null;
+        let adminQRTimerInterval = null; 
+        let html5QrCodeScanner = null; // Para el nuevo escáner de usuario
 
         // --- Elementos DOM de Compra (V9) ---
         const buyModal = document.getElementById('buy-modal');
@@ -1699,22 +1820,45 @@
             document.getElementById('total-scans').textContent = totalScans;
             document.getElementById('total-redeems').textContent = totalRedeems;
         }
+
+        /*
+         * =============================================
+         * === FUNCIÓN CORREGIDA ANTERIORMENTE
+         * =============================================
+        */
         function openHistoryModal(type) {
             closeAllDropdowns();
             if (!usuarioLogueado) return;
-            const history = loadHistory(usuarioLogueado);
+            
+            const history = loadHistory(usuarioLogueado); // <-- ¡LÍNEA CORREGIDA! (userEmail -> usuarioLogueado)
+            
             const listElement = document.getElementById('history-list-popup');
             const titleElement = document.getElementById('history-modal-title');
             listElement.innerHTML = '';
+            
             const filteredHistory = history.filter(item => item.type === type || (type === 'scan' && (item.type === 'secret' || item.type === 'streak')));
-            if (type === 'scan') { titleElement.textContent = 'Historial de Puntos Acomulados'; } else if (type === 'redeem') { titleElement.textContent = 'Historial de Regalos Canjeados'; }
-            if (filteredHistory.length === 0) { listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'acomulación de puntos' : 'canjes'}.</li>`; } else {
+            
+            if (type === 'scan') { 
+                titleElement.textContent = 'Historial de Puntos Acomulados'; 
+            } else if (type === 'redeem') { 
+                titleElement.textContent = 'Historial de Regalos Canjeados'; 
+            }
+            
+            if (filteredHistory.length === 0) { 
+                listElement.innerHTML = `<li>No hay historial de ${type === 'scan' ? 'acomulación de puntos' : 'canjes'}.</li>`; 
+            } else {
                 filteredHistory.forEach(item => {
-                    const li = document.createElement('li'); let icon = item.type === 'redeem' ? '🎁' : item.type === 'streak' ? '🔥' : '⬆️'; li.className = item.type === 'redeem' ? 'redeem-item' : item.type === 'streak' ? 'streak-item' : 'scan-item'; li.innerHTML = `<strong>${icon} ${item.description}</strong><br><span style="font-size: 0.9em; color: #6c757d;">${item.date}</span>`; listElement.appendChild(li);
+                    const li = document.createElement('li'); 
+                    let icon = item.type === 'redeem' ? '🎁' : item.type === 'streak' ? '🔥' : '⬆️'; 
+                    li.className = item.type === 'redeem' ? 'redeem-item' : item.type === 'streak' ? 'streak-item' : 'scan-item'; 
+                    li.innerHTML = `<strong>${icon} ${item.description}</strong><br><span style="font-size: 0.9em; color: #6c757d;">${item.date}</span>`; 
+                    listElement.appendChild(li);
                 });
             }
             document.getElementById('history-modal').style.display = 'block';
         }
+        /* === FIN: FUNCIÓN CORREGIDA === */
+
         function cargarPuntosUsuarios() {
             try { const data = localStorage.getItem(CLAVE_ALMACENAMIENTO_USUARIOS); return data ? JSON.parse(data) : {}; } catch (e) { return {}; }
         }
@@ -1787,13 +1931,16 @@
         // --- LÓGICA DE AUTENTICACIÓN (MODIFICADA V8) ---
         document.getElementById('login-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            const username = document.getElementById('username').value.toLowerCase();
+            const username = document.getElementById('username').value; // No convertir a minúscula aquí para admin
             const psw = document.getElementById('psw').value;
             const errorElement = document.getElementById('login-error');
-            if (USUARIOS_VALIDOS[username] && USUARIOS_VALIDOS[username].psw === psw) {
-                const email = USUARIOS_VALIDOS[username].email;
+            
+            const userKey = Object.keys(USUARIOS_VALIDOS).find(k => k.toLowerCase() === username.toLowerCase());
+
+            if (userKey && USUARIOS_VALIDOS[userKey] && USUARIOS_VALIDOS[userKey].psw === psw) {
+                const email = USUARIOS_VALIDOS[userKey].email;
                 localStorage.setItem(CLAVE_USUARIO_ACTIVO, email);
-                iniciarSesion(username, email);
+                iniciarSesion(userKey, email); // Usar userKey (que preserva mayúsculas)
             } else {
                 errorElement.textContent = "Usuario o contraseña incorrectos.";
             }
@@ -1811,10 +1958,17 @@
             document.getElementById('nav-bar').style.display = 'flex';
             renderDropdownCategories(); 
             actualizarInterfaz();
-            simularEscaneoQR();
+            // Ya no se llama a simularEscaneoQR() aquí, la sección fue eliminada
             renderizarEstadisticas();
             updateStreakDisplay();
             updateNotificationBadge(); 
+
+            const adminBtn = document.getElementById('admin-qr-btn');
+            if (username === 'Administrador') {
+                adminBtn.style.display = 'block';
+            } else {
+                adminBtn.style.display = 'none';
+            }
             
             if (!sessionStorage.getItem('welcomeModalShown')) {
                 document.getElementById('welcome-modal').style.display = 'block';
@@ -1836,7 +1990,10 @@
             document.getElementById('nav-bar').style.display = 'none';
             document.getElementById('login-error').textContent = '';
             document.getElementById('login-form').reset();
-            document.getElementById("qr-code").innerHTML = '';
+            // Ya no es necesario limpiar el qr-code div
+            // document.getElementById("qr-code").innerHTML = '';
+
+            document.getElementById('admin-qr-btn').style.display = 'none';
         }
 
         // --- LÓGICA DE CANJE Y REND. (MODIFICADA V7) ---
@@ -1855,16 +2012,13 @@
                 if (confirm(`✅ CONFIRMAR CANJE: ¿Canjear "${premio.nombre}" por ${premio.costo} puntos?`)) {
                     const puntosRestantes = puntosUsuario - premio.costo;
                     
-                    // Primero, mostrar la alerta personalizada
                     showAlert(`✅ ¡Canje exitoso! Obtenido: ${premio.nombre}. Puntos restantes: ${puntosRestantes}. Ahora, por favor, envía el mensaje de WhatsApp para solicitar tu premio.`, '¡Canje Exitoso!');
                     
-                    // Luego, abrir WhatsApp
                     const redemptionID = `A1000-${premio.id}-${Date.now()}`;
                     const mensaje = `¡SOLICITUD DE PREMIO CANJEADO!%0A*ID de Canje:* ${redemptionID}%0A*Usuario:* ${usuarioLogueadoUsername} (${usuarioLogueado})%0A*Premio Solicitado:* ${premio.nombre}%0A*Puntos Descontados:* ${premio.costo}%0A*Puntos Restantes:* ${puntosRestantes}`;
                     const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
                     window.open(whatsappURL, '_blank');
                     
-                    // Finalmente, actualizar el estado de la app
                     puntosUsuario = puntosRestantes;
                     guardarCanje(usuarioLogueado, idPremio, Date.now());
                     incrementStat(CLAVE_LOG_REDEEMS, usuarioLogueado);
@@ -1945,42 +2099,125 @@
             }
             document.getElementById('acumular-modal-message').textContent = '';
             document.getElementById('secret-code').value = '';
+            
+            // Asegurarse de que el formulario esté visible y el escáner oculto
+            document.getElementById('qr-reader-container').style.display = 'none';
+            document.getElementById('qr-form-container').style.display = 'block';
+            
             document.getElementById('acumular-modal').style.display = 'block';
         }
+        
+        /*
+         * =============================================
+         * === INICIO: NUEVA FUNCIÓN PARA CERRAR MODAL ACUMULAR
+         * =============================================
+        */
+        function closeAcumularModal() {
+            // Detener el escáner si está activo
+            if (html5QrCodeScanner) {
+                try {
+                    html5QrCodeScanner.stop().then(() => {
+                        console.log("Escáner detenido.");
+                    }).catch((err) => {
+                        console.warn("Error al detener el escáner al cerrar:", err);
+                    });
+                } catch (e) {
+                    console.warn("Error al detener el escáner:", e);
+                }
+                html5QrCodeScanner = null;
+            }
+            document.getElementById('acumular-modal').style.display = 'none';
+        }
+        /* === FIN: NUEVA FUNCIÓN === */
+
+        
         function procesarCodigoSecreto() {
             const codigoIngresado = document.getElementById('secret-code').value.trim().toUpperCase();
             const modalMessage = document.getElementById('acumular-modal-message');
-            const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
-            if (!puntosASumar) { modalMessage.textContent = '❌ Código incorrecto o inválido.'; document.getElementById('secret-code').value = ''; return; }
-            const isSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
-            const codigosUsados = cargarCodigosUsados();
-            if (isSingleUse && codigosUsados.has(codigoIngresado)) { modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.'; document.getElementById('secret-code').value = ''; return; }
-            if (!isSingleUse) {
-                const sessionKey = `puntosSumados_${usuarioLogueado}`;
-                if (sessionStorage.getItem(sessionKey)) { modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!'; return; }
-                const todosLosPuntos = cargarPuntosUsuarios();
-                puntosUsuario = todosLosPuntos[usuarioLogueado] || 0;
-                puntosUsuario += puntosASumar;
-                guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
-                sessionStorage.setItem(sessionKey, 'true');
-                incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
-                addMovementToHistory(usuarioLogueado, 'scan', `Código Manual QR (+${puntosASumar} Pts)`);
-            } else if (isSingleUse) {
-                const todosLosPuntos = cargarPuntosUsuarios();
-                puntosUsuario = todosLosPuntos[usuarioLogueado] || 0;
-                puntosUsuario += puntosASumar;
-                guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
+            
+            let puntosASumar = 0;
+            let isTempCode = false;
+            let isPermanentSingleUse = false;
+
+            // 1. Check for temporary admin codes
+            let tempCodes = {};
+            try { tempCodes = JSON.parse(localStorage.getItem(CLAVE_TEMP_CODES)) || {}; } catch (e) {}
+            
+            if (tempCodes[codigoIngresado]) {
+                puntosASumar = tempCodes[codigoIngresado];
+                isTempCode = true;
+                
+                // De-activate code immediately upon use
+                delete tempCodes[codigoIngresado];
+                localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+            }
+
+            // 2. Check for permanent codes (if not found in temp)
+            if (!puntosASumar) {
+                puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
+                if (puntosASumar) {
+                    isPermanentSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
+                }
+            }
+
+            // 3. Handle invalid code
+            if (!puntosASumar) {
+                modalMessage.textContent = '❌ Código incorrecto, expirado o inválido.';
+                document.getElementById('secret-code').value = '';
+                return;
+            }
+
+            // 4. Handle code usage rules
+            if (isTempCode) {
+                // It's a temporary admin code. Add points directly.
+            } else if (isPermanentSingleUse) {
+                // It's a permanent single-use code (e.g., SECRETO100)
+                const codigosUsados = cargarCodigosUsados();
+                if (codigosUsados.has(codigoIngresado)) {
+                    modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.';
+                    document.getElementById('secret-code').value = '';
+                    return;
+                }
                 marcarCodigoComoUsado(codigoIngresado);
-                incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
-                addMovementToHistory(usuarioLogueado, 'secret', `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`);
+            } else {
+                // It's a multi-use code (e.g., 10019950)
+                const sessionKey = `puntosSumados_${usuarioLogueado}`;
+                if (sessionStorage.getItem(sessionKey)) {
+                    modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!';
+                    return;
+                }
+                sessionStorage.setItem(sessionKey, 'true');
+            }
+
+            // 5. Add points and history
+            const todosLosPuntos = cargarPuntosUsuarios();
+            puntosUsuario = todosLosPuntos[usuarioLogueado] || 0;
+            puntosUsuario += puntosASumar;
+            guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
+            
+            incrementStat(CLAVE_LOG_SCANS, usuarioLogueado); // <-- ¡NUEVA LÍNEA AÑADIDA!
+            
+            let historyMessage = '';
+            if (isTempCode) {
+                historyMessage = `Código Admin ${codigoIngresado} (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioLogueado, 'scan', historyMessage);
+            } else if (isPermanentSingleUse) {
+                historyMessage = `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioLogueado, 'secret', historyMessage);
+            } else {
+                historyMessage = `Código Manual QR (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioLogueado, 'scan', historyMessage);
             }
             
             addNotification("⬆️ ¡Puntos Sumados!", `Código correcto. Has ganado ${puntosASumar} puntos.`);
-
-            document.getElementById('acumular-modal').style.display = 'none';
+            
+            // Cerrar el modal
+            closeAcumularModal();
+            
             actualizarInterfaz();
             showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
         }
+
 
         // --- OTRAS LÓGICAS (MODIFICADA V7) ---
         function actualizarInterfaz() {
@@ -2000,64 +2237,121 @@
             updateNotificationBadge();
         }
 
+        /*
         function simularEscaneoQR() {
-            const currentUsername = usuarioLogueadoUsername;
-            const URL_BASE = window.location.origin + window.location.pathname;
-            const QR_DATA = `${URL_BASE}?action=addpoints&user=${currentUsername}`;
-            document.getElementById("qr-code").innerHTML = '';
-            new QRCode(document.getElementById("qr-code"), {
-                text: QR_DATA, width: 150, height: 150,
-                colorDark: "#000000", colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
+            // Esta función ya no es necesaria ya que el QR estático fue eliminado
         }
+        */
+        
         function mostrarModalCanje(userEmail) {
             usuarioEscaneado = userEmail;
             document.getElementById('modal-message').textContent = '';
             document.getElementById('redemption-code').value = '';
             document.getElementById('redemption-modal').style.display = 'block';
         }
-        function procesarCanjeQR() {
-            const codigoIngresado = document.getElementById('redemption-code').value.trim();
-            const modalMessage = document.getElementById('modal-message');
-            const sessionKey = `puntosSumados_${usuarioEscaneado}`;
-            if (sessionStorage.getItem(sessionKey)) { modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!'; return; }
-            const puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
-            if (puntosASumar) {
-                if (esCodigoDeUnSoloUso(codigoIngresado) && cargarCodigosUsados().has(codigoIngresado)) { modalMessage.textContent = '❌ Código de canje ya utilizado.'; document.getElementById('redemption-code').value = ''; return; }
-                if (esCodigoDeUnSoloUso(codigoIngresado)) { marcarCodigoComoUsado(codigoIngresado); }
-                const todosLosPuntos = cargarPuntosUsuarios();
-                let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
-                puntosTemporales += puntosASumar;
-                guardarPuntosUsuario(usuarioEscaneado, puntosTemporales);
-                sessionStorage.setItem(sessionKey, 'true');
-                incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado);
-                addMovementToHistory(usuarioEscaneado, 'scan', `Escaneo QR y Canje de Código (+${puntosASumar} Pts)`);
-                
-                if (usuarioLogueado === usuarioEscaneado) {
-                    addNotification("⬆️ ¡Puntos Sumados!", `Escaneo QR correcto. Has ganado ${puntosASumar} puntos.`);
-                }
 
-                document.getElementById('redemption-modal').style.display = 'none';
-                if (usuarioLogueado === usuarioEscaneado) {
-                    puntosUsuario = puntosTemporales;
-                    actualizarInterfaz();
-                    renderizarEstadisticas();
-                    showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
-                } else {
-                    showAlert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`, 'Puntos Sumados');
+        function procesarCanjeQR() {
+            const codigoIngresado = document.getElementById('redemption-code').value.trim().toUpperCase();
+            const modalMessage = document.getElementById('modal-message');
+            
+            let puntosASumar = 0;
+            let isTempCode = false;
+            let isPermanentSingleUse = false;
+
+            // 1. Check for temporary admin codes
+            let tempCodes = {};
+            try { tempCodes = JSON.parse(localStorage.getItem(CLAVE_TEMP_CODES)) || {}; } catch (e) {}
+            
+            if (tempCodes[codigoIngresado]) {
+                puntosASumar = tempCodes[codigoIngresado];
+                isTempCode = true;
+                
+                // De-activate code immediately upon use
+                delete tempCodes[codigoIngresado];
+                localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+            }
+
+            // 2. Check for permanent codes (if not found in temp)
+            if (!puntosASumar) {
+                puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
+                if (puntosASumar) {
+                    isPermanentSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
                 }
-            } else {
-                modalMessage.textContent = '❌ Código de canje incorrecto o inválido. No se sumaron puntos.';
+            }
+
+            // 3. Handle invalid code
+            if (!puntosASumar) {
+                modalMessage.textContent = '❌ Código de canje incorrecto, expirado o inválido.';
                 document.getElementById('redemption-code').value = '';
+                return;
+            }
+
+            // 4. Handle code usage rules
+            if (isTempCode) {
+                // It's a temporary admin code. Add points directly.
+            } else if (isPermanentSingleUse) {
+                // It's a permanent single-use code (e.g., SECRETO100)
+                const codigosUsados = cargarCodigosUsados();
+                if (codigosUsados.has(codigoIngresado)) {
+                    modalMessage.textContent = '❌ Código de canje ya utilizado.';
+                    document.getElementById('redemption-code').value = '';
+                    return;
+                }
+                marcarCodigoComoUsado(codigoIngresado);
+            } else {
+                // It's a multi-use code (e.g., 10019950)
+                const sessionKey = `puntosSumados_${usuarioEscaneado}`;
+                if (sessionStorage.getItem(sessionKey)) {
+                    modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!';
+                    return;
+                }
+                sessionStorage.setItem(sessionKey, 'true');
+            }
+
+            // 5. Add points and history
+            const todosLosPuntos = cargarPuntosUsuarios();
+            let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
+            puntosTemporales += puntosASumar;
+            guardarPuntosUsuario(usuarioEscaneado, puntosTemporales);
+            
+            incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado); // <-- ¡NUEVA LÍNEA AÑADIDA!
+            
+            let historyMessage = '';
+            if (isTempCode) {
+                historyMessage = `Código Admin ${codigoIngresado} (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
+            } else if (isPermanentSingleUse) {
+                historyMessage = `Código Secreto ${codigoIngresado} (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioEscaneado, 'secret', historyMessage);
+            } else {
+                historyMessage = `Escaneo QR y Canje de Código (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
+            }
+            
+            if (usuarioLogueado === usuarioEscaneado) {
+                addNotification("⬆️ ¡Puntos Sumados!", `Escaneo QR correcto. Has ganado ${puntosASumar} puntos.`);
+            }
+
+            document.getElementById('redemption-modal').style.display = 'none';
+            if (usuarioLogueado === usuarioEscaneado) {
+                puntosUsuario = puntosTemporales;
+                actualizarInterfaz();
+                renderizarEstadisticas();
+                showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
+            } else {
+                showAlert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`, 'Puntos Sumados');
             }
         }
+
         function verificarEscaneoAlCargar() {
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action');
             const userFromQR_Username = urlParams.get('user');
             if (action === 'addpoints' && userFromQR_Username) {
-                const userData = USUARIOS_VALIDOS[userFromQR_Username];
+                
+                const userKey = Object.keys(USUARIOS_VALIDOS).find(k => k.toLowerCase() === userFromQR_Username.toLowerCase());
+                const userData = userKey ? USUARIOS_VALIDOS[userKey] : null;
+
                 const userEmailToCredit = userData ? userData.email : null;
                 if (userEmailToCredit) {
                     const URL_BASE = window.location.origin + window.location.pathname;
@@ -2074,7 +2368,12 @@
             const newPsw = document.getElementById('new-psw').value.trim();
             const createMessage = document.getElementById('create-message');
             if (!newEmail || !newUsername || !newPsw) { createMessage.style.color = 'red'; createMessage.textContent = 'Por favor, completa todos los campos.'; return; }
-            if (USUARIOS_VALIDOS.hasOwnProperty(newUsername)) { createMessage.style.color = 'red'; createMessage.textContent = 'El usuario ya existe. Intenta con otro.'; return; }
+            
+            const userKey = Object.keys(USUARIOS_VALIDOS).find(k => k.toLowerCase() === newUsername.toLowerCase());
+            if (userKey) { 
+                createMessage.style.color = 'red'; createMessage.textContent = 'El usuario ya existe. Intenta con otro.'; return; 
+            }
+            
             const mensaje = `¡SOLICITUD DE NUEVA CUENTA DE LEALTAD!%0A*Correo:* ${newEmail}%0A*Usuario:* ${newUsername}%0A*Contraseña deseada:* ${newPsw}%0A%0APor favor, registrar y confirmar la cuenta.`;
             const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
             window.open(whatsappURL, '_blank');
@@ -2087,8 +2386,11 @@
             const recoverUsername = document.getElementById('recover-username').value.trim();
             const recoverMessage = document.getElementById('recover-message');
             recoverMessage.textContent = '';
-            const userEntry = USUARIOS_VALIDOS[recoverUsername];
-            if (userEntry && userEntry.email === recoverEmail) {
+            
+            const userKey = Object.keys(USUARIOS_VALIDOS).find(k => k.toLowerCase() === recoverUsername.toLowerCase());
+            const userEntry = userKey ? USUARIOS_VALIDOS[userKey] : null;
+
+            if (userEntry && userEntry.email.toLowerCase() === recoverEmail.toLowerCase()) {
                 recoverMessage.style.color = 'green';
                 recoverMessage.innerHTML = `✅ ¡Encontrada! Tu contraseña es: <strong>${userEntry.psw}</strong>`;
             } else {
@@ -2188,6 +2490,160 @@
             document.getElementById('referral-modal').style.display = 'block';
         }
 
+        /* --- FUNCIONES ADMIN QR --- */
+        function openGenerateQRModal() {
+            closeAllDropdowns();
+            if (adminQRTimerInterval) {
+                clearInterval(adminQRTimerInterval); // Detener temporizador si se cierra el modal
+                adminQRTimerInterval = null;
+            }
+            
+            const select = document.getElementById('admin-qr-select');
+            const output = document.getElementById('admin-qr-output');
+            const timerEl = document.getElementById('admin-qr-timer');
+            const messageEl = document.getElementById('admin-qr-message');
+            
+            output.innerHTML = '';
+            timerEl.textContent = '';
+            messageEl.textContent = 'Selecciona un producto para generar un código.';
+            
+            select.innerHTML = '<option value="">-- Selecciona un producto --</option>';
+            for (const code in ADMIN_QR_OPTIONS) {
+                const option = ADMIN_QR_OPTIONS[code];
+                select.innerHTML += `<option value="${code}">${option.name} (${option.points} Pts)</option>`;
+            }
+            
+            document.getElementById('admin-qr-modal').style.display = 'block';
+        }
+
+        function generateAdminQR() {
+            if (adminQRTimerInterval) {
+                clearInterval(adminQRTimerInterval); 
+            }
+            
+            const select = document.getElementById('admin-qr-select');
+            const output = document.getElementById('admin-qr-output');
+            const timerEl = document.getElementById('admin-qr-timer');
+            const messageEl = document.getElementById('admin-qr-message');
+            
+            const selectedCode = select.value;
+            output.innerHTML = ''; 
+            timerEl.textContent = '';
+            
+            if (!selectedCode) {
+                messageEl.textContent = 'Selecciona un producto para generar un código.';
+                return;
+            }
+            
+            const product = ADMIN_QR_OPTIONS[selectedCode];
+            if (!product) return;
+            
+            let tempCodes = {};
+            try { tempCodes = JSON.parse(localStorage.getItem(CLAVE_TEMP_CODES)) || {}; } catch (e) {}
+            tempCodes[selectedCode] = product.points;
+            localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
+            
+            const qrUrl = `https://barcode.tec-it.com/barcode.ashx?data=${selectedCode}&code=QRCode&imagetype=png`;
+            const qrImg = document.createElement('img');
+            qrImg.src = qrUrl;
+            qrImg.alt = `QR Code for ${product.name}`;
+            output.appendChild(qrImg);
+            
+            messageEl.textContent = `Código: ${selectedCode} (${product.points} Pts). Válido por 1 minuto.`;
+            
+            let timeLeft = 60;
+            timerEl.textContent = `Tiempo restante: ${timeLeft}s`;
+            
+            adminQRTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `Tiempo restante: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(adminQRTimerInterval);
+                    adminQRTimerInterval = null;
+                    
+                    let currentTempCodes = {};
+                    try { currentTempCodes = JSON.parse(localStorage.getItem(CLAVE_TEMP_CODES)) || {}; } catch (e) {}
+                    
+                    if (currentTempCodes[selectedCode]) { 
+                        delete currentTempCodes[selectedCode];
+                        localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(currentTempCodes));
+                        messageEl.textContent = '¡Tiempo expirado! El código ha sido invalidado. Genera uno nuevo.';
+                    } else {
+                        messageEl.textContent = 'El código ya fue canjeado o ha expirado.';
+                    }
+                    
+                    output.innerHTML = '';
+                    timerEl.textContent = 'Expirado';
+                }
+            }, 1000);
+        }
+        
+        /*
+         * =============================================
+         * === INICIO: NUEVAS FUNCIONES ESCÁNER USUARIO
+         * =============================================
+        */
+        function startScanner() {
+            document.getElementById('qr-form-container').style.display = 'none';
+            document.getElementById('qr-reader-container').style.display = 'block';
+
+            const qrReaderElement = document.getElementById("qr-reader");
+            qrReaderElement.innerHTML = ''; // Limpiar
+
+            // Crear una nueva instancia del escáner
+            html5QrCodeScanner = new Html5Qrcode("qr-reader");
+            
+            const onScanSuccess = (decodedText, decodedResult) => {
+                // Rellenar el campo (que ahora es tipo password)
+                document.getElementById('secret-code').value = decodedText.toUpperCase();
+                
+                // Detener el escáner y volver al formulario
+                stopScannerAndShowForm();
+                
+                // Opcional: procesar automáticamente después de escanear
+                // procesarCodigoSecreto();
+            };
+
+            const onScanFailure = (error) => {
+                // No hacer nada en caso de fallo (sigue intentando)
+            };
+
+            // Pedir permiso para la cámara y empezar a escanear
+            html5QrCodeScanner.start(
+                { facingMode: "environment" }, // Pedir cámara trasera
+                {
+                    fps: 10, // Frames por segundo
+                    qrbox: { width: 250, height: 250 } // Tamaño de la caja de escaneo
+                },
+                onScanSuccess,
+                onScanFailure
+            ).catch((err) => {
+                console.error("No se pudo iniciar el escáner QR:", err);
+                showAlert(`Error al iniciar la cámara. Asegúrate de dar permisos.`, 'Error de Cámara', 'var(--color-secundario)');
+                stopScannerAndShowForm(); // Volver al formulario si hay un error
+            });
+        }
+
+        function stopScannerAndShowForm() {
+            if (html5QrCodeScanner) {
+                try {
+                    html5QrCodeScanner.stop().then(() => {
+                        console.log("Escáner detenido.");
+                    }).catch((err) => {
+                        console.warn("Error al detener el escáner:", err);
+                    });
+                } catch (e) {
+                    console.warn("Error al detener el escáner:", e);
+                }
+                html5QrCodeScanner = null;
+            }
+            document.getElementById('qr-reader-container').style.display = 'none';
+            document.getElementById('qr-form-container').style.display = 'block';
+        }
+        /* === FIN: NUEVAS FUNCIONES ESCÁNER USUARIO === */
+
+
         /* --- FUNCIONES DE TEMA (V8) --- */
         
         function loadSavedTheme() {
@@ -2238,10 +2694,7 @@
             document.getElementById('theme-modal').style.display = 'block';
         }
         
-        /* * =============================================
-         * === INICIO: NUEVAS FUNCIONES DE COMPRA (V9)
-         * =============================================
-         */
+        /* --- FUNCIONES DE COMPRA (V9) --- */
         
         function toggleBuyOptions() {
             buyOptionsContainer.classList.toggle('show');
@@ -2265,35 +2718,19 @@
             buyIframe.src = 'about:blank';
             buyOptionsContainer.classList.remove('show');
         }
-        /* === FIN: NUEVAS FUNCIONES DE COMPRA (V9) === */
-
         
-        /*
-         * =============================================
-         * === INICIO: JS DEL NUEVO MODAL DE ALERTA
-         * =============================================
-        */
+        /* --- MODAL DE ALERTA --- */
         
-        /**
-         * Muestra el modal de alerta personalizado.
-         * @param {string} message - El mensaje a mostrar.
-         * @param {string} [title='Aviso'] - El título del modal.
-         * @param {string} [titleColor='var(--color-principal)'] - El color del título.
-         */
         function showAlert(message, title = 'Aviso', titleColor = 'var(--color-principal)') {
             const modal = document.getElementById('customAlertModal');
             const messageEl = document.getElementById('customAlertMessage');
             const titleEl = document.getElementById('customAlertTitle');
             const modalContent = modal.querySelector('.modal-content');
             
-            // Usamos textContent para seguridad y evitar inyección XSS
             messageEl.textContent = message;
             titleEl.textContent = title;
-            
-            // Aplicar estilos dinámicos
             titleEl.style.color = titleColor;
             
-            // Si es un error, usa el color secundario para el borde
             if (titleColor === 'var(--color-secundario)') {
                 modalContent.style.borderColor = 'var(--color-secundario)';
             } else {
@@ -2307,7 +2744,6 @@
             const modal = document.getElementById('customAlertModal');
             modal.style.display = 'none';
         }
-        /* === FIN: JS DEL NUEVO MODAL DE ALERTA === */
 
 
         // --- INICIALIZACIÓN DE LA APLICACIÓN ---
