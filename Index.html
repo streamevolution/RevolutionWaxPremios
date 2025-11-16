@@ -1341,6 +1341,80 @@
             to { width: 100%; }
         }
         /* === FIN: ESTILOS MODAL PUBLICIDAD === */
+
+        /* * =============================================
+         * === INICIO: NUEVOS ESTILOS PARA EL MODAL DE PROCESAMIENTO (AJUSTADO)
+         * =============================================
+        */
+        #processing-modal .modal-content {
+            /* Hacemos el modal más pequeño y estilo pop-up */
+            max-width: 220px; 
+            padding: 25px 15px; 
+            background-color: var(--color-blanco);
+            border-radius: 15px;
+            border: 3px solid var(--color-principal);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Estilo para el ícono de carga (spinner) */
+        .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--color-principal);
+            border-radius: 50%;
+            width: 40px; /* Tamaño reducido */
+            height: 40px; /* Tamaño reducido */
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px; 
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilo para el check de éxito */
+        .success-check {
+            width: 50px; /* Tamaño reducido */
+            height: 50px; /* Tamaño reducido */
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            background: var(--color-principal);
+            transform: scale(0);
+            animation: bounceIn 0.5s forwards;
+            margin: 0 auto 15px;
+        }
+
+        .success-check::before {
+            content: '';
+            position: absolute;
+            width: 12px; /* Ajuste para el nuevo tamaño */
+            height: 25px; /* Ajuste para el nuevo tamaño */
+            border-right: 4px solid var(--color-blanco); /* Borde más delgado */
+            border-bottom: 4px solid var(--color-blanco); /* Borde más delgado */
+            transform: translate(18px, 10px) rotate(45deg); /* Ajuste de posición */
+            opacity: 0;
+            animation: drawCheck 0.3s 0.5s forwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes drawCheck {
+            100% { opacity: 1; }
+        }
+
+        #processing-message {
+            font-size: 1em !important;
+        }
+
+        /* Clases de utilidad para el JS */
+        .hidden { display: none; }
+        /* === FIN: NUEVOS ESTILOS PARA EL MODAL DE PROCESAMIENTO === */
     </style>
 </head>
 <body onscroll="scrollFunction()">
@@ -1491,13 +1565,13 @@
 
     <div class="social-links" id="contacto-redes">
         <p style="font-weight: bold;">Síguenos y contáctanos:</p>
-        <a href="https://www.facebook.com/AngelDZamoraNS" target="_blank" title="Visita nuestro Facebook">
+        <a href="https://www.facebook.com/RevolutionWaxRW" target="_blank" title="Visita nuestro Facebook">
             <i class="fab fa-facebook-square"></i>
         </a>
         <a href="https://www.instagram.com/angelzamorange" target="_blank" title="Síguenos en Instagram">
             <i class="fab fa-instagram"></i>
         </a>
-        <a href="https://wa.me/5217719624236" target="_blank" title="Escríbenos por WhatsApp">
+        <a href="https://wa.me/5214499328985" target="_blank" title="Escríbenos por WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
@@ -1526,6 +1600,19 @@
                 <div id="ad-progress-bar"></div>
             </div>
 
+        </div>
+    </div>
+
+    <div id="processing-modal" class="modal">
+        <div class="modal-content">
+            <div id="processing-spinner-container">
+                <div class="spinner"></div>
+                <p style="font-weight: bold; font-size: 1.1em; color: var(--color-principal);">Procesando código...</p>
+            </div>
+            <div id="processing-success-container" class="hidden">
+                <div class="success-check"></div>
+                <p id="processing-message" style="font-weight: bold; font-size: 1.1em; color: var(--color-principal);">¡Validado con Éxito!</p>
+            </div>
         </div>
     </div>
     <div id="customAlertModal" class="modal">
@@ -2214,10 +2301,11 @@
                     let buttonStyle = '';
                     if (!puedeCanjearPorPuntos) {
                         buttonText = `Faltan ${premio.costo - puntosUsuario} Pts`;
+                        buttonStyle = 'background-color: var(--color-secundario) !important;';
                     } else if (isRestricted) {
                         const timeLeft = RESTRICCION_CANJE_MS - timeElapsed;
                         buttonText = formatTime(timeLeft);
-                        buttonStyle = 'background-color: var(--color-secundario);';
+                        buttonStyle = 'background-color: #6c757d;'; // Color gris
                     }
                     const divPremio = document.createElement('div');
                     divPremio.className = 'premio';
@@ -2263,7 +2351,7 @@
         
         /*
          * =============================================
-         * === INICIO: NUEVA FUNCIÓN PARA CERRAR MODAL ACUMULAR
+         * === FUNCIÓN CORREGIDA PARA CERRAR MODAL ACUMULAR
          * =============================================
         */
         function closeAcumularModal() {
@@ -2282,13 +2370,17 @@
             }
             document.getElementById('acumular-modal').style.display = 'none';
         }
-        /* === FIN: NUEVA FUNCIÓN === */
+        /* === FIN: FUNCIÓN CORREGIDA === */
 
-        
-        function procesarCodigoSecreto() {
-            const codigoIngresado = document.getElementById('secret-code').value.trim().toUpperCase();
+        /*
+         * =============================================
+         * === FUNCIÓN CLAVE: PROCESAR CÓDIGO (MODIFICADA PARA APLICAR CAMBIO)
+         * =============================================
+        */
+        function procesarCodigo(codigo, isScan = false, callback = null) { // Añadir callback
+            const codigoIngresado = codigo.trim().toUpperCase();
             const modalMessage = document.getElementById('acumular-modal-message');
-            
+
             let puntosASumar = 0;
             let isTempCode = false;
             let isPermanentSingleUse = false;
@@ -2300,12 +2392,6 @@
             if (tempCodes[codigoIngresado]) {
                 puntosASumar = tempCodes[codigoIngresado];
                 isTempCode = true;
-                
-                // De-activate code immediately upon use
-                // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
-                // delete tempCodes[codigoIngresado];
-                // localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
-                // --- FIN DE CAMBIO ---
             }
 
             // 2. Check for permanent codes (if not found in temp)
@@ -2318,35 +2404,22 @@
 
             // 3. Handle invalid code
             if (!puntosASumar) {
+                // Mensaje para modal manual
                 modalMessage.textContent = '❌ Código incorrecto, expirado o inválido.';
                 document.getElementById('secret-code').value = '';
-                return;
+                
+                // Si viene de escaneo, cerramos el modal de procesamiento y mostramos alerta de error
+                if(isScan) {
+                    hideProcessingModal(); 
+                    setTimeout(() => { 
+                        showAlert(`❌ Código incorrecto, expirado o inválido.`, 'Error de Código', 'var(--color-secundario)');
+                    }, 100); // Pequeño delay para que la transición sea suave
+                } 
+                // Detiene el proceso
+                return; 
             }
 
-            // 4. Handle code usage rules
-            if (isTempCode) {
-                // It's a temporary admin code. Add points directly.
-            
-            // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
-            } else if (isPermanentSingleUse) {
-                // It's a permanent single-use code (e.g., SECRETO100)
-                // const codigosUsados = cargarCodigosUsados();
-                // if (codigosUsados.has(codigoIngresado)) {
-                //     modalMessage.textContent = '⚠️ Este código ya ha sido utilizado.';
-                //     document.getElementById('secret-code').value = '';
-                //     return;
-                // }
-                // marcarCodigoComoUsado(codigoIngresado);
-            } else {
-                // It's a multi-use code (e.g., 10019950)
-                // const sessionKey = `puntosSumados_${usuarioLogueado}`;
-                // if (sessionStorage.getItem(sessionKey)) {
-                //     modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos en esta sesión!';
-                //     return;
-                // }
-                // sessionStorage.setItem(sessionKey, 'true');
-            }
-            // --- FIN DE CAMBIO ---
+            // 4. Handle code usage rules (Mantenido el cambio de "códigos ilimitados")
 
             // 5. Add points and history
             const todosLosPuntos = cargarPuntosUsuarios();
@@ -2354,32 +2427,125 @@
             puntosUsuario += puntosASumar;
             guardarPuntosUsuario(usuarioLogueado, puntosUsuario);
             
-            incrementStat(CLAVE_LOG_SCANS, usuarioLogueado); // <-- ¡NUEVA LÍNEA AÑADIDA!
+            incrementStat(CLAVE_LOG_SCANS, usuarioLogueado);
             
-            // --- INICIO DE CAMBIO: OCULTAR CÓDIGO EN HISTORIAL ---
             let historyMessage = '';
+            let movementType = 'scan';
+
             if (isTempCode) {
                 historyMessage = `Código Admin Canjeado (+${puntosASumar} Pts)`;
-                addMovementToHistory(usuarioLogueado, 'scan', historyMessage);
+                movementType = 'scan';
             } else if (isPermanentSingleUse) {
                 historyMessage = `Código Secreto Canjeado (+${puntosASumar} Pts)`;
-                addMovementToHistory(usuarioLogueado, 'secret', historyMessage);
+                movementType = 'secret';
             } else {
-                historyMessage = `Código Manual Canjeado (+${puntosASumar} Pts)`;
-                addMovementToHistory(usuarioLogueado, 'scan', historyMessage);
+                let source = isScan ? 'Escaneo QR' : 'Manual';
+                historyMessage = `${source} Canjeado (+${puntosASumar} Pts)`;
+                movementType = 'scan';
             }
-            // --- FIN DE CAMBIO ---
             
+            addMovementToHistory(usuarioLogueado, movementType, historyMessage);
             addNotification("⬆️ ¡Puntos Sumados!", `Código correcto. Has ganado ${puntosASumar} puntos.`);
             
-            // Cerrar el modal
-            closeAcumularModal();
-            
-            actualizarInterfaz();
-            showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
+            // Cerrar el modal para entrada manual
+            if(!isScan) {
+                closeAcumularModal();
+            }
+
+            // Si hay un callback (usado por el escáner), lo ejecutamos con los datos
+            if (callback) {
+                callback(puntosASumar, historyMessage);
+            } else {
+                 // Si no hay callback (es manual), actualizamos y mostramos alerta
+                actualizarInterfaz();
+                showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
+            }
         }
 
 
+        // Redirigir la función manual para usar la nueva función modular
+        function procesarCodigoSecreto() {
+            const codigoIngresado = document.getElementById('secret-code').value;
+            const modalMessage = document.getElementById('acumular-modal-message');
+            
+            if (!codigoIngresado) {
+                modalMessage.textContent = 'Por favor, ingrese el código.';
+                return;
+            }
+            
+            procesarCodigo(codigoIngresado, false); // Llamar a la función principal, NO es escaneo
+        }
+
+        // Reemplazar la función `procesarCanjeQR` existente para usar la nueva función modular
+        function procesarCanjeQR() {
+            const codigoIngresado = document.getElementById('redemption-code').value.trim().toUpperCase();
+            const modalMessage = document.getElementById('modal-message');
+            
+            let puntosASumar = 0;
+            let isTempCode = false;
+            let isPermanentSingleUse = false;
+
+            // 1. Check for temporary admin codes
+            let tempCodes = {};
+            try { tempCodes = JSON.parse(localStorage.getItem(CLAVE_TEMP_CODES)) || {}; } catch (e) {}
+            
+            if (tempCodes[codigoIngresado]) {
+                puntosASumar = tempCodes[codigoIngresado];
+                isTempCode = true;
+            }
+
+            // 2. Check for permanent codes (if not found in temp)
+            if (!puntosASumar) {
+                puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
+                if (puntosASumar) {
+                    isPermanentSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
+                }
+            }
+
+            // 3. Handle invalid code
+            if (!puntosASumar) {
+                modalMessage.textContent = '❌ Código de canje incorrecto, expirado o inválido.';
+                document.getElementById('redemption-code').value = '';
+                return;
+            }
+
+            // 4. Handle code usage rules (Mantenido el cambio de "códigos ilimitados")
+
+            // 5. Add points and history
+            const todosLosPuntos = cargarPuntosUsuarios();
+            let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
+            puntosTemporales += puntosASumar;
+            guardarPuntosUsuario(usuarioEscaneado, puntosTemporales);
+            
+            incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado);
+            
+            let historyMessage = '';
+            if (isTempCode) {
+                historyMessage = `Código Admin Canjeado (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
+            } else if (isPermanentSingleUse) {
+                historyMessage = `Código Secreto Canjeado (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioEscaneado, 'secret', historyMessage);
+            } else {
+                historyMessage = `Código de Escaneo Canjeado (+${puntosASumar} Pts)`;
+                addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
+            }
+            
+            if (usuarioLogueado === usuarioEscaneado) {
+                addNotification("⬆️ ¡Puntos Sumados!", `Escaneo QR correcto. Has ganado ${puntosASumar} puntos.`);
+            }
+
+            document.getElementById('redemption-modal').style.display = 'none';
+            if (usuarioLogueado === usuarioEscaneado) {
+                puntosUsuario = puntosTemporales;
+                actualizarInterfaz();
+                renderizarEstadisticas();
+                showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
+            } else {
+                showAlert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`, 'Puntos Sumados');
+            }
+        }
+        
         // --- OTRAS LÓGICAS (MODIFICADA V7) ---
         function actualizarInterfaz() {
             if (!usuarioLogueado) return; 
@@ -2398,117 +2564,11 @@
             updateNotificationBadge();
         }
 
-        /*
-        function simularEscaneoQR() {
-            // Esta función ya no es necesaria ya que el QR estático fue eliminado
-        }
-        */
-        
         function mostrarModalCanje(userEmail) {
             usuarioEscaneado = userEmail;
             document.getElementById('modal-message').textContent = '';
             document.getElementById('redemption-code').value = '';
             document.getElementById('redemption-modal').style.display = 'block';
-        }
-
-        function procesarCanjeQR() {
-            const codigoIngresado = document.getElementById('redemption-code').value.trim().toUpperCase();
-            const modalMessage = document.getElementById('modal-message');
-            
-            let puntosASumar = 0;
-            let isTempCode = false;
-            let isPermanentSingleUse = false;
-
-            // 1. Check for temporary admin codes
-            let tempCodes = {};
-            try { tempCodes = JSON.parse(localStorage.getItem(CLAVE_TEMP_CODES)) || {}; } catch (e) {}
-            
-            if (tempCodes[codigoIngresado]) {
-                puntosASumar = tempCodes[codigoIngresado];
-                isTempCode = true;
-                
-                // De-activate code immediately upon use
-                // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
-                // delete tempCodes[codigoIngresado];
-                // localStorage.setItem(CLAVE_TEMP_CODES, JSON.stringify(tempCodes));
-                // --- FIN DE CAMBIO ---
-            }
-
-            // 2. Check for permanent codes (if not found in temp)
-            if (!puntosASumar) {
-                puntosASumar = CODIGOS_DE_CANJE[codigoIngresado];
-                if (puntosASumar) {
-                    isPermanentSingleUse = esCodigoDeUnSoloUso(codigoIngresado);
-                }
-            }
-
-            // 3. Handle invalid code
-            if (!puntosASumar) {
-                modalMessage.textContent = '❌ Código de canje incorrecto, expirado o inválido.';
-                document.getElementById('redemption-code').value = '';
-                return;
-            }
-
-            // 4. Handle code usage rules
-            if (isTempCode) {
-                // It's a temporary admin code. Add points directly.
-            
-            // --- INICIO DE CAMBIO: CÓDIGOS ILIMITADOS ---
-            } else if (isPermanentSingleUse) {
-                // It's a permanent single-use code (e.g., SECRETO100)
-                // const codigosUsados = cargarCodigosUsados();
-                // if (codigosUsados.has(codigoIngresado)) {
-                //     modalMessage.textContent = '❌ Código de canje ya utilizado.';
-                //     document.getElementById('redemption-code').value = '';
-                //     return;
-                // }
-                // marcarCodigoComoUsado(codigoIngresado);
-            } else {
-                // It's a multi-use code (e.g., 10019950)
-                // const sessionKey = `puntosSumados_${usuarioEscaneado}`;
-                // if (sessionStorage.getItem(sessionKey)) {
-                //     modalMessage.textContent = '⚠️ ¡Ya canjeaste los puntos para este escaneo!';
-                //     return;
-                // }
-                // sessionStorage.setItem(sessionKey, 'true');
-            }
-            // --- FIN DE CAMBIO ---
-
-            // 5. Add points and history
-            const todosLosPuntos = cargarPuntosUsuarios();
-            let puntosTemporales = todosLosPuntos[usuarioEscaneado] || 0;
-            puntosTemporales += puntosASumar;
-            guardarPuntosUsuario(usuarioEscaneado, puntosTemporales);
-            
-            incrementStat(CLAVE_LOG_SCANS, usuarioEscaneado); // <-- ¡NUEVA LÍNEA AÑADIDA!
-            
-            // --- INICIO DE CAMBIO: OCULTAR CÓDIGO EN HISTORIAL ---
-            let historyMessage = '';
-            if (isTempCode) {
-                historyMessage = `Código Admin Canjeado (+${puntosASumar} Pts)`;
-                addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
-            } else if (isPermanentSingleUse) {
-                historyMessage = `Código Secreto Canjeado (+${puntosASumar} Pts)`;
-                addMovementToHistory(usuarioEscaneado, 'secret', historyMessage);
-            } else {
-                historyMessage = `Código de Escaneo Canjeado (+${puntosASumar} Pts)`;
-                addMovementToHistory(usuarioEscaneado, 'scan', historyMessage);
-            }
-            // --- FIN DE CAMBIO ---
-            
-            if (usuarioLogueado === usuarioEscaneado) {
-                addNotification("⬆️ ¡Puntos Sumados!", `Escaneo QR correcto. Has ganado ${puntosASumar} puntos.`);
-            }
-
-            document.getElementById('redemption-modal').style.display = 'none';
-            if (usuarioLogueado === usuarioEscaneado) {
-                puntosUsuario = puntosTemporales;
-                actualizarInterfaz();
-                renderizarEstadisticas();
-                showAlert(`🎉 ¡Código correcto! ${puntosASumar} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
-            } else {
-                showAlert(`✅ ${puntosASumar} puntos sumados a la cuenta de ${usuarioEscaneado}. Por favor, inicia sesión para ver tu saldo.`, 'Puntos Sumados');
-            }
         }
 
         function verificarEscaneoAlCargar() {
@@ -2746,10 +2806,53 @@
                 }
             }, 1000);
         }
+
+        /*
+         * =============================================
+         * === NUEVAS FUNCIONES PARA EL MODAL DE PROCESAMIENTO
+         * =============================================
+        */
+        function showProcessingModal() {
+            const modal = document.getElementById('processing-modal');
+            const spinner = document.getElementById('processing-spinner-container');
+            const success = document.getElementById('processing-success-container');
+            
+            // 1. Mostrar spinner y ocultar check
+            spinner.classList.remove('hidden');
+            success.classList.add('hidden');
+            
+            // 2. Mostrar modal
+            modal.style.display = 'block';
+        }
+
+        function showSuccessAnimation(points) {
+            const spinner = document.getElementById('processing-spinner-container');
+            const success = document.getElementById('processing-success-container');
+            const messageEl = document.getElementById('processing-message');
+            
+            // 1. Ocultar spinner y mostrar check
+            spinner.classList.add('hidden');
+            success.classList.remove('hidden');
+            messageEl.textContent = `¡Validado! Sumando ${points} Puntos...✅`;
+            
+            // 2. Esperar 1 segundo para garantizar que la animación del check se vea.
+            const ANIMATION_VISIBILITY_TIME = 2000; 
+            
+            setTimeout(() => {
+                hideProcessingModal();
+                // Llamar a la función de actualización y alerta final
+                actualizarInterfaz();
+                showAlert(`🎉 ¡Código correcto! ${points} puntos sumados a tu cuenta.`, '¡Puntos Sumados!');
+            }, ANIMATION_VISIBILITY_TIME);
+        }
+
+        function hideProcessingModal() {
+            document.getElementById('processing-modal').style.display = 'none';
+        }
         
         /*
          * =============================================
-         * === INICIO: NUEVAS FUNCIONES ESCÁNER USUARIO
+         * === FUNCIÓN CLAVE: INICIAR ESCÁNER (MODIFICADA PARA ACUMULACIÓN AUTOMÁTICA CON ANIMACIÓN)
          * =============================================
         */
         function startScanner() {
@@ -2759,40 +2862,43 @@
             const qrReaderElement = document.getElementById("qr-reader");
             qrReaderElement.innerHTML = ''; // Limpiar
 
-            // Crear una nueva instancia del escáner
             html5QrCodeScanner = new Html5Qrcode("qr-reader");
             
             const onScanSuccess = (decodedText, decodedResult) => {
-                // Rellenar el campo (que ahora es tipo password)
-                document.getElementById('secret-code').value = decodedText.toUpperCase();
+                // 1. Detener escáner y cerrar modal de acumular
+                stopScannerAndShowForm(); 
                 
-                // Detener el escáner y volver al formulario
-                stopScannerAndShowForm();
-                
-                // Opcional: procesar automáticamente después de escanear
-                // procesarCodigoSecreto();
+                // 2. Mostrar modal de procesamiento (Carga)
+                showProcessingModal();
+
+                // 3. Procesar el código con un callback para manejar el éxito/falla
+                // La suma de puntos ocurre AHORA.
+                procesarCodigo(decodedText, true, (points, historyMessage) => {
+                    // Este callback SOLO se ejecuta si procesarCodigo determina que es VÁLIDO.
+                    showSuccessAnimation(points);
+                });
             };
 
             const onScanFailure = (error) => {
                 // No hacer nada en caso de fallo (sigue intentando)
             };
 
-            // Pedir permiso para la cámara y empezar a escanear
             html5QrCodeScanner.start(
-                { facingMode: "environment" }, // Pedir cámara trasera
+                { facingMode: "environment" }, 
                 {
-                    fps: 10, // Frames por segundo
-                    qrbox: { width: 250, height: 250 } // Tamaño de la caja de escaneo
+                    fps: 10, 
+                    qrbox: { width: 250, height: 250 } 
                 },
                 onScanSuccess,
                 onScanFailure
             ).catch((err) => {
                 console.error("No se pudo iniciar el escáner QR:", err);
                 showAlert(`Error al iniciar la cámara. Asegúrate de dar permisos.`, 'Error de Cámara', 'var(--color-secundario)');
-                stopScannerAndShowForm(); // Volver al formulario si hay un error
+                stopScannerAndShowForm(); 
             });
         }
 
+        // Función auxiliar para detener escáner y mostrar formulario (se mantiene)
         function stopScannerAndShowForm() {
             if (html5QrCodeScanner) {
                 try {
@@ -2806,10 +2912,11 @@
                 }
                 html5QrCodeScanner = null;
             }
+            document.getElementById('acumular-modal').style.display = 'none'; // Aseguramos que se cierre
             document.getElementById('qr-reader-container').style.display = 'none';
             document.getElementById('qr-form-container').style.display = 'block';
         }
-        /* === FIN: NUEVAS FUNCIONES ESCÁNER USUARIO === */
+        /* === FIN: FUNCIÓN CLAVE */
 
 
         /* --- FUNCIONES DE TEMA (V8) --- */
@@ -3040,4 +3147,3 @@
     </script>
 </body>
 </html>
-
