@@ -19,7 +19,10 @@
         :root {
             /* COLORES DE IDENTIDAD */
             --primary-blue: #2c5aa0;
-            --primary-red: #e02b3a;
+            --primary-red: #848482;
+            
+            /* NUEVO COLOR AMARILLO MOSTAZA (simulando la botella) */
+            --primary-yellow: #848482; 
             
             /* COLORES MINIMALISTAS CLAROS */
             --bg-body: #f8f9fa;
@@ -68,14 +71,14 @@
             align-items: flex-end;
         }
 
-        /* ESTILO BASADO EN LA IMAGEN ADJUNTA, PERO MÁS DELGADO */
+        /* ESTILO BOTÓN PRINCIPAL (MÁS DELGADO) */
         .fab-main {
             /* Dimensiones Reducidas */
-            width: 130px; /* Ancho ajustado para que quepa el texto y el ícono */
-            height: 40px; /* Altura más delgada */
-            border-radius: 20px; /* Ajuste del radio para la nueva altura */
+            width: 130px; 
+            height: 40px; 
+            border-radius: 20px; 
             
-            background-color: var(--primary-blue); /* Color azul de la imagen */
+            background-color: var(--primary-blue); 
             color: white;
             border: none;
             box-shadow: var(--shadow-lg);
@@ -83,7 +86,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px; /* Fuente ligeramente más pequeña */
+            font-size: 14px; 
             font-weight: 600;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
@@ -92,7 +95,7 @@
         .fab-content {
             display: flex;
             align-items: center;
-            gap: 5px; /* Reducción del espacio entre el ícono y el texto */
+            gap: 5px; 
         }
         
         /* Estilo al presionar */
@@ -139,7 +142,7 @@
             margin-right: 8px;
             color: var(--primary-red);
         }
-        /* === FIN ESTILOS NUEVOS === */
+        /* === FIN ESTILOS BOTONES FLOTANTES === */
 
 
         /* VISTAS */
@@ -197,17 +200,17 @@
         
         .bottom-curve-bg { display: none; }
 
-        /* 3. HOME */
+        /* 3. HOME - FONDO AMARILLO SOLICITADO */
         .home-header { 
-            background-color: var(--primary-red); 
-            color: white; 
+            background-color: var(--primary-yellow); /* CAMBIO AQUÍ: Rojo a Amarillo */
+            color: var(--text-main); /* Cambiamos el color de texto a oscuro para contraste */
             padding: 20px 20px 100px 20px; 
             position: relative; 
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); 
             box-shadow: var(--shadow-md);
         }
         .home-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .menu-icon { font-size: 24px; cursor: pointer; }
+        .menu-icon { font-size: 24px; cursor: pointer; color: var(--text-main); } /* Ajuste de color del ícono */
         .page-title { font-size: 18px; font-weight: 500; }
         .greeting-text { font-size: 18px; font-weight: 400; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
         
@@ -712,12 +715,19 @@
                 <button type="submit" class="btn-register-red" style="background:var(--primary-blue);">ENTRAR</button>
             </form>
             <div style="text-align: center; margin-top: 20px;">
-                <button onclick="goToRegister()" style="background:none; border:none; color: var(--text-secondary); cursor:pointer;">¿No tienes cuenta? <span style="color:var(--primary-blue); font-weight:600;">Regístrate</span></button>
-                <br><br>
-                <button onclick="forgotPassword()" style="background:none; border:none; color: #999; cursor:pointer; font-size:13px;">Olvidé mi contraseña</button>
+            <button onclick="goToRegister()" style="background:none; border:none; color: var(--text-secondary); cursor:pointer;">¿No tienes cuenta? <span style="color:var(--primary-blue); font-weight:600;">Regístrate</span></button>
+            <br><br>
+            <button onclick="forgotPassword()" style="background:none; border:none; color: #999; cursor:pointer; font-size:13px;">Olvidé mi contraseña</button>
+            
+            <br><br> 
+            <button onclick="window.open('https://www.mediafire.com', '_blank')" 
+                style="background:var(--primary-red); color:white; border:none; width:80%; padding:10px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; box-shadow: 0 4px 10px rgba(224, 43, 58, 0.2); transition: all 0.2s ease;">
+                <i class="fab fa-android" style="margin-right: 5px;"></i> Descargar Aplicación Android
+            </button>
             </div>
-        </div>
     </div>
+</div>
+
 
     <div id="register-view" class="view-section">
         <div class="reg-header">
