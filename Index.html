@@ -455,6 +455,7 @@
         
         #transfer-code-view .code-pill { background-color: #f3f4f6; color: var(--text-main); width: 100%; max-width: 320px; padding: 20px; border-radius: 16px; font-size: 22px; font-weight: 700; letter-spacing: 4px; margin-bottom: 30px; box-shadow: none; border: 1px solid var(--border-light); }
         #transfer-code-view .copy-code-btn { background: none; border: none; color: var(--primary-blue); font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: auto; }
+        #transfer-code-view .transfer-disclaimer { margin-bottom: 30px; font-size: 12px; color: var(--text-secondary); } /* Agregado margen inferior para el disclaimer */
         #transfer-code-view .btn-exit-red { background-color: var(--primary-red); color: white; border: none; width: 100%; max-width: 320px; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; }
 
         /* 8. VERIFICAR DESTINATARIO */
@@ -1193,7 +1194,7 @@
     
     <div id="scanner-modal" class="modal">
         <div class="modal-content">
-            <span class="close-icon" onclick="document.getElementById('scanner-modal').style.display='none'">&times;</span>
+            <span class="close-icon" onclick="closeModal('scanner-modal')">&times;</span> 
             
             <h3 style="color:#2c5aa0; text-align:center;">Escanear Cliente</h3>
             
@@ -1203,7 +1204,34 @@
         </div>
     </div>
 
-    <div id="profile-modal" class="modal">
+<div id="add-points-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:#2c5aa0; text-align:center;">Escanear Cliente</h3>
+            
+            <div style="padding: 10px 0; text-align: center; font-size: 16px;">
+                <p style="margin: 5px 0 15px 0;">
+                    <i class="fas fa-user-circle" style="color: #2c5aa0; margin-right: 5px;"></i> 
+                    **CLIENTE DETECTADO:** <span id="modal-client-name" style="font-weight: 700;">--</span>
+                </p>
+                <p style="margin: 15px 0 5px 0;">
+                    <i class="fas fa-coins" style="color: #848482; margin-right: 5px;"></i> 
+                    Ingresa la cantidad de puntos a sumar:
+                </p>
+                
+                <input type="number" id="modal-points-input" class="pill-input" placeholder="0.00" style="width: 80%; margin: 10px auto; text-align: center; font-size: 18px;">
+            </div>
+            
+            <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                <button class="btn-register-red" onclick="closeModal('add-points-modal')" style="background:#ccc; width:45%;">
+                    Cancelar
+                </button>
+                <button class="btn-register-red" onclick="confirmPointAddition()" style="background:var(--primary-blue); width:45%;">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
+<div id="profile-modal" class="modal">
         <div class="modal-content">
             <span class="close-icon" onclick="closeModal('profile-modal')">&times;</span>
             <h3 style="color:var(--primary-blue); text-align:center;">Mi Perfil</h3>
@@ -1285,8 +1313,8 @@
         let selectedCenterName = null;
         let cart = []; 
         let cartType = 'products'; 
-        let allCities = {}; // Mapa para almacenar {cityId: cityName}
-        let allCenters = []; // Almacena todos los centros con su cityId para el filtrado
+        let allCities = {}; 
+        let allCenters = []; 
         let adsInterval = null;
         let allAdsCache = [];
         
@@ -1294,19 +1322,22 @@
         let currentEditingAdId = null; 
         let currentEditingProdId = null;
         let currentEditingProdCenterId = null;
-        let currentEditingVoucherId = null; // NUEVA VARIABLE PARA VALES
+        let currentEditingVoucherId = null; 
         
         // Variables para control de carrusel
         let isInteracting = false;
         let resumeTimeout = null;
         
+        // Variable para almacenar datos del cliente escaneado (NECESARIO PARA EL NUEVO MODAL)
+        window.currentScannedUser = null; 
+
 
         // --- SISTEMA DE NAVEGACIÓN ---
         const ALL_VIEWS = [
             'login-view', 'register-view', 'app-view', 
             'catalog-view', 'centers-view', 'cart-view', 
             'transfer-code-view', 'verify-view', 'admin-view', 'locations-view', 'ad-detail-view', 
-            'vouchers-view', 'movements-history-view' 
+            'vouchers-view', 'movements-history-view' , 'add-points-modal' // Agregamos el nuevo modal para que hideAll lo oculte
         ];
 
         // --- FUNCIÓN DE ALERTA PERSONALIZADA ---
@@ -1322,7 +1353,7 @@
             });
             document.getElementById('sidebar-overlay').classList.remove('open');
             document.getElementById('sidebar').classList.remove('open');
-            closeModal('custom-alert-modal'); // Asegurar que el modal de alerta se cierra
+            closeModal('custom-alert-modal'); 
             
             // Ocultar botón flotante al cambiar de vista
             document.getElementById('floating-buy-container').style.display = 'none';
@@ -2579,15 +2610,47 @@
             });
         }
 
-        // SCANNER (MODIFICADO PARA REGISTRAR MOVIMIENTOS)
-        function openScanner() { document.getElementById('scanner-modal').style.display='block'; html5QrCode = new Html5Qrcode("qr-reader"); html5QrCode.start({facingMode:"environment"}, {fps:10}, t => { if(html5QrCode) html5QrCode.stop().then(()=>html5QrCode.clear()); processCode(t); }); }
-        function processManual() { processCode(document.getElementById('manual-code').value); }
-                        function processCode(code) {
+        // SCANNER (MODIFICADO PARA USAR EL MODAL PERSONALIZADO)
+        function openScanner() { 
+            if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+                return showCustomAlert("Acceso denegado: Solo administradores.");
+            }
+            
+            document.getElementById('scanner-modal').style.display='block'; 
+            document.getElementById('scan-status').textContent = 'Cargando cámara...';
+            
+            if (!html5QrCode) {
+                 // Crear nueva instancia de Html5Qrcode al abrir el modal
+                 html5QrCode = new Html5Qrcode("qr-reader"); 
+            }
+
+            // Opciones de configuración
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrCode.start(
+                { facingMode: "environment" }, 
+                config, 
+                (decodedText, decodedResult) => {
+                    // Éxito al escanear: detenemos la cámara y procesamos.
+                    processCode(decodedText); 
+                },
+                (errorMessage) => {
+                    // Fallo o lectura continua sin éxito
+                    document.getElementById('scan-status').textContent = 'Listo para escanear...';
+                }
+            )
+            .catch((err) => {
+                // Error al iniciar la cámara (Ej: Falta de permisos)
+                document.getElementById('scan-status').textContent = 'Error al iniciar la cámara: ' + (err.message || 'Verifique permisos.');
+                console.error("Error al iniciar el escáner:", err);
+            });
+        }
+
+        function processCode(code) {
             code = code.trim(); // Limpiar espacios vacíos
             
-            // 1. Detener la cámara y cerrar modal
-            if(html5QrCode) html5QrCode.stop().then(()=>html5QrCode.clear()).catch(()=>{});
-            document.getElementById('scanner-modal').style.display = 'none';
+            // Cierre manual del modal del escáner
+            closeModal('scanner-modal');
 
             // 2. VERIFICAR SI ES UN USUARIO (Los IDs de usuario son largos, +20 caracteres)
             if (code.length > 20) {
@@ -2595,46 +2658,22 @@
                 
                 // Buscar usuario en la base de datos
                 db.collection(USERS_PATH).doc(code).get().then(doc => {
-                    document.getElementById('loading-overlay').style.display = 'none';
                     
                     if (doc.exists) {
                         const userData = doc.data();
-                        const userName = userData.username || "Cliente";
-
-                        // 3. PREGUNTAR AL ADMIN CUÁNTOS PUNTOS (usando native prompt)
-                        const pointsInput = prompt(`👤 CLIENTE DETECTADO:\n${userName}\n\n⛽ Ingresa la cantidad de puntos a sumar:`);
                         
-                        // Validar que escribió un número
-                        if (pointsInput !== null && pointsInput.trim() !== "") {
-                            const pts = parseFloat(pointsInput);
+                        // ALMACENAR DATOS DEL CLIENTE Y ABRIR MODAL PERSONALIZADO (Reemplazo del prompt nativo)
+                        window.currentScannedUser = { id: code, name: userData.username || "Cliente" };
 
-                            if (!isNaN(pts) && pts > 0) {
-                                // 4. CONFIRMAR ACCIÓN (usando native confirm)
-                                const confirmacion = confirm(`¿Estás seguro de abonar ${pts} puntos a ${userName}?`);
-                                
-                                if (confirmacion) {
-                                    document.getElementById('loading-overlay').style.display = 'flex';
-                                    
-                                    // 5. ACTUALIZAR BASE DE DATOS (INCREMENTAR)
-                                    db.doc(`${USERS_PATH}/${code}`).update({
-                                        points: firebase.firestore.FieldValue.increment(pts)
-                                    }).then(() => {
-                                        document.getElementById('loading-overlay').style.display = 'none';
-                                        
-                                        // 6. REGISTRAR MOVIMIENTO
-                                        logTransaction(code, pts, 'accumulated', `Abono por admin (${currentUser.email})`);
-                                        
-                                        showCustomAlert(`✅ ÉXITO\nSe han sumado ${pts} puntos correctamente a ${userName}.`);
-                                    }).catch(err => {
-                                        document.getElementById('loading-overlay').style.display = 'none';
-                                        showCustomAlert("❌ Error al guardar en base de datos: " + err);
-                                    });
-                                }
-                            } else {
-                                showCustomAlert("⚠️ Cantidad inválida. Debes ingresar un número mayor a 0.");
-                            }
-                        }
+                        document.getElementById('loading-overlay').style.display = 'none';
+                        
+                        // 3. ABRIR MODAL PERSONALIZADO (REEMPLAZA EL PROMPT NATIVO)
+                        document.getElementById('modal-client-name').textContent = userData.username || "Cliente";
+                        document.getElementById('modal-points-input').value = ''; // Limpiar input
+                        document.getElementById('add-points-modal').style.display = 'block';
+
                     } else {
+                        document.getElementById('loading-overlay').style.display = 'none';
                         showCustomAlert("⚠️ El código escaneado no corresponde a un usuario registrado.");
                     }
                 }).catch(e => {
@@ -2657,8 +2696,50 @@
                 } 
             }
         }
+        
+        // FUNCIÓN NUEVA: Lógica para sumar puntos desde el modal personalizado
+        function confirmPointAddition() {
+            closeModal('add-points-modal'); // Cerrar el modal
 
-                /* --- FUNCIONES DE TRANSFERENCIA MODIFICADAS --- */
+            // Obtener los datos del cliente guardados temporalmente y el valor del input
+            const ptsInput = document.getElementById('modal-points-input').value;
+            const pts = parseFloat(ptsInput);
+            
+            // Validar datos
+            if (isNaN(pts) || pts <= 0) {
+                return showCustomAlert("⚠️ Cantidad inválida. Debes ingresar un número mayor a 0.");
+            }
+
+            // Usamos los datos guardados en el paso 2
+            const { id: scannedId, name: scannedName } = window.currentScannedUser;
+            
+            // 4. CONFIRMAR ACCIÓN 
+            const confirmacion = confirm(`¿Estás seguro de abonar ${pts} puntos a ${scannedName}?`);
+
+            if (confirmacion) {
+                document.getElementById('loading-overlay').style.display = 'flex';
+                
+                // 5. ACTUALIZAR BASE DE DATOS (INCREMENTAR)
+                db.doc(`${USERS_PATH}/${scannedId}`).update({
+                    points: firebase.firestore.FieldValue.increment(pts)
+                }).then(() => {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    
+                    // 6. REGISTRAR MOVIMIENTO
+                    logTransaction(scannedId, pts, 'accumulated', `Abono por admin`);
+                    
+                    showCustomAlert(`✅ ÉXITO\nSe han sumado ${pts} puntos correctamente a ${scannedName}.`);
+                }).catch(err => {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    showCustomAlert("❌ Error al guardar en base de datos: " + err);
+                });
+            } else {
+                showCustomAlert("Operación de abono cancelada.");
+            }
+        }
+
+
+        /* --- FUNCIONES DE TRANSFERENCIA MODIFICADAS --- */
 
         // 1. Mostrar mi código
         function openTransferCode() {
@@ -2823,12 +2904,28 @@
             }
         }
 
-        if (id === 'scanner-modal' && typeof html5QrCode !== 'undefined' && html5QrCode) {
-            html5QrCode.stop().then(() => {
+        if (id === 'scanner-modal') {
+            if (html5QrCode && html5QrCode.isScanning) {
+                // Detener la cámara explícitamente y luego limpiar la instancia
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    html5QrCode = null; // CRÍTICO: Permite que openScanner inicialice una instancia limpia
+                    document.getElementById('scan-status').textContent = 'Cámara detenida.';
+                }).catch(err => {
+                    // Si falla la detención (ej: ya estaba detenida), al menos la limpiamos
+                    console.warn("Advertencia al detener la cámara QR:", err);
+                    if (html5QrCode) {
+                        html5QrCode.clear();
+                        html5QrCode = null;
+                    }
+                    document.getElementById('scan-status').textContent = 'Cámara detenida.';
+                });
+            } else if (html5QrCode) {
+                 // Si no está escaneando pero la instancia existe, solo la limpiamos
                 html5QrCode.clear();
-            }).catch(err => {
-                // Ignorar error si ya estaba detenida
-            });
+                html5QrCode = null;
+                document.getElementById('scan-status').textContent = 'Cámara detenida.';
+            }
         }
         
         // Asegurar que las opciones del FAB se cierren
