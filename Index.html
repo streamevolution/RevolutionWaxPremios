@@ -478,16 +478,17 @@
         .admin-form input, .admin-form select, .admin-form textarea { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-light); border-radius: 8px; box-sizing: border-box; background: #fcfcfc; font-family: inherit; }
         .admin-btn { background: var(--primary-blue); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; }
         
-        .admin-list-item-new { 
+                .admin-list-item-new { 
             display: flex; 
             justify-content: space-between; 
-            align-items: center; 
+            align-items: center; /* Cambiado a flex-start en el JS para la vista de usuarios */
             background: var(--surface-white); 
             padding: 10px 15px; 
             margin-bottom: 8px; 
             border-radius: 12px; 
             border: 1px solid var(--border-light); 
         }
+
         /* Nuevo estilo para la lista de productos del admin */
         .admin-product-item, .admin-voucher-item {
             display: flex;
@@ -2411,7 +2412,46 @@
 
         function adminDeleteAd(id) { if(confirm("¿Borrar publicidad?")) db.doc(`${ADS_PATH}/${id}`).delete().then(() => { adminLoadAds(); loadAdsCarousel(); }); }
         
-        function adminLoadUsers() { const l=document.getElementById('admin-users-list'); l.innerHTML='...'; db.collection(USERS_PATH).get().then(s=>{l.innerHTML=''; s.forEach(d=>{ const u=d.data(); l.innerHTML+=`<div class="admin-list-item-new"><b>${u.username}</b><br>${u.email} <span style="color:green">${u.points}pts</span></div>`})}); }
+        function adminLoadUsers() { 
+            const l=document.getElementById('admin-users-list'); 
+            l.innerHTML='<div style="text-align:center;">Cargando usuarios...</div>'; 
+            
+            // *** NOTA: Agregué .orderBy('joined', 'desc') para mostrar los más recientes primero. ***
+            db.collection(USERS_PATH).orderBy('joined', 'desc').get().then(s=>{
+                l.innerHTML=''; 
+                if (s.empty) {
+                    l.innerHTML = '<div style="text-align:center; padding:20px;">No hay usuarios registrados.</div>';
+                    return;
+                }
+                
+                s.forEach(d=>{ 
+                    const u=d.data(); 
+                    
+                    // Formatear la fecha de registro si existe
+                    let joinedDate = 'N/A';
+                    if (u.joined && u.joined.toDate) {
+                        joinedDate = u.joined.toDate().toLocaleDateString('es-MX');
+                    }
+                    
+                    l.innerHTML+=`
+                        <div class="admin-list-item-new" style="flex-direction: column; align-items: flex-start; padding: 15px;">
+                            <div style="font-size: 16px; font-weight: 700; color: var(--primary-blue); margin-bottom: 5px;">${u.username || 'Sin Nombre'}</div>
+                            <div style="font-size: 14px; color: var(--text-main); margin-bottom: 3px;">
+                                <strong>Puntos:</strong> <span style="color:green; font-weight:bold;">${u.points || 0} pts</span>
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">
+                                <p style="margin: 2px 0;"><strong>Correo:</strong> ${u.email || 'N/A'}</p>
+                                <p style="margin: 2px 0;"><strong>Teléfono:</strong> ${u.phone || 'N/A'}</p>
+                                <p style="margin: 2px 0;"><strong>Ciudad:</strong> ${u.city || 'N/A'}</p>
+                                <p style="margin: 2px 0;"><strong>Nacimiento:</strong> ${u.dob || 'N/A'}</p>
+                                <p style="margin: 2px 0;"><strong>Registro:</strong> ${joinedDate}</p>
+                            </div>
+                        </div>
+                    `;
+                })
+            }); 
+        }
+
 
         // --- CARGA DE CENTROS AGRUPADOS POR CIUDAD (MODIFICADO para usar cache) ---
         async function loadCentersList() {
