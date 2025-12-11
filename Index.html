@@ -231,13 +231,13 @@
             background: linear-gradient(115deg, var(--primary-blue) 55%, #d1d5db 55.1%); 
             z-index: 1; 
         }
-        .card-content { position: relative; z-index: 2; padding: 20px; color: white; height: 100%; box-sizing: border-box; }
+                .card-content { position: relative; z-index: 2; padding: 20px; color: white; min-height: 100%; box-sizing: border-box; }
         .card-brand { font-size: 12px; opacity: 0.9; margin-bottom: 10px; }
         .balance-label { font-size: 12px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         .balance-amount { font-size: 36px; font-weight: bold; line-height: 1; }
         .balance-unit { font-size: 14px; margin-bottom: 0px; }
         .card-footer-text { font-size: 12px; opacity: 0.8; position: absolute; bottom: 65px; left: 20px; display: block; }
-        .mascot-img { position: absolute; right: 10px; top: 40px; width: 110px; height: auto; z-index: 3; transform: none; }
+                .mascot-img { position: absolute; right: 15px; top: 50px; width: 110px; height: auto; z-index: 3; transform: none; }
         
         .btn-transfer { 
             background-color: var(--primary-red); color: white; border: 1px solid rgba(255,255,255,0.5); 
@@ -551,7 +551,15 @@
         
         #ad-detail-view { background: var(--bg-body); z-index: 2000; }
         .ad-detail-hero-img { width: 100%; height: 250px; object-fit: cover; }
-        .ad-detail-content { padding: 20px; background: var(--surface-white); border-top-left-radius: 20px; border-top-right-radius: 20px; margin-top: -20px; position: relative; min-height: 50vh; }
+                .ad-detail-content { 
+            padding: 20px; 
+            background: var(--bg-body); /* CAMBIO: Usamos el mismo color del fondo de la app */
+            border-top-left-radius: 0; /* ELIMINADO: Quita el borde redondeado */
+            border-top-right-radius: 0; /* ELIMINADO: Quita el borde redondeado */
+            margin-top: 0; /* ELIMINADO: Quita el efecto de solapamiento (el corte) */
+            position: relative; 
+            min-height: 50vh; 
+        }
         .ad-detail-title { color: var(--primary-red); font-size: 20px; font-weight: bold; margin-bottom: 10px; line-height: 1.3; }
         .ad-detail-date { color: var(--text-secondary); font-size: 13px; margin-bottom: 20px; }
         .ad-detail-desc { color: var(--text-main); font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
@@ -809,8 +817,8 @@
         <div class="balance-card">
             <div class="balance-card-bg"></div>
             <div class="card-content">
-                <div class="card-brand">Revolution Wax Puntos</div>
-                <div style="text-align: center; margin-top: 0px;"> <div class="balance-label">SALDO DISPONIBLE</div>
+                                <div class="card-brand">Revolution Wax Puntos</div>
+                <div style="text-align: center; margin-top: 25px;"> <div class="balance-label">SALDO DISPONIBLE</div>
                     <div class="balance-amount" id="saldo-amount">0.00</div>
                     <div class="balance-unit">Puntos</div>
                 </div>
@@ -835,7 +843,7 @@
         </div>
 
         <div class="bottom-nav">
-            <button class="nav-item active"><i class="fas fa-map-marker-alt"></i></button>
+            <button class="nav-item" onclick="window.open('https://www.facebook.com/RevolutionWaxRW', '_blank')"><i class="fab fa-facebook"></i></button>
             <button class="nav-item" onclick="startCatalogFlow()"><i class="fas fa-gas-pump"></i></button>
             <div class="qr-btn-wrapper" onclick="openPersonalQR()"><i class="fas fa-qrcode"></i></div>
             
@@ -1085,12 +1093,10 @@
             <div id="admin-centers-list"></div>
         </div>
 
-        <div id="admin-tab-products" class="admin-content hidden">
+                <div id="admin-tab-products" class="admin-content hidden">
             <div class="admin-card">
-                <h3>Agregar Producto</h3>
-                <p style="font-size:13px; color:#666; margin-bottom:10px;">Selecciona la gasolinera:</p>
+                <h3>Agregar Producto Global</h3>
                 <div class="admin-form">
-                    <select id="admin-prod-center-select"></select>
                     <input type="text" id="admin-prod-name" placeholder="Nombre del Producto">
                     <input type="number" id="admin-prod-cost" placeholder="Costo en Puntos">
                     <input type="text" id="admin-prod-img" placeholder="URL Imagen">
@@ -1098,8 +1104,7 @@
                     <button class="admin-btn" onclick="adminAddProduct()">Guardar Producto</button>
                 </div>
             </div>
-            <h3>Productos por Gasolinera</h3>
-            <select id="admin-view-center-select" onchange="adminLoadProductsList()" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px;"></select>
+            <h3>Productos Registrados (Global)</h3>
             <div id="admin-products-list"></div>
         </div>
         
@@ -1187,7 +1192,7 @@
             <div id="personal-qr-display"></div>
 
             <p style="font-size: 13px; color: #555; margin-top: 20px; line-height: 1.4;">
-                * Recuerda mostrar tu QR personal al despachador al momento de cargar para registrar tu recompensa
+                Recuerda mostrar tu QR personal al Asesor al momento de tu compra para registrar tu recompensa y empieces a acomular puntos.
             </p>
         </div>
     </div>
@@ -1302,6 +1307,7 @@
         const ADS_PATH = `artifacts/${APP_ID}/public/data/ads`;
         const VOUCHERS_PATH = `artifacts/${APP_ID}/public/data/vouchers`; 
         const MOVEMENTS_PATH = `artifacts/${APP_ID}/public/data/movements`; 
+const PRODUCTS_PATH = `artifacts/${APP_ID}/public/data/products`;  
         
         const ADMIN_EMAIL = "mrandroidtutorialeshd@gmail.com";
 
@@ -1440,57 +1446,51 @@
         }
                 
         function loadCatalogGrid() {
-            const grid = document.getElementById('catalog-grid');
-            grid.innerHTML = '<div style="width:100%; text-align:center; padding:20px;">Cargando premios...</div>';
+    const grid = document.getElementById('catalog-grid');
+    grid.innerHTML = '<div style="width:100%; text-align:center; padding:20px;">Cargando premios...</div>';
 
-            if (!selectedCenterId) return;
-
-            // Buscar productos en la base de datos
-            db.collection(CENTERS_PATH).doc(selectedCenterId).collection('products').get()
-            .then(snap => {
-                grid.innerHTML = '';
-                
-                if (snap.empty) {
-                    grid.innerHTML = '<div style="width:100%; text-align:center; padding:20px;">No hay productos en esta estación.</div>';
-                    return;
-                }
-
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    
-                    // Preparamos los datos para que el botón "+" funcione bien
-                    // Usamos comillas simples y escapes para evitar errores en el HTML
-                    const prodObj = {
-                        id: doc.id,
-                        name: p.name,
-                        cost: Number(p.cost),
-                        img: p.img,
-                        disp: p.disp,
-                        type: 'product',
-                        centerName: selectedCenterName
-                    };
-                    const prodJson = JSON.stringify(prodObj).replace(/"/g, "&quot;");
-
-                    // Dibujamos la tarjeta
-                    grid.innerHTML += `
-                        <div class="red-product-card">
-                            <div class="prod-img-box">
-                                <img src="${p.img || 'https://via.placeholder.com/100'}" style="max-width:80%; max-height:90%;" onerror="this.style.display='none'">
-                                <div class="cart-float-btn" onclick="addToCart(${prodJson})">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                            </div>
-                            <div class="prod-title">${p.name}</div>
-                            <div class="prod-desc">Canjeable por puntos</div>
-                            <div class="prod-footer">
-                                <div class="prod-price">${p.cost} pts</div>
-                                <div class="prod-disp">Disp: ${p.disp || 0}</div>
-                            </div>
-                        </div>
-                    `;
-                });
-            });
+    // *** CAMBIO: Carga desde la colección global de productos ***
+    db.collection(PRODUCTS_PATH).get() 
+    .then(snap => {
+        grid.innerHTML = '';
+        
+        if (snap.empty) {
+            grid.innerHTML = '<div style="width:100%; text-align:center; padding:20px;">No hay productos disponibles para canjear.</div>';
+            return;
         }
+
+        snap.forEach(doc => {
+            const p = doc.data();
+            
+            const prodObj = {
+                id: doc.id,
+                name: p.name,
+                cost: Number(p.cost),
+                img: p.img,
+                disp: p.disp,
+                type: 'product',
+            };
+            const prodJson = JSON.stringify(prodObj).replace(/"/g, "&quot;");
+
+            grid.innerHTML += `
+                <div class="red-product-card">
+                    <div class="prod-img-box">
+                        <img src="${p.img || 'https://via.placeholder.com/100'}" style="max-width:80%; max-height:90%;" onerror="this.style.display='none'">
+                        <div class="cart-float-btn" onclick="addToCart(${prodJson})">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <div class="prod-title">${p.name}</div>
+                    <div class="prod-desc">Canjeable por puntos</div>
+                    <div class="prod-footer">
+                        <div class="prod-price">${p.cost} pts</div>
+                        <div class="prod-disp">Disp: ${p.disp || 0}</div>
+                    </div>
+                </div>
+            `;
+        });
+    });
+}
         
         function loadVouchersGrid() {
             const grid = document.getElementById('vouchers-grid');
@@ -2094,18 +2094,18 @@
 
         // --- ADMIN FUNCIONES MODIFICADAS PARA PRODUCTOS Y VALES ---
         function switchAdminTab(tab, btn) {
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.admin-content').forEach(c => c.classList.add('hidden'));
-            if(btn) btn.classList.add('active');
-            document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
-            
-            if(tab === 'centers') { adminLoadCenters(); adminLoadCitiesForSelect(); }
-            if(tab === 'cities') adminLoadCities();
-            if(tab === 'products') adminInitProductsTab();
-            if(tab === 'vouchers') adminLoadVouchers(); 
-            if(tab === 'users') adminLoadUsers();
-            if(tab === 'ads') adminLoadAds();
-        }
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-content').forEach(c => c.classList.add('hidden'));
+    if(btn) btn.classList.add('active');
+    document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
+    
+    if(tab === 'centers') { adminLoadCenters(); adminLoadCitiesForSelect(); }
+    if(tab === 'cities') adminLoadCities();
+    if(tab === 'products') adminLoadProductsList(); // MODIFICADO
+    if(tab === 'vouchers') adminLoadVouchers(); 
+    if(tab === 'users') adminLoadUsers();
+    if(tab === 'ads') adminLoadAds();
+}
 
         // Funciones auxiliares Admin
         function adminAddCity() { const name = document.getElementById('admin-city-name').value.toUpperCase(); if(!name) return showCustomAlert("Nombre requerido."); db.collection(CITIES_PATH).add({name}).then(()=>{showCustomAlert("Ciudad guardada OK"); document.getElementById('admin-city-name').value=''; adminLoadCities();}); }
@@ -2128,124 +2128,121 @@
         }
 
         function adminLoadCenters() { const l=document.getElementById('admin-centers-list'); l.innerHTML='...'; db.collection(CENTERS_PATH).get().then(s=>{l.innerHTML=''; s.forEach(d=>{l.innerHTML+=`<div class="admin-list-item-new"><b>${d.data().name}</b><button onclick="adminDeleteCenter('${d.id}')" style="color:red;border:none;bg:none;">X</button></div>`})}); }
-        function adminDeleteCenter(id) { if(confirm("¿Borrar centro?")) db.doc(`${CENTERS_PATH}/${id}`).delete().then(adminLoadCenters); }
-        function adminInitProductsTab() { 
-            const s=document.getElementById('admin-prod-center-select'); 
-            const v=document.getElementById('admin-view-center-select'); 
-            // Cargar selectores de gasolinera
-            db.collection(CENTERS_PATH).get().then(snap=>{
-                let o='<option value="">Gasolinera</option>'; 
-                snap.forEach(d=>o+=`<option value="${d.id}">${d.data().name}</option>`); 
-                s.innerHTML=o; 
-                v.innerHTML=o;
-                // Si ya hay una gasolinera seleccionada para ver, cargar sus productos
-                if (v.value) adminLoadProductsList();
-            }); 
-        }
+        function adminDeleteCenter(id) { if(confirm("¿Borrar centro?")) db.doc(`${CENTERS_PATH}/${id}`).delete().then(adminLoadCenters); }        
         function adminAddProduct() { 
-            const cid=document.getElementById('admin-prod-center-select').value; 
-            const n=document.getElementById('admin-prod-name').value; 
-            const c=document.getElementById('admin-prod-cost').value; 
-            const i=document.getElementById('admin-prod-img').value; 
-            const d=document.getElementById('admin-prod-disp').value; 
-            if(!cid||!n) return showCustomAlert("Datos incompletos"); 
-            db.collection(CENTERS_PATH).doc(cid).collection('products').add({name:n, cost:Number(c), img:i, disp:d}).then(()=>{
-                showCustomAlert("Producto agregado OK"); 
-                // Limpiar inputs
-                document.getElementById('admin-prod-name').value = '';
-                document.getElementById('admin-prod-cost').value = '';
-                document.getElementById('admin-prod-img').value = '';
-                document.getElementById('admin-prod-disp').value = '';
-                if(document.getElementById('admin-view-center-select').value===cid) adminLoadProductsList();
-            }); 
-        }
+    // ELIMINADA la lectura del selector de centro (cid)
+    const n=document.getElementById('admin-prod-name').value; 
+    const c=document.getElementById('admin-prod-cost').value; 
+    const i=document.getElementById('admin-prod-img').value; 
+    const d=document.getElementById('admin-prod-disp').value; 
+    // VALIDACIÓN MODIFICADA: Ahora solo requiere nombre
+    if(!n) return showCustomAlert("Nombre de producto requerido"); 
+    
+    // *** CAMBIO: Usa PRODUCTS_PATH para guardar de forma global ***
+    db.collection(PRODUCTS_PATH).add({name:n, cost:Number(c), img:i, disp:d}).then(()=>{
+        showCustomAlert("Producto agregado OK"); 
+        // Limpiar inputs
+        document.getElementById('admin-prod-name').value = '';
+        document.getElementById('admin-prod-cost').value = '';
+        document.getElementById('admin-prod-img').value = '';
+        document.getElementById('admin-prod-disp').value = '';
+        adminLoadProductsList(); // Recargar la lista de productos
+    }); 
+}
         
         // MODIFICADO: Muestra lista con opciones de Edición
         function adminLoadProductsList() { 
-            const cid=document.getElementById('admin-view-center-select').value; 
-            const l=document.getElementById('admin-products-list'); 
-            if(!cid) return l.innerHTML=''; 
-            l.innerHTML='<div style="text-align:center;">Cargando productos...</div>'; 
-            
-            db.collection(CENTERS_PATH).doc(cid).collection('products').get().then(s=>{
-                l.innerHTML=''; 
-                if (s.empty) {
-                    l.innerHTML = '<div style="text-align:center;">No hay productos en esta gasolinera.</div>';
-                    return;
-                }
-                s.forEach(d=>{
-                    const p = d.data();
-                    const productData = JSON.stringify({id: d.id, centerId: cid, ...p}).replace(/"/g, "&quot;");
-
-                    l.innerHTML+=`
-                        <div class="admin-list-item-new">
-                            <div class="admin-product-item">
-                                <img src="${p.img || 'https://via.placeholder.com/40'}" class="admin-product-thumb" onerror="this.onerror=null; this.src='https://via.placeholder.com/40'">
-                                <div class="admin-product-info">
-                                    <b>${p.name}</b><br>
-                                    ${p.cost} pts | Disp: ${p.disp || 0}
-                                </div>
-                            </div>
-                            <div class="admin-actions-group">
-                                <button class="admin-action-btn" style="color:var(--primary-blue);" onclick='adminOpenEditProductModal(${productData})'>
-                                    <i class="fas fa-pencil-alt"></i>
-                                </button>
-                                <button class="admin-action-btn" style="color:var(--primary-red);" onclick="adminDelProd('${cid}','${d.id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                })
-            }); 
+    // ELIMINADAS las líneas de lectura del selector de centro
+    const l=document.getElementById('admin-products-list'); 
+    l.innerHTML='<div style="text-align:center;">Cargando productos...</div>'; 
+    
+    // *** CAMBIO: Consulta PRODUCTS_PATH ***
+    db.collection(PRODUCTS_PATH).get().then(s=>{
+        l.innerHTML=''; 
+        if (s.empty) {
+            l.innerHTML = '<div style="text-align:center;">No hay productos disponibles.</div>';
+            return;
         }
+        s.forEach(d=>{
+            const p = d.data();
+            // productData solo necesita id y data, ya no el centerId
+            const productData = JSON.stringify({id: d.id, ...p}).replace(/"/g, "&quot;");
+
+            l.innerHTML+=`
+                <div class="admin-list-item-new">
+                    <div class="admin-product-item">
+                        <img src="${p.img || 'https://via.placeholder.com/40'}" class="admin-product-thumb" onerror="this.onerror=null; this.src='https://via.placeholder.com/40'">
+                        <div class="admin-product-info">
+                            <b>${p.name}</b><br>
+                            ${p.cost} pts | Disp: ${p.disp || 0}
+                        </div>
+                    </div>
+                    <div class="admin-actions-group">
+                        <button class="admin-action-btn" style="color:var(--primary-blue);" onclick='adminOpenEditProductModal(${productData})'>
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="admin-action-btn" style="color:var(--primary-red);" onclick="adminDelProd('${d.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        })
+    }); 
+}
 
         // NUEVA FUNCIÓN: Abrir modal de edición de producto
         function adminOpenEditProductModal(product) {
-            currentEditingProdCenterId = product.centerId;
-            currentEditingProdId = product.id;
-            
-            document.getElementById('edit-prod-name').value = product.name || '';
-            document.getElementById('edit-prod-cost').value = product.cost || '';
-            document.getElementById('edit-prod-img').value = product.img || '';
-            document.getElementById('edit-prod-disp').value = product.disp || '';
-            document.getElementById('edit-prod-current-img').src = product.img || 'https://via.placeholder.com/80';
-            
-            document.getElementById('edit-product-modal').style.display = 'block';
-        }
+    // ELIMINADA la línea: currentEditingProdCenterId = product.centerId;
+    currentEditingProdId = product.id;
+    
+    document.getElementById('edit-prod-name').value = product.name || '';
+    document.getElementById('edit-prod-cost').value = product.cost || '';
+    document.getElementById('edit-prod-img').value = product.img || '';
+    document.getElementById('edit-prod-disp').value = product.disp || '';
+    document.getElementById('edit-prod-current-img').src = product.img || 'https://via.placeholder.com/80';
+    
+    document.getElementById('edit-product-modal').style.display = 'block';
+}
         
         // NUEVA FUNCIÓN: Guardar producto editado
         function adminSaveEditedProduct() {
-            const cid = currentEditingProdCenterId;
-            const pid = currentEditingProdId;
-            const name = document.getElementById('edit-prod-name').value;
-            const cost = document.getElementById('edit-prod-cost').value;
-            const img = document.getElementById('edit-prod-img').value;
-            const disp = document.getElementById('edit-prod-disp').value;
-            
-            if (!name || !cost || !cid || !pid) return showCustomAlert("Faltan datos esenciales para guardar.");
+    // ELIMINADA la línea: const cid = currentEditingProdCenterId;
+    const pid = currentEditingProdId;
+    const name = document.getElementById('edit-prod-name').value;
+    const cost = document.getElementById('edit-prod-cost').value;
+    const img = document.getElementById('edit-prod-img').value;
+    const disp = document.getElementById('edit-prod-disp').value;
+    
+    if (!name || !cost || !pid) return showCustomAlert("Faltan datos esenciales para guardar.");
 
-            const updates = {
-                name: name,
-                cost: Number(cost),
-                img: img,
-                disp: disp
-            };
+    const updates = {
+        name: name,
+        cost: Number(cost),
+        img: img,
+        disp: disp
+    };
 
-            db.collection(CENTERS_PATH).doc(cid).collection('products').doc(pid).update(updates)
-                .then(() => {
-                    showCustomAlert("Producto actualizado con éxito.");
-                    closeModal('edit-product-modal');
-                    adminLoadProductsList(); // Recargar lista
-                })
-                .catch(error => {
-                    console.error("Error al actualizar producto:", error);
-                    showCustomAlert("Error al actualizar: " + error.message);
-                });
-        }
+    // *** CAMBIO: Usa PRODUCTS_PATH ***
+    db.collection(PRODUCTS_PATH).doc(pid).update(updates)
+        .then(() => {
+            showCustomAlert("Producto actualizado con éxito.");
+            closeModal('edit-product-modal');
+            adminLoadProductsList(); // Recargar lista
+        })
+        .catch(error => {
+            console.error("Error al actualizar producto:", error);
+            showCustomAlert("Error al actualizar: " + error.message);
+        });
+}
 
 
-        function adminDelProd(c,p) { if(confirm("¿Borrar producto?")) db.collection(CENTERS_PATH).doc(c).collection('products').doc(p).delete().then(adminLoadProductsList); }
+        // MODIFICADA para aceptar solo el ID del producto y usar PRODUCTS_PATH
+function adminDelProd(p) { 
+    if(confirm("¿Borrar producto?")) {
+        db.collection(PRODUCTS_PATH).doc(p).delete().then(adminLoadProductsList); 
+    }
+}
         
         // --- ADMIN VALES FUNCIONES (MODIFICADAS) ---
         function adminAddVoucher() {
