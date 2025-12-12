@@ -2145,6 +2145,54 @@ const PRODUCTS_PATH = `artifacts/${APP_ID}/public/data/products`;
                 adminLoadCenters();
             }); 
         }
+        
+                // SE AGREGA LA LIMPIEZA DE INPUTS AQUÍ (Función adminAddCenter existente, solo como referencia de ubicación)
+        function adminAddCenter() { 
+            // ... (código existente de adminAddCenter) ...
+            db.collection(CENTERS_PATH).add({name:n, address:a, cityId:cid}).then(()=>{
+                showCustomAlert("Centro agregado"); 
+                document.getElementById('admin-center-name').value = '';
+                document.getElementById('admin-center-address').value = '';
+                adminLoadCenters();
+            }); 
+        }
+
+        // **********************************************
+        // ********** COMIENZO DEL CÓDIGO FALTANTE **********
+
+        function adminAddProduct() { 
+            // ELIMINADA la lectura del selector de centro (cid)
+            const n = document.getElementById('admin-prod-name').value; 
+            const c = document.getElementById('admin-prod-cost').value; 
+            const i = document.getElementById('admin-prod-img').value; 
+            const d = document.getElementById('admin-prod-disp').value; 
+            
+            // VALIDACIÓN: Requiere nombre y costo (debe ser > 0)
+            if(!n) return showCustomAlert("Nombre de producto requerido"); 
+            if(!c || isNaN(Number(c)) || Number(c) <= 0) return showCustomAlert("Costo en puntos requerido y debe ser mayor a 0."); 
+            
+            // Guarda en la colección de Productos Globales
+            db.collection(PRODUCTS_PATH).add({
+                name: n, 
+                cost: Number(c), // Aseguramos que se guarde como número
+                img: i, 
+                disp: d
+            }).then(()=>{
+                showCustomAlert("Producto agregado OK"); 
+                // Limpiar inputs
+                document.getElementById('admin-prod-name').value = '';
+                document.getElementById('admin-prod-cost').value = '';
+                document.getElementById('admin-prod-img').value = '';
+                document.getElementById('admin-prod-disp').value = '';
+                adminLoadProductsList(); // Recargar la lista de productos
+            }).catch(error => {
+                showCustomAlert("Error al guardar: " + error.message);
+                console.error("Error al añadir producto:", error);
+            }); 
+        }
+
+        // ********** FIN DEL CÓDIGO FALTANTE **********
+        // **********************************************
 
                 function adminLoadCenters() { 
             const l = document.getElementById('admin-centers-list'); 
