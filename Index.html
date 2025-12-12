@@ -1177,6 +1177,25 @@
             </div>
         </div>
     </div>
+    
+    <div id="edit-center-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-icon" onclick="closeModal('edit-center-modal')">&times;</span>
+        <h3 style="color:var(--primary-blue); text-align:center;">Editar Gasolinera</h3>
+        
+        <input type="hidden" id="edit-center-id">
+        
+        <div class="admin-form">
+            <label style="font-size:12px; color:#666;">Selecciona la ciudad:</label>
+            <select id="edit-center-city-select" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; margin-bottom:10px;"></select>
+            
+            <input type="text" id="edit-center-name" placeholder="Nombre de la Gasolinera">
+            <input type="text" id="edit-center-address" placeholder="Dirección">
+            
+            <button class="admin-btn" onclick="adminSaveEditedCenter()" style="margin-top: 15px;">Guardar Cambios</button>
+        </div>
+    </div>
+</div>
 
 
         <div id="personal-qr-modal" class="modal">
@@ -2127,28 +2146,165 @@ const PRODUCTS_PATH = `artifacts/${APP_ID}/public/data/products`;
             }); 
         }
 
-        function adminLoadCenters() { const l=document.getElementById('admin-centers-list'); l.innerHTML='...'; db.collection(CENTERS_PATH).get().then(s=>{l.innerHTML=''; s.forEach(d=>{l.innerHTML+=`<div class="admin-list-item-new"><b>${d.data().name}</b><button onclick="adminDeleteCenter('${d.id}')" style="color:red;border:none;bg:none;">X</button></div>`})}); }
-        function adminDeleteCenter(id) { if(confirm("¿Borrar centro?")) db.doc(`${CENTERS_PATH}/${id}`).delete().then(adminLoadCenters); }        
-        function adminAddProduct() { 
-    // ELIMINADA la lectura del selector de centro (cid)
-    const n=document.getElementById('admin-prod-name').value; 
-    const c=document.getElementById('admin-prod-cost').value; 
-    const i=document.getElementById('admin-prod-img').value; 
-    const d=document.getElementById('admin-prod-disp').value; 
-    // VALIDACIÓN MODIFICADA: Ahora solo requiere nombre
-    if(!n) return showCustomAlert("Nombre de producto requerido"); 
-    
-    // *** CAMBIO: Usa PRODUCTS_PATH para guardar de forma global ***
-    db.collection(PRODUCTS_PATH).add({name:n, cost:Number(c), img:i, disp:d}).then(()=>{
-        showCustomAlert("Producto agregado OK"); 
-        // Limpiar inputs
-        document.getElementById('admin-prod-name').value = '';
-        document.getElementById('admin-prod-cost').value = '';
-        document.getElementById('admin-prod-img').value = '';
-        document.getElementById('admin-prod-disp').value = '';
-        adminLoadProductsList(); // Recargar la lista de productos
-    }); 
-}
+                function adminLoadCenters() { 
+            const l = document.getElementById('admin-centers-list'); 
+            l.innerHTML = '<div style="text-align:center;">Cargando centros de distribución por ciudad...</div>';
+            
+            // 1. Cargar todas las ciudades para mapear ID a Nombre
+            db.collection(CITIES_PATH).get().then(citySnap => {
+                const cityMap = {};
+                citySnap.forEach(doc => {
+                    cityMap[doc.id] = doc.data().name;
+                });
+
+                // 2. Cargar todos los centros
+                db.collection(CENTERS_PATH).get().then(centerSnap => {
+                    
+                    // 3. Agrupar centros por cityId
+                    const groupedCenters = {};
+                    centerSnap.forEach(doc => {
+                        const center = { id: doc.id, ...doc.data() };
+                        const cityId = center.cityId;
+                        if (!groupedCenters[cityId]) {
+                            groupedCenters[cityId] = [];
+                        }
+                        groupedCenters[cityId].push(center);
+                    });
+
+                    // 4. Renderizar la lista agrupada
+                    l.innerHTML = ''; 
+                    
+                    if (centerSnap.empty) {
+                        l.innerHTML = '<div style="text-align:center;">No hay centros de distribución registrados.</div>';
+                        return;
+                    }
+                    
+                    // Ordenar por nombre de ciudad
+                    const sortedCityIds = Object.keys(groupedCenters).sort((a, b) => {
+                        const nameA = cityMap[a] || 'Z Desconocida';
+                        const nameB = cityMap[b] || 'Z Desconocida';
+                        return nameA.localeCompare(nameB);
+                    });
+
+                    sortedCityIds.forEach(cityId => {
+                        const cityName = cityMap[cityId] || 'CIUDAD DESCONOCIDA';
+                        const centers = groupedCenters[cityId];
+
+                        // Usa el estilo de separador de ciudad que ya tienes en la app
+                        l.innerHTML += `<p class="city-separator" style="padding: 10px 15px; margin-top: 15px;">${cityName} (${centers.length})</p>`;
+                        
+                        centers.forEach(c => {
+                                                                                    l.innerHTML += `
+                                <div class="admin-list-item-new">
+                                    <div>
+                                        <b>${c.name}</b><br>
+                                        <span style="font-size:12px; color:#666;">${c.address || 'Sin dirección'}</span>
+                                    </div>
+                                    <div class="admin-actions-group">
+                                        <button class="admin-action-btn" style="color:var(--primary-blue);" onclick="adminOpenEditCenterModal('${c.id}')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="admin-action-btn" style="color:var(--primary-red);" onclick="adminDeleteCenter('${c.id}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    });
+
+                }).catch(e => {
+                    l.innerHTML = `<div style="text-align:center; color:red;">Error al cargar centros: ${e.message}</div>`;
+                    console.error("Error al cargar centros:", e);
+                });
+
+            }).catch(e => {
+                l.innerHTML = `<div style="text-align:center; color:red;">Error al cargar ciudades: ${e.message}</div>`;
+                console.error("Error al cargar ciudades:", e);
+            });
+        }
+        
+                // FUNCIÓN AUXILIAR: Carga las ciudades en el <select> (para Agregar y Editar)
+        // Ya existe esta función en el código base, pero la reescribimos para asegurar 
+        // que soporte la selección de una ciudad por defecto para edición.
+        function adminLoadCitiesForSelect(selectElementId, selectedCityId = null) {
+            const select = document.getElementById(selectElementId);
+            if (!select) return; 
+
+            select.innerHTML = '<option value="">Cargando ciudades...</option>';
+
+            db.collection(CITIES_PATH).get().then(snap => {
+                select.innerHTML = '<option value="">Selecciona la ciudad:</option>';
+                snap.forEach(doc => {
+                    const city = doc.data();
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = city.name;
+                    if (selectedCityId && doc.id === selectedCityId) {
+                        option.selected = true; // Selecciona la ciudad actual del centro
+                    }
+                    select.appendChild(option);
+                });
+            }).catch(e => {
+                console.error("Error al cargar ciudades para select:", e);
+                select.innerHTML = '<option value="">Error al cargar ciudades</option>';
+            });
+        }
+        
+        // FUNCIÓN 1 DE EDICIÓN: Abrir Modal y Llenar Campos
+        function adminOpenEditCenterModal(id) {
+            db.doc(`${CENTERS_PATH}/${id}`).get().then(doc => {
+                if (!doc.exists) {
+                    return showCustomAlert("Centro no encontrado.");
+                }
+                const center = doc.data();
+
+                // 1. Guardar el ID para usarlo al guardar
+                document.getElementById('edit-center-id').value = id;
+                
+                // 2. Llenar los campos de texto
+                document.getElementById('edit-center-name').value = center.name || '';
+                document.getElementById('edit-center-address').value = center.address || '';
+                
+                // 3. Cargar y seleccionar la ciudad actual
+                adminLoadCitiesForSelect('edit-center-city-select', center.cityId);
+
+                // 4. Abrir el modal
+                document.getElementById('edit-center-modal').style.display = 'block';
+
+            }).catch(e => {
+                console.error("Error al cargar centro para edición:", e);
+                showCustomAlert("Error al cargar centro para edición.");
+            });
+        }
+
+        // FUNCIÓN 2 DE EDICIÓN: Guardar Cambios en Firebase
+        function adminSaveEditedCenter() {
+            const id = document.getElementById('edit-center-id').value;
+            const cid = document.getElementById('edit-center-city-select').value;
+            const n = document.getElementById('edit-center-name').value;
+            const a = document.getElementById('edit-center-address').value;
+
+            if (!n || !cid) {
+                return showCustomAlert("El nombre y la ciudad son obligatorios.");
+            }
+
+            const updates = {
+                name: n,
+                address: a,
+                cityId: cid
+            };
+
+            db.doc(`${CENTERS_PATH}/${id}`).update(updates).then(() => {
+                showCustomAlert("Centro actualizado con éxito.");
+                closeModal('edit-center-modal');
+                adminLoadCenters(); // Recargar la lista agrupada y actualizada
+            }).catch(e => {
+                console.error("Error al actualizar centro:", e);
+                showCustomAlert("Error al guardar cambios: " + e.message);
+            });
+        }
+
         
         // MODIFICADO: Muestra lista con opciones de Edición
         function adminLoadProductsList() { 
@@ -2996,6 +3152,12 @@ function adminDelProd(p) {
         }
     }
     // === FIN FUNCIÓN NUEVA ===
+    
+            function adminDeleteCenter(id) { 
+            if(confirm("¿Borrar centro?")) 
+                // Esto borra y luego recarga la lista agrupada
+                db.doc(`${CENTERS_PATH}/${id}`).delete().then(adminLoadCenters); 
+        }
     </script>
 </body>
 </html>
