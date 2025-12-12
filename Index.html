@@ -561,7 +561,7 @@
             min-height: 50vh; 
         }
         .ad-detail-title { color: var(--primary-red); font-size: 20px; font-weight: bold; margin-bottom: 10px; line-height: 1.3; }
-        .ad-detail-date { color: var(--text-secondary); font-size: 13px; margin-bottom: 20px; }
+        .ad-detail-date { color: var(--primary-red); font-size: 13px; margin-bottom: 20px; font-weight: 600; }
         .ad-detail-desc { color: var(--text-main); font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
 
         #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-body); z-index: 9999; display: flex; justify-content: center; align-items: center; }
@@ -862,7 +862,7 @@
         <img id="ad-detail-img" class="ad-detail-hero-img" src="">
         <div class="ad-detail-content">
             <div id="ad-detail-title" class="ad-detail-title"></div>
-            <div class="ad-detail-date">Sin fecha de vigencia</div>
+            <div id="ad-detail-date" class="ad-detail-date">Sin fecha de vigencia</div>
             <div id="ad-detail-desc" class="ad-detail-desc"></div>
         </div>
     </div>
@@ -1289,6 +1289,8 @@
                 <input type="text" id="edit-ad-img-url" placeholder="URL de la imagen (Banner)">
                 <input type="text" id="edit-ad-title" placeholder="Título (Destacado Rojo)">
                 <textarea id="edit-ad-desc" placeholder="Descripción detallada..." rows="4"></textarea>
+                <label style="font-size:12px; color:#666; display:block; margin-top:10px; margin-bottom:5px; text-align:left;">Fecha de Vigencia (Opcional)</label>
+                <input type="date" id="edit-ad-validity-date">
                 <button class="admin-btn" onclick="saveEditedAd()">Guardar Cambios</button>
             </div>
         </div>
@@ -2100,13 +2102,24 @@ const PRODUCTS_PATH = `artifacts/${APP_ID}/public/data/products`;
             });
         }
 
-        function openAdDetails(index) {
+                function openAdDetails(index) {
             // Usamos modulo para evitar error por duplicados
             const ad = allAdsCache[index % allAdsCache.length]; 
             if(ad) {
                 document.getElementById('ad-detail-img').src = ad.imageUrl;
                 document.getElementById('ad-detail-title').innerText = ad.title || "Publicidad";
                 document.getElementById('ad-detail-desc').innerText = ad.description || "Sin descripción adicional.";
+
+                // Lógica de fecha de vigencia
+                const dateDisplay = document.getElementById('ad-detail-date');
+                if (ad.validityDate) {
+                    // Formato DD/MM/AAAA para mejor lectura
+                    const [year, month, day] = ad.validityDate.split('-');
+                    dateDisplay.innerText = `VIGENCIA: ${day}/${month}/${year}`;
+                } else {
+                    dateDisplay.innerText = "SIN FECHA DE VIGENCIA";
+                }
+
                 showView('ad-detail-view');
             }
         }
@@ -2563,25 +2576,25 @@ function adminDelProd(p) {
             const title = document.getElementById('admin-ad-title').value;
             const desc = document.getElementById('admin-ad-desc').value;
             if(!imgUrl) return showCustomAlert("URL imagen requerida.");
-            db.collection(ADS_PATH).add({imageUrl: imgUrl, title: title, description: desc, createdAt: firebase.firestore.FieldValue.serverTimestamp()}).then(() => {
+            db.collection(ADS_PATH).add({imageUrl: imgUrl, title: title, description: desc, validityDate: '', createdAt: firebase.firestore.FieldValue.serverTimestamp()}).then(() => {
                 showCustomAlert("Publicidad agregada OK"); document.getElementById('admin-ad-img-url').value=''; adminLoadAds(); loadAdsCarousel();
             });
         }
 
-        function adminLoadAds() {
+                function adminLoadAds() {
             const list = document.getElementById('admin-ads-list');
             list.innerHTML = 'Cargando...';
             db.collection(ADS_PATH).orderBy('createdAt', 'desc').get().then(snap => {
                 list.innerHTML = '';
                 snap.forEach(doc => {
-                    const ad = doc.data();
-                    const safeTitle = (ad.title || '').replace(/'/g, "\\'");
-                    const safeDesc = (ad.description || '').replace(/'/g, "\\'").replace(/\n/g, " ");
+                    const ad = { id: doc.id, ...doc.data() };
+                    const adJson = JSON.stringify(ad).replace(/"/g, "&quot;"); // Crear un JSON seguro para pasar
+
                     list.innerHTML += `
                         <div class="admin-list-item-new" style="align-items: flex-start;">
                             <div><img src="${ad.imageUrl}" style="height:60px;border-radius:8px;"><br><b>${ad.title||''}</b></div>
                             <div>
-                                <button onclick="adminOpenEditModal('${doc.id}','${ad.imageUrl}','${safeTitle}','${safeDesc}')" class="admin-action-btn" style="color:blue;">
+                                <button onclick='adminOpenEditModal(${adJson})' class="admin-action-btn" style="color:blue;">
                                     <i class="fas fa-pencil-alt"></i>
                                 </button>
                                 <button onclick="adminDeleteAd('${doc.id}')" class="admin-action-btn" style="color:red;">
@@ -2593,20 +2606,32 @@ function adminDelProd(p) {
             });
         }
 
-        function adminOpenEditModal(id, url, title, desc) {
-            currentEditingAdId = id;
-            document.getElementById('edit-ad-img-url').value = url;
-            document.getElementById('edit-ad-title').value = title;
-            document.getElementById('edit-ad-desc').value = desc;
+                function adminOpenEditModal(ad) {
+            currentEditingAdId = ad.id;
+            document.getElementById('edit-ad-img-url').value = ad.imageUrl;
+            document.getElementById('edit-ad-title').value = ad.title;
+            document.getElementById('edit-ad-desc').value = ad.description;
+            // CAMBIO: Asignar la fecha de vigencia
+            document.getElementById('edit-ad-validity-date').value = ad.validityDate || ''; 
+            
             document.getElementById('edit-ad-modal').style.display = 'block';
         }
 
-        function saveEditedAd() {
+                function saveEditedAd() {
             if(!currentEditingAdId) return;
             const imgUrl = document.getElementById('edit-ad-img-url').value;
             const title = document.getElementById('edit-ad-title').value;
             const desc = document.getElementById('edit-ad-desc').value;
-            db.doc(`${ADS_PATH}/${currentEditingAdId}`).update({imageUrl: imgUrl, title: title, description: desc}).then(() => {
+            // CAMBIO: Leer la fecha de vigencia
+            const validityDate = document.getElementById('edit-ad-validity-date').value; 
+            
+            db.doc(`${ADS_PATH}/${currentEditingAdId}`).update({
+                imageUrl: imgUrl, 
+                title: title, 
+                description: desc, 
+                // CAMBIO: Guardar la fecha
+                validityDate: validityDate 
+            }).then(() => {
                 showCustomAlert("Actualizado"); closeModal('edit-ad-modal'); adminLoadAds(); loadAdsCarousel();
             });
         }
