@@ -1032,19 +1032,21 @@
         <div class="bottom-curve-bg" style="position:absolute; bottom:0; width:100%; height:100px; background-color:var(--primary-red); border-top-left-radius:100%; border-top-right-radius:100%; z-index:-1;"></div>
     </div>
 
-    <div id="locations-view" class="view-section">
+            <div id="locations-view" class="view-section">
         <div class="locations-header">
-            <i class="fas fa-arrow-left" style="font-size:20px; cursor:pointer; color:white;" onclick="backFromLocations()"></i>
-            <div class="search-container">
+            <i class="fas fa-arrow-left" style="font-size:20px; cursor:pointer; color:var(--text-main);" onclick="backFromLocations()"></i>
+            
+            <div style="flex-grow: 1;">
                 <input type="text" id="city-search-input" class="search-input" placeholder="Buscar estado" onkeyup="filterCities()">
             </div>
-            <i class="fas fa-times" style="font-size:20px; cursor:pointer; color:white;" onclick="goToApp()"></i>
+            
+            <i class="fas fa-times" style="font-size:20px; cursor:pointer; color:var(--text-main);" onclick="goToApp()"></i>
         </div>
 
         <div id="loc-cities-container"></div>
         <div id="loc-stations-container" class="hidden"></div>
     </div>
-
+    
     <div id="admin-view" class="view-section">
         <div class="catalog-header">
             <i class="fas fa-arrow-left" style="color:var(--text-main); font-size:20px; cursor:pointer;" onclick="goToApp()"></i>
@@ -2730,75 +2732,77 @@ function adminDelProd(p) {
         }
 
         // FUNCIÓN: Renderizar centros agrupados (usada por loadCentersList y filterCenters)
-        function renderGroupedCenters(centersToRender, searchTerm = null) {
-            const list = document.getElementById('centers-list-container');
-            list.innerHTML = ''; // Limpiar lista
-            
-            if (centersToRender.length === 0 && searchTerm) {
-                 list.innerHTML = `<p class="city-separator" style="text-align:center; color:var(--text-secondary); background:var(--bg-body); font-weight:normal;">No se encontraron centros para "${searchTerm}".</p>`;
-                 return;
-            } else if (centersToRender.length === 0 && !searchTerm) {
-                list.innerHTML = '<p class="city-separator" style="text-align:center; color:var(--text-secondary); background:var(--bg-body); font-weight:normal;">No hay centros de canje registrados.</p>';
-                return;
-            }
+        // FUNCIÓN: Renderizar centros agrupados (usada por loadCentersList y filterCenters)
+function renderGroupedCenters(centersToRender, searchTerm = null) {
+    const list = document.getElementById('centers-list-container');
+    list.innerHTML = ''; // Limpiar lista
+    
+    if (centersToRender.length === 0 && searchTerm) {
+            list.innerHTML = `<p class="city-separator" style="text-align:center; color:var(--text-secondary); background:var(--bg-body); font-weight:normal;">No se encontraron centros para "${searchTerm}".</p>`;
+            return;
+    } else if (centersToRender.length === 0 && !searchTerm) {
+        list.innerHTML = '<p class="city-separator" style="text-align:center; color:var(--text-secondary); background:var(--bg-body); font-weight:normal;">No hay centros de canje registrados.</p>';
+        return;
+    }
 
-            const groupedCenters = {};
-            centersToRender.forEach(c => {
-                const cityId = c.cityId;
-                if (!groupedCenters[cityId]) {
-                    groupedCenters[cityId] = [];
-                }
-                groupedCenters[cityId].push(c);
-            });
-
-            let html = '';
-            
-            // Si hay búsqueda, mostramos los resultados sin cabeceras de ciudad separadas (más compacto)
-            if (searchTerm) {
-                 html += `<p class="city-separator" style="background:#fff3e0; color:var(--primary-red);">Resultados de búsqueda (${centersToRender.length})</p>`;
-                 centersToRender.forEach(c => {
-                     const cityName = allCities[c.cityId] || 'Ciudad Desconocida';
-                     html += `
-                            <div class="station-item" onclick="selectCenter('${c.id}', '${c.name}')">
-                                <div class="station-icon-simple"><i class="fas fa-gas-pump"></i></div>
-                                <div class="station-text">
-                                    <span>${c.name}</span>
-                                    <span class="station-addr">${c.address || 'Sin dirección'} (${cityName})</span>
-                                
-                                </div>
-                            </div>
-                        `;
-                 });
-            } else {
-                // Modo normal: Agrupado por Ciudad
-                const sortedCityIds = Object.keys(groupedCenters).sort((a, b) => {
-                    const nameA = allCities[a] || 'Z Desconocida';
-                    const nameB = allCities[b] || 'Z Desconocida';
-                    return nameA.localeCompare(nameB);
-                });
-                
-                sortedCityIds.forEach(cityId => {
-                    const cityName = allCities[cityId] || 'CIUDAD DESCONOCIDA';
-                    const centers = groupedCenters[cityId];
-
-                    html += `<p class="city-separator">${cityName}</p>`;
-                    
-                    centers.forEach(c => {
-                        html += `
-                            <div class="station-item" onclick="selectCenter('${c.id}', '${c.name}')">
-                                <div class="station-icon-simple"><i class="fas fa-gas-pump"></i></div>
-                            <div class="station-text">
-                                <span>${c.name}</span>
-                                <span class="station-addr">${c.address || 'Sin dirección'}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-            }
-
-            list.innerHTML = html;
+    const groupedCenters = {};
+    centersToRender.forEach(c => {
+        const cityId = c.cityId;
+        if (!groupedCenters[cityId]) {
+            groupedCenters[cityId] = [];
         }
+        groupedCenters[cityId].push(c);
+    });
+
+    let html = '';
+    
+    // Si hay búsqueda, mostramos los resultados sin cabeceras de ciudad separadas (más compacto)
+    if (searchTerm) {
+            html += `<p class="city-separator" style="background:#fff3e0; color:var(--primary-red);">Resultados de búsqueda (${centersToRender.length})</p>`;
+            centersToRender.forEach(c => {
+                const cityName = allCities[c.cityId] || 'Ciudad Desconocida';
+                html += `
+                    <div class="station-item" onclick="selectCenter('${c.id}', '${c.name}')">
+                        <div class="station-icon-simple"><i class="fas fa-gas-pump"></i></div>
+                        <div class="station-text">
+                            <span>${c.name}</span>
+                            <span class="station-addr">${c.address || 'Sin dirección'} (${cityName})</span>
+                        
+                        </div>
+                    </div>
+                `;
+            });
+    } else {
+        // Modo normal: Agrupado por Ciudad
+        const sortedCityIds = Object.keys(groupedCenters).sort((a, b) => {
+            const nameA = allCities[a] || 'Z Desconocida';
+            const nameB = allCities[b] || 'Z Desconocida';
+            return nameA.localeCompare(nameB);
+        });
+        
+        sortedCityIds.forEach(cityId => {
+            const cityName = allCities[cityId] || 'CIUDAD DESCONOCIDA';
+            const centers = groupedCenters[cityId];
+
+            // --- AQUÍ ESTÁ EL CAMBIO: Se agrega (${centers.length}) ---
+            html += `<p class="city-separator">${cityName} (${centers.length})</p>`;
+            
+            centers.forEach(c => {
+                html += `
+                    <div class="station-item" onclick="selectCenter('${c.id}', '${c.name}')">
+                        <div class="station-icon-simple"><i class="fas fa-gas-pump"></i></div>
+                    <div class="station-text">
+                        <span>${c.name}</span>
+                        <span class="station-addr">${c.address || 'Sin dirección'}</span>
+                    </div>
+                </div>
+            `;
+        });
+    });
+    }
+
+    list.innerHTML = html;
+}
 
         // --- FUNCIONES DE UBICACIONES (SOLUCIÓN PANTALLA BLANCA) ---
         function loadLocationsCities() {
