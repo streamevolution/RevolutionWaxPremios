@@ -1324,7 +1324,7 @@
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'revolutionwax-v1';
-        const USERS_PATH = `artifacts/${APP_ID}/public/data/users`;
+        const USERS_PATH = `artifacts/${APP_ID}/public/data/users`; 
         const CENTERS_PATH = `artifacts/${APP_ID}/public/data/centers`;
         const CITIES_PATH = `artifacts/${APP_ID}/public/data/cities`;
         const ADS_PATH = `artifacts/${APP_ID}/public/data/ads`;
@@ -1963,46 +1963,52 @@ const PRODUCTS_PATH = `artifacts/${APP_ID}/public/data/products`;
         });
 
                 document.getElementById('register-form').addEventListener('submit', e => {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value;
-            const phone = document.getElementById('reg-phone').value;
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-pass').value;
-            const dob = document.getElementById('reg-dob').value;
-            const city = document.getElementById('reg-city').value;
-            let gender = "No especificado";
-            document.getElementsByName('gender').forEach(r => { if(r.checked) gender = r.value; });
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value;
+    const phone = document.getElementById('reg-phone').value;
+    const email = document.getElementById('reg-email').value;
+    const pass = document.getElementById('reg-pass').value;
+    const dob = document.getElementById('reg-dob').value;
+    const city = document.getElementById('reg-city').value;
+    let gender = "No especificado";
+    document.getElementsByName('gender').forEach(r => { if(r.checked) gender = r.value; });
 
-            // GENERAMOS EL CÓDIGO AQUÍ
-            const transferCode = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+    // GENERAMOS EL CÓDIGO
+    const transferCode = Math.floor(1000000000 + Math.random() * 9000000000).toString();
 
-            auth.createUserWithEmailAndPassword(email, pass).then(async (cred) => {
-                await cred.user.sendEmailVerification();
-                
-                // GUARDAMOS EL CÓDIGO EN LA BASE DE DATOS
-                await db.doc(`${USERS_PATH}/${cred.user.uid}`).set({
-                    username: name, 
-                    email, 
-                    phone, 
-                    dob, 
-                    city, 
-                    gender,
-                    transferCode: transferCode, 
-                    points: 0, 
-                    joined: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                // Registro de movimiento inicial (puntos = 0)
-                logTransaction(cred.user.uid, 0, 'new_account', 'Creación de cuenta de lealtad');
-
-                showCustomAlert("Cuenta creada con éxito. Se ha enviado un correo de verificación. Por favor verifica tu cuenta antes de iniciar sesión.");
-                await auth.signOut();
-                goToLogin();
-            }).catch(err => {
-                document.getElementById('reg-error').innerText = err.message;
-                document.getElementById('reg-error').style.display = 'block';
-            });
+    // 1. CREAR USUARIO EN AUTH
+    auth.createUserWithEmailAndPassword(email, pass).then((cred) => {
+        
+        // 2. GUARDAR EN BASE DE DATOS INMEDIATAMENTE
+        // Usamos return para asegurar que la promesa se complete antes de seguir
+        return db.collection(USERS_PATH).doc(cred.user.uid).set({
+            username: name, 
+            email: email, 
+            phone: phone, 
+            dob: dob, 
+            city: city, 
+            gender: gender,
+            transferCode: transferCode, 
+            points: 0, 
+            joined: firebase.firestore.FieldValue.serverTimestamp() // Fecha de registro
+        }).then(() => {
+            // 3. REGISTRAR MOVIMIENTO INICIAL
+            logTransaction(cred.user.uid, 0, 'new_account', 'Creación de cuenta de lealtad');
+            
+            // 4. ENVIAR CORREO Y CERRAR
+            cred.user.sendEmailVerification().catch(err => console.log("Error enviando email verif", err));
+            
+            showCustomAlert("Cuenta creada con éxito. Ya puedes iniciar sesión.");
+            auth.signOut(); // Cerramos sesión SOLO después de guardar los datos
+            goToLogin();
         });
+
+    }).catch(err => {
+        console.error("Error en registro:", err);
+        document.getElementById('reg-error').innerText = err.message;
+        document.getElementById('reg-error').style.display = 'block';
+    });
+});
 
             
     function logout() { 
@@ -2640,44 +2646,60 @@ function adminDelProd(p) {
 
         function adminDeleteAd(id) { if(confirm("¿Borrar publicidad?")) db.doc(`${ADS_PATH}/${id}`).delete().then(() => { adminLoadAds(); loadAdsCarousel(); }); }
         
-        function adminLoadUsers() { 
-            const l=document.getElementById('admin-users-list'); 
-            l.innerHTML='<div style="text-align:center;">Cargando usuarios...</div>'; 
+                function adminLoadUsers() { 
+            const l = document.getElementById('admin-users-list'); 
+            l.innerHTML = '<div style="text-align:center;">Cargando usuarios...</div>'; 
             
-            // *** NOTA: Agregué .orderBy('joined', 'desc') para mostrar los más recientes primero. ***
-            db.collection(USERS_PATH).orderBy('joined', 'desc').get().then(s=>{
-                l.innerHTML=''; 
+            db.collection(USERS_PATH).get().then(s => {
+                l.innerHTML = ''; 
                 if (s.empty) {
                     l.innerHTML = '<div style="text-align:center; padding:20px;">No hay usuarios registrados.</div>';
                     return;
                 }
                 
-                s.forEach(d=>{ 
-                    const u=d.data(); 
-                    
-                    // Formatear la fecha de registro si existe
+                s.forEach(d => { 
+                    const u = d.data(); 
                     let joinedDate = 'N/A';
                     if (u.joined && u.joined.toDate) {
                         joinedDate = u.joined.toDate().toLocaleDateString('es-MX');
                     }
                     
-                    l.innerHTML+=`
-                        <div class="admin-list-item-new" style="flex-direction: column; align-items: flex-start; padding: 15px;">
-                            <div style="font-size: 16px; font-weight: 700; color: var(--primary-blue); margin-bottom: 5px;">${u.username || 'Sin Nombre'}</div>
-                            <div style="font-size: 14px; color: var(--text-main); margin-bottom: 3px;">
-                                <strong>Puntos:</strong> <span style="color:green; font-weight:bold;">${u.points || 0} pts</span>
+                    l.innerHTML += `
+                        <div class="admin-list-item-new" style="flex-direction: row; align-items: center; padding: 15px; justify-content: space-between;">
+                            <div style="flex-grow:1;">
+                                <div style="font-size: 16px; font-weight: 700; color: var(--primary-blue); margin-bottom: 5px;">${u.username || 'Sin Nombre'}</div>
+                                <div style="font-size: 14px; color: var(--text-main); margin-bottom: 3px;">
+                                    <strong>Puntos:</strong> <span style="color:green; font-weight:bold;">${u.points || 0} pts</span>
+                                </div>
+                                <div style="font-size: 13px; color: var(--text-secondary);">
+                                    <p style="margin: 2px 0;"><strong>Correo:</strong> ${u.email || 'N/A'}</p>
+                                    <p style="margin: 2px 0;"><strong>Registro:</strong> ${joinedDate}</p>
+                                </div>
                             </div>
-                            <div style="font-size: 13px; color: var(--text-secondary);">
-                                <p style="margin: 2px 0;"><strong>Correo:</strong> ${u.email || 'N/A'}</p>
-                                <p style="margin: 2px 0;"><strong>Teléfono:</strong> ${u.phone || 'N/A'}</p>
-                                <p style="margin: 2px 0;"><strong>Ciudad:</strong> ${u.city || 'N/A'}</p>
-                                <p style="margin: 2px 0;"><strong>Nacimiento:</strong> ${u.dob || 'N/A'}</p>
-                                <p style="margin: 2px 0;"><strong>Registro:</strong> ${joinedDate}</p>
-                            </div>
+                            
+                            <button onclick="adminDeleteUser('${d.id}', '${u.username}')" style="background:none; border:none; cursor:pointer; color:var(--primary-red); font-size:20px; padding:10px;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     `;
                 })
+            }).catch(error => {
+                console.error("Error cargando usuarios:", error);
+                l.innerHTML = '<div style="text-align:center; color:red;">Error al cargar lista.</div>';
             }); 
+        }
+        
+                function adminDeleteUser(userId, userName) {
+            if(confirm(`¿Estás SEGURO de eliminar los datos de ${userName}? \n\nEsta acción borrará sus puntos y su registro de la app, pero NO borrará su acceso (login) si aún existe.`)) {
+                
+                // Borrar el documento de la base de datos
+                db.collection(USERS_PATH).doc(userId).delete().then(() => {
+                    showCustomAlert(`Usuario ${userName} eliminado correctamente.`);
+                    adminLoadUsers(); // Recargar la lista para ver el cambio
+                }).catch(error => {
+                    showCustomAlert("Error al eliminar: " + error.message);
+                });
+            }
         }
 
 
